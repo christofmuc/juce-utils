@@ -12,16 +12,25 @@ find_package(JUCE REQUIRED
 		juce_events
 		juce_audio_basics
 		juce_audio_devices
+		juce_data_structures
 )
 
 # Define the sources for the static library
 set(Sources
+    Data.cpp
+	Data.h
 	MidiClocker.cpp
 	MidiClocker.h
 	MidiNote.cpp
 	MidiNote.h
 	MidiRecorder.cpp
 	MidiRecorder.h
+	Settings.cpp
+	Settings.h
+	StreamLogger.cpp
+	StreamLogger.h
+	README.md
+	LICENSE.md
 )
 
 # Setup library
