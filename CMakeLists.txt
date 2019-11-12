@@ -34,15 +34,15 @@ set(Sources
 )
 
 # Setup library
-add_library(JUCE-MIDI-Helpers ${Sources})
-target_include_directories(JUCE-MIDI-Helpers INTERFACE ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(JUCE-MIDI-Helpers PRIVATE ${JUCE_LIBRARIES})
+add_library(juce-utils ${Sources})
+target_include_directories(juce-utils INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(juce-utils PRIVATE ${JUCE_LIBRARIES})
 
 # Pedantic about warnings
 if (MSVC)
     # warning level 4 and all warnings as errors
-    target_compile_options(JUCE-MIDI-Helpers PRIVATE /W4 /WX)
+    target_compile_options(juce-utils PRIVATE /W4 /WX)
 else()
     # lots of warnings and all warnings as errors
-    target_compile_options(JUCE-MIDI-Helpers PRIVATE -Wall -Wextra -pedantic -Werror)
+    target_compile_options(juce-utils PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
