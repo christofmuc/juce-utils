@@ -4,6 +4,8 @@
 #  Dual licensed: Distributed under Affero GPL license by default, an MIT license is available for purchase
 #
 
+project(juce-utils)
+
 # Find JUCE, and add the components we need
 SET(JUCE_DIR_HINT "${CMAKE_CURRENT_LIST_DIR}/../thirdparty")
 find_package(JUCE REQUIRED 
