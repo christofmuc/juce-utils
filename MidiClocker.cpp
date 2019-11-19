@@ -28,7 +28,7 @@ double MidiClocker::getCurrentBPM()
 	std::deque<double> &list = clockTimes_.begin()->second;
 	double delta = 0.0;
 	size_t count = 0;
-	for (int i = 1; i < list.size(); i++) {
+	for (size_t i = 1; i < list.size(); i++) {
 		delta += list[i] - list[i - 1];
 		count++;
 	}
