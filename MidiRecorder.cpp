@@ -9,7 +9,7 @@
 #include "Settings.h"
 #include "StreamLogger.h"
 
-MidiRecorder::MidiRecorder(AudioDeviceManager &deviceManager) : deviceManager_(deviceManager), isRecording_(false)
+MidiRecorder::MidiRecorder(AudioDeviceManager &deviceManager) : isRecording_(false), deviceManager_(deviceManager)
 {
 	// Just enable *all* Midi devices. Not sure if that's smart in the long run, but hey...
 	auto devices = MidiInput::getDevices();
