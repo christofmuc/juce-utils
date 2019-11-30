@@ -7,15 +7,17 @@
 project(juce-utils)
 
 # Find JUCE, and add the components we need
-SET(JUCE_DIR_HINT "${CMAKE_CURRENT_LIST_DIR}/../thirdparty")
-find_package(JUCE REQUIRED 
-	COMPONENTS 
-		juce_core		
-		juce_events
-		juce_audio_basics
-		juce_audio_devices
-		juce_data_structures
-)
+IF(NOT DEFINED JUCE_LIBRARIES)
+	SET(JUCE_DIR_HINT "${CMAKE_CURRENT_LIST_DIR}/../thirdparty")
+	find_package(JUCE REQUIRED 
+		COMPONENTS 
+			juce_core		
+			juce_events
+			juce_audio_basics
+			juce_audio_devices
+			juce_data_structures
+	)
+ENDIF()
 
 # Define the sources for the static library
 set(Sources
@@ -37,8 +39,7 @@ set(Sources
 
 # Setup library
 add_library(juce-utils ${Sources})
-target_include_directories(juce-utils INTERFACE ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(juce-utils PRIVATE ${JUCE_LIBRARIES})
+target_include_directories(juce-utils INTERFACE ${CMAKE_CURRENT_LIST_DIR} PRIVATE ${JUCE_INCLUDES})
 
 # Pedantic about warnings
 if (MSVC)
