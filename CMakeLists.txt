@@ -25,6 +25,8 @@ set(Sources
 	Data.h
 	MidiClocker.cpp
 	MidiClocker.h
+	MidiHelpers.cpp 
+	MidiHelpers.h
 	MidiNote.cpp
 	MidiNote.h
 	MidiRecorder.cpp
@@ -33,6 +35,8 @@ set(Sources
 	Settings.h
 	StreamLogger.cpp
 	StreamLogger.h
+	Sysex.cpp
+	Sysex.h
 	README.md
 	LICENSE.md
 )
