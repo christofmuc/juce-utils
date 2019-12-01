@@ -1,8 +1,12 @@
+/*
+   Copyright (c) 2019 Christof Ruch. All rights reserved.
+
+   Dual licensed: Distributed under Affero GPL license by default, an MIT license is available for purchase
+*/
+
 #include "Sysex.h"
 
 #include "Logger.h"
-
-#include <boost/format.hpp>
 
 std::vector<MidiMessage> Sysex::loadSysex(std::string const &filename)
 {
@@ -18,7 +22,7 @@ std::vector<MidiMessage> Sysex::loadSysex(std::string const &filename)
 				File zipEntry = File::createFileWithoutCheckingPath(entry->filename);
 				if (zipEntry.getFileExtension().toLowerCase() == ".mid" || zipEntry.getFileExtension().toLowerCase() == ".syx") {
 					// That's an interesting entry
-					SimpleLogger::instance()->postMessage((boost::format("Opening %s") % entry->filename).str());
+					SimpleLogger::instance()->postMessage(String("Opening ") + String(entry->filename));
 					auto zipStream = zip.createStreamForEntry(i);
 					if (zipStream) {
 						auto newMessages = loadSysex(*zipStream);
