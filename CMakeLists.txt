@@ -23,6 +23,8 @@ ENDIF()
 set(Sources
     Data.cpp
 	Data.h
+	Logger.cpp
+	Logger.h
 	MidiClocker.cpp
 	MidiClocker.h
 	MidiHelpers.cpp 
