@@ -29,6 +29,7 @@ set(Sources
 	MidiClocker.h
 	MidiHelpers.cpp 
 	MidiHelpers.h
+	MidiNetworkLocation.h
 	MidiNote.cpp
 	MidiNote.h
 	MidiRecorder.cpp
