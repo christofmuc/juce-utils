@@ -44,7 +44,7 @@ File Settings::getSessionStorageDir() const
 Settings::Settings()
 {
 	PropertiesFile::Options options;
-	options.folderName = "JammerNetz";
+	options.folderName = settingsID_;
 	options.applicationName = settingsID_;
 	options.filenameSuffix = ".settings";
 	options.commonToAllUsers = false;
