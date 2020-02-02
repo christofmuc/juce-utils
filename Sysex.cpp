@@ -64,11 +64,11 @@ std::vector<juce::MidiMessage> Sysex::loadSysex(InputStream &inputStream)
 	else {
 		// More likely, this is a pure sysex file where we read the raw messages from a binary stream
 		inputStream.setPosition(0);
-		std::vector<uint8> data(inputStream.getTotalLength());
+		std::vector<uint8> data((size_t) inputStream.getTotalLength());
 		inputStream.read(&data[0], (int)inputStream.getTotalLength()); // 4 GB Limit
 
 		// Now produce the Sysex messages from the file
-		int inPointer = 0;
+		size_t inPointer = 0;
 		uint8 lastStatusByte = 0xf0; // Sysex message
 		while (inPointer < data.size()) {
 			int bytesUsed = 0;
