@@ -17,9 +17,20 @@ SimpleLogger::SimpleLogger()
 	FileLogger::setCurrentLogger(fileLogger_.get());
 }
 
+SimpleLogger::~SimpleLogger()
+{
+}
+
 SimpleLogger * SimpleLogger::instance()
 {
 	return instance_;
+}
+
+void SimpleLogger::shutdown()
+{
+	Logger::setCurrentLogger(nullptr);
+	//delete instance_;
+	//instance_ = nullptr;
 }
 
 void SimpleLogger::markBenchmarkPoint(const String &message)

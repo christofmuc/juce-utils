@@ -4,10 +4,17 @@
 
 juce::String Settings::settingsID_ = "JammerNetz"; // This can be overridden for testing, so you can start more than one client on a single machine and don't overwrite your settings file
 
+Settings *Settings::instance_ = new Settings();
+
 Settings & Settings::instance()
 {
-	static Settings instance_;
-	return instance_;
+	return *instance_;
+}
+
+void Settings::shutdown()
+{
+	delete instance_;
+	instance_ = nullptr;
 }
 
 void Settings::setSettingsID(String const &id)

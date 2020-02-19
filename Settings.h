@@ -6,6 +6,7 @@ class Settings {
 public:
 	static void setSettingsID(String const &id); // Call this before any call to instance
 	static Settings & instance();
+	static void shutdown();
 	void saveAndClose();
 
 	std::string get(std::string const &key, std::string const &defaultValue = std::string());
@@ -20,6 +21,7 @@ public:
 private:
 	Settings();
 
+	static Settings *instance_;
 	static String settingsID_;
 	ApplicationProperties properties_;
 };

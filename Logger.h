@@ -11,8 +11,10 @@
 class SimpleLogger {
 public:
 	SimpleLogger();
+	virtual ~SimpleLogger();
 
 	static SimpleLogger *instance();
+	static void shutdown();
 
 	virtual void postMessage(const String& message) = 0;
 	virtual void markBenchmarkPoint(const String &message);
