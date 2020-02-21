@@ -73,7 +73,7 @@ std::vector<juce::MidiMessage> Sysex::loadSysex(InputStream &inputStream)
 		while (inPointer < data.size()) {
 			int bytesUsed = 0;
 			//TODO - this crashes in case the data is not well formed sysex (example: Depeche Mode TI sound set, there is a message which ends on 0xff 0xff). 
-			messages.push_back(MidiMessage(&data[inPointer], (int)(data.size()) - inPointer, bytesUsed, lastStatusByte, 0.0, false));
+			messages.push_back(MidiMessage(&data[inPointer], (int)(data.size() - inPointer), bytesUsed, lastStatusByte, 0.0, false));
 			inPointer += bytesUsed;
 		}
 	}
