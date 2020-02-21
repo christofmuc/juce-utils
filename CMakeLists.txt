@@ -40,6 +40,7 @@ set(Sources
 	StreamLogger.h
 	Sysex.cpp
 	Sysex.h
+	TypedNamedValue.h
 	README.md
 	LICENSE.md
 )
