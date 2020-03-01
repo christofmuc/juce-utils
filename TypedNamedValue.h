@@ -5,6 +5,7 @@
 enum class ValueType {
 	Integer,
 	Bool,
+	String,
 	Lookup
 };
 
