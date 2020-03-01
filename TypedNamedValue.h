@@ -17,5 +17,6 @@ struct  TypedNamedValue {
 	int minValue;
 	int maxValue;
 	std::map<int, std::string> lookup;
+	bool enabled;
 };
 
