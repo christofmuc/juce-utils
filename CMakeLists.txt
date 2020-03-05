@@ -25,6 +25,7 @@ set(Sources
 	Data.h
 	Logger.cpp
 	Logger.h
+	MidiBankNumber.cpp MidiBankNumber.h
 	MidiClocker.cpp
 	MidiClocker.h
 	MidiHelpers.cpp 
@@ -32,8 +33,10 @@ set(Sources
 	MidiNetworkLocation.h
 	MidiNote.cpp
 	MidiNote.h
+	MidiProgramNumber.cpp MidiProgramNumber.h
 	MidiRecorder.cpp
 	MidiRecorder.h
+	MidiTuning.cpp MidiTuning.h
 	Settings.cpp
 	Settings.h
 	StreamLogger.cpp
