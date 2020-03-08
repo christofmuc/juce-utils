@@ -34,7 +34,7 @@ bool MidiTuning::fromMidiMessage(MidiMessage const &message, MidiTuning &tuningR
 	if (isTuningDump(message)) {
 		auto data = message.getSysExData();
 		auto program = MidiProgramNumber::fromZeroBase(data[4]);
-		std::string name(data[5], data[5 + 16]);
+		std::string name(&data[5], &data[5 + 16]);
 		const size_t tuningIndex = 5 + 16;
 		TTuning tuning;
 		for (size_t i = 0; i < 128; i++) {
