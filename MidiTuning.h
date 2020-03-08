@@ -20,6 +20,9 @@ public:
 	static bool fromMidiMessage(MidiMessage const &message, MidiTuning &tuningResult);
 
 	MidiTuning(MidiProgramNumber program, std::string const &name, TTuning const &tuning);
+	MidiTuning();
+
+	std::string name() const;
 
 private:
 	MidiProgramNumber program_;

@@ -51,3 +51,12 @@ bool MidiTuning::fromMidiMessage(MidiMessage const &message, MidiTuning &tuningR
 MidiTuning::MidiTuning(MidiProgramNumber program, std::string const &name, TTuning const &tuning) : program_(program), name_(name), tuning_(tuning)
 {
 }
+
+MidiTuning::MidiTuning() : program_(MidiProgramNumber::fromZeroBase(0))
+{
+}
+
+std::string MidiTuning::name() const
+{
+	return name_;
+}
