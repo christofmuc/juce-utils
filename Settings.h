@@ -8,6 +8,7 @@ public:
 	static Settings & instance();
 	static void shutdown();
 	void saveAndClose();
+	void flush();
 
 	std::string get(std::string const &key, std::string const &defaultValue = std::string());
 	void set(std::string const &key, std::string const &value);
@@ -18,10 +19,11 @@ public:
 	Settings(Settings const &) = delete;
 	void operator=(Settings const&) = delete;
 
-private:
+	// Can't be private because of unique_ptr
 	Settings();
 
-	static Settings *instance_;
+private:
+	static std::unique_ptr<Settings> instance_;
 	static String settingsID_;
 	ApplicationProperties properties_;
 };

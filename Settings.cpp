@@ -4,17 +4,19 @@
 
 juce::String Settings::settingsID_ = "JammerNetz"; // This can be overridden for testing, so you can start more than one client on a single machine and don't overwrite your settings file
 
-Settings *Settings::instance_ = new Settings();
+std::unique_ptr<Settings> Settings::instance_;
 
 Settings & Settings::instance()
 {
+	if (!instance_) {
+		instance_ = std::make_unique<Settings>();
+	}
 	return *instance_;
 }
 
 void Settings::shutdown()
 {
-	delete instance_;
-	instance_ = nullptr;
+	instance_.reset();
 }
 
 void Settings::setSettingsID(String const &id)
@@ -30,6 +32,7 @@ std::string Settings::get(std::string const &key, std::string const &defaultValu
 void Settings::set(std::string const &key, std::string const &value)
 {
 	properties_.getUserSettings()->setValue(key, String(value));
+	properties_.getUserSettings()->setNeedsToBeSaved(true);
 }
 
 File Settings::getSessionStorageDir() const
@@ -61,5 +64,10 @@ Settings::Settings()
 void Settings::saveAndClose()
 {
 	properties_.closeFiles();
+}
+
+void Settings::flush()
+{
+	properties_.saveIfNeeded();
 }
 
