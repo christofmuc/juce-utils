@@ -37,6 +37,7 @@ set(Sources
 	MidiRecorder.cpp
 	MidiRecorder.h
 	MidiTuning.cpp MidiTuning.h
+	PackedDataFormatInfo.cpp PackedDataFormatInfo.h
 	Settings.cpp
 	Settings.h
 	StreamLogger.cpp
