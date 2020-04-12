@@ -32,6 +32,15 @@ std::vector<MidiMessage> Sysex::loadSysex(std::string const &filename)
 				}
 			}
 		}
+		else if (sysexFile.getFileExtension().toLowerCase() == ".txt") {
+			// Let's assume this is one of the funny files which contains the sysex hex dump as text - I found some with MKS80 patches that looked like that!
+			FileInputStream inputStream(sysexFile);
+			auto content = inputStream.readEntireStreamAsString();
+			MemoryBlock memory;
+			memory.loadFromHexString(content);
+			MemoryInputStream sysexStream(memory, false);
+			return loadSysex(sysexStream);
+		}
 		else {
 			// Single file
 			FileInputStream inputStream(sysexFile);
