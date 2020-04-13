@@ -58,6 +58,7 @@ Settings::Settings()
 	options.applicationName = settingsID_;
 	options.filenameSuffix = ".settings";
 	options.commonToAllUsers = false;
+	options.osxLibrarySubFolder = "Application Support"; // Required to avoid an assert in JUCE
 	properties_.setStorageParameters(options);
 }
 
