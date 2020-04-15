@@ -81,6 +81,26 @@ bool MidiHelpers::equalSysexMessageContent(MidiMessage const &message1, MidiMess
 	return true;
 }
 
+bool MidiHelpers::isSysexMessageMatching(MidiMessage const &message, std::vector<std::pair<size_t, uint8>> const &indexAndContentCondition)
+{
+	if (!message.isSysEx()) {
+		return false;
+	}
+
+	for (auto const &condition : indexAndContentCondition) {
+		// Check if the value at index (first) equals content (second). Do check index access first!
+		if (message.getSysExDataSize() <= condition.first) {
+			// Index out of range
+			return false;
+		}
+		if (message.getSysExData()[condition.first] != condition.second) {
+			// Value mismatch
+			return false;
+		}
+	}
+	return true;
+}
+
 juce::uint8 MidiHelpers::checksum7bit(std::vector<uint8> const &data)
 {
 	int sum = 0;
