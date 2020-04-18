@@ -27,6 +27,7 @@ set(Sources
 	Logger.cpp
 	Logger.h
 	MidiBankNumber.cpp MidiBankNumber.h
+	MidiChannel.h
 	MidiClocker.cpp
 	MidiClocker.h
 	MidiHelpers.cpp 
