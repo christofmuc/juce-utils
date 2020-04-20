@@ -51,6 +51,8 @@ private:
 
 	int lastSampleRate_;
 	int lastNumChannels_;
+
+	bool hasFoundStart_;
 };
 
 

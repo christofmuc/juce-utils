@@ -6,6 +6,8 @@
 
 #include "AudioRecorder.h"
 
+const float kSignalThreshold = 0.01f; // Signals below this value are considered noise (don't trigger recording)
+
 AudioRecorder::AudioRecorder(File directory, std::string const &baseFileName, RecordingType recordingType)
 	: directory_(directory), baseFileName_(baseFileName), writer_(nullptr), recordingType_(recordingType), samplesWritten_(0)
 {
@@ -164,7 +166,24 @@ void AudioRecorder::audioDeviceIOCallback(const float** inputChannelData, int nu
 {
 	ignoreUnused(outputChannelData, numOutputChannels);
 	if (numInputChannels == lastNumChannels_ && numInputChannels > 0) {
-		saveBlock(inputChannelData, numSamples);
+		// Check if some data in there...
+		bool silence = true;
+		for (int s = 0; s < numSamples; s++) {
+			if (fabs(inputChannelData[0][s]) > kSignalThreshold) {
+				hasFoundStart_;
+				silence = false;
+				break;
+			}
+		}
+
+		if (hasFoundStart_) {
+			saveBlock(inputChannelData, numSamples);
+
+			if (silence) {
+				// End of story 
+				writeThread_.reset();
+			}
+		}
 	}
 	else {
 		jassertfalse;
@@ -174,7 +193,8 @@ void AudioRecorder::audioDeviceIOCallback(const float** inputChannelData, int nu
 void AudioRecorder::audioDeviceAboutToStart(AudioIODevice* device)
 {
 	auto inputChannelMask = device->getActiveInputChannels();
-	updateChannelInfo((int) device->getCurrentSampleRate(), inputChannelMask.countNumberOfSetBits());
+	updateChannelInfo((int)device->getCurrentSampleRate(), inputChannelMask.countNumberOfSetBits());
+	hasFoundStart_ = false;
 }
 
 void AudioRecorder::audioDeviceStopped()
