@@ -15,37 +15,30 @@ IF(NOT DEFINED JUCE_LIBRARIES)
 			juce_events
 			juce_audio_basics
 			juce_audio_devices
+			juce_audio_formats
 			juce_data_structures
 	)
 ENDIF()
 
 # Define the sources for the static library
 set(Sources
-    Data.cpp
-	Data.h
+	AudioRecorder.cpp AudioRecorder.h 
+    Data.cpp Data.h
 	DebounceTimer.cpp DebounceTimer.h
-	Logger.cpp
-	Logger.h
+	Logger.cpp Logger.h
 	MidiBankNumber.cpp MidiBankNumber.h
 	MidiChannel.h
-	MidiClocker.cpp
-	MidiClocker.h
-	MidiHelpers.cpp 
-	MidiHelpers.h
+	MidiClocker.cpp MidiClocker.h
+	MidiHelpers.cpp MidiHelpers.h
 	MidiNetworkLocation.h
-	MidiNote.cpp
-	MidiNote.h
+	MidiNote.cpp MidiNote.h
 	MidiProgramNumber.cpp MidiProgramNumber.h
-	MidiRecorder.cpp
-	MidiRecorder.h
+	MidiRecorder.cpp MidiRecorder.h
 	MidiTuning.cpp MidiTuning.h
 	PackedDataFormatInfo.cpp PackedDataFormatInfo.h
-	Settings.cpp
-	Settings.h
-	StreamLogger.cpp
-	StreamLogger.h
-	Sysex.cpp
-	Sysex.h
+	Settings.cpp Settings.h
+	StreamLogger.cpp StreamLogger.h
+	Sysex.cpp Sysex.h
 	TypedNamedValue.h
 	README.md
 	LICENSE.md
