@@ -24,8 +24,9 @@ AudioRecorder::~AudioRecorder()
 	thread_->stopThread(1000);
 }
 
-void AudioRecorder::setRecording(bool recordOn)
+void AudioRecorder::setRecording(bool recordOn, std::function<void()> onSilence)
 {
+	onSilence_ = onSilence;
 	if (recordOn && !isRecording()) {
 		updateChannelInfo(lastSampleRate_, lastNumChannels_);
 	}
@@ -46,7 +47,7 @@ RelativeTime AudioRecorder::getElapsedTime() const
 
 juce::String AudioRecorder::getFilename() const
 {
-	return activeFile_.getFileName();
+	return activeFile_.getFullPathName();
 }
 
 juce::File AudioRecorder::getFile() const
@@ -170,18 +171,22 @@ void AudioRecorder::audioDeviceIOCallback(const float** inputChannelData, int nu
 		bool silence = true;
 		for (int s = 0; s < numSamples; s++) {
 			if (fabs(inputChannelData[0][s]) > kSignalThreshold) {
-				hasFoundStart_;
+				hasFoundStart_ = true;
 				silence = false;
 				break;
 			}
 		}
 
 		if (hasFoundStart_) {
-			saveBlock(inputChannelData, numSamples);
+			if (writeThread_) {
+				saveBlock(inputChannelData, numSamples);
+			}
 
 			if (silence) {
 				// End of story 
 				writeThread_.reset();
+				MessageManager::callAsync([this]() { onSilence_();  });
+				hasFoundStart_ = false;
 			}
 		}
 	}
