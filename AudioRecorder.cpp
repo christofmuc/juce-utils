@@ -6,10 +6,12 @@
 
 #include "AudioRecorder.h"
 
-const float kSignalThreshold = 0.01f; // Signals below this value are considered noise (don't trigger recording)
+#include "Logger.h"
+
+const float kSignalThreshold = 0.001f; // Signals below this value are considered noise (don't trigger recording)
 
 AudioRecorder::AudioRecorder(File directory, std::string const &baseFileName, RecordingType recordingType)
-	: directory_(directory), baseFileName_(baseFileName), writer_(nullptr), recordingType_(recordingType), samplesWritten_(0)
+	: directory_(directory), baseFileName_(baseFileName), writer_(nullptr), recordingType_(recordingType), samplesWritten_(0), automaticRecordFromSilenceToSilence_(false), silenceDuration_(0)
 {
 	thread_ = std::make_unique<TimeSliceThread>("RecorderDiskWriter");
 	thread_->startThread();
@@ -24,15 +26,26 @@ AudioRecorder::~AudioRecorder()
 	thread_->stopThread(1000);
 }
 
-void AudioRecorder::setRecording(bool recordOn, std::function<void()> onSilence)
+void AudioRecorder::startRecording(std::string const &filename, bool fromSilenceToSilence, std::function<void()> onSilence)
 {
+	automaticRecordFromSilenceToSilence_ = fromSilenceToSilence;
+	activeFile_ = File(filename);
 	onSilence_ = onSilence;
-	if (recordOn && !isRecording()) {
-		updateChannelInfo(lastSampleRate_, lastNumChannels_);
-	}
-	else if (!recordOn && isRecording()) {
+	if (isRecording()) {
+		// Stop current recorder first
 		writeThread_.reset();
 	}
+
+	// This will reinitialize and start the recorder
+	samplesWritten_ = 0;
+	hasFoundStart_ = false;
+	silenceDuration_ = 0;
+	updateChannelInfo(lastSampleRate_, lastNumChannels_);
+}
+
+void AudioRecorder::stopRecording()
+{
+	writeThread_.reset();
 }
 
 bool AudioRecorder::isRecording() const
@@ -78,7 +91,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels) {
 	for (auto allowed : audioFormat->getPossibleBitDepths()) if (allowed == bitDepthRequested) bitsOk = true;
 	if (!bitsOk) {
 		jassert(false);
-		std::cerr << "Error: trying to create a file with a bit depth that is not supported by the format: " << bitDepthRequested << std::endl;
+		SimpleLogger::instance()->postMessage("Error: trying to create a file with a bit depth that is not supported by the format: " + String(bitDepthRequested));
 		return;
 	}
 
@@ -86,7 +99,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels) {
 	for (auto rate : audioFormat->getPossibleSampleRates()) if (rate == sampleRate) rateOk = true;
 	if (!rateOk) {
 		jassert(false);
-		std::cerr << "Error: trying to create a file with a sample rate that is not supported by the format: " << sampleRate << std::endl;
+		SimpleLogger::instance()->postMessage("Error: trying to create a file with a sample rate that is not supported by the format: " + String(sampleRate));
 		return;
 	}
 
@@ -122,7 +135,14 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels) {
 
 	// Setup a new audio file to write to
 	startTime_ = Time::getCurrentTime();
-	activeFile_ = directory_.getNonexistentChildFile(String(baseFileName_) + startTime_.formatted("-%Y-%m-%d-%H-%M-%S"), fileExtension, false);
+	if (activeFile_.getFullPathName().isEmpty()) {
+		return;
+		//activeFile_ = directory_.getNonexistentChildFile(String(baseFileName_) + startTime_.formatted("-%Y-%m-%d-%H-%M-%S"), fileExtension, false);
+	}
+	if (activeFile_.existsAsFile()) {
+		SimpleLogger::instance()->postMessage("Overwriting file " + activeFile_.getFullPathName());
+		activeFile_.deleteFile();
+	}
 	OutputStream * outStream = new FileOutputStream(activeFile_, 16384);
 
 	// Create the writer based on the format and file
@@ -131,7 +151,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels) {
 	if (!writer_) {
 		jassert(false);
 		delete outStream;
-		std::cerr << "Fatal: Could not create writer for Audio file, can't record to disk" << std::endl;
+		SimpleLogger::instance()->postMessage("Fatal: Could not create writer for Audio file, can't record to disk");
 		return;
 	}
 
@@ -145,7 +165,7 @@ void AudioRecorder::saveBlock(const float* const* data, int numSamples) {
 	if (data && data[0]) {
 		if (!writeThread_->write(data, numSamples)) {
 			//TODO - need a smarter strategy than that
-			std::cerr << "Ups, FIFO full and can't write block to disk, lost it!" << std::endl;
+			SimpleLogger::instance()->postMessage("Ups, FIFO full and can't write block to disk, lost it!");
 		}
 		samplesWritten_ += numSamples;
 	}
@@ -167,22 +187,32 @@ void AudioRecorder::audioDeviceIOCallback(const float** inputChannelData, int nu
 {
 	ignoreUnused(outputChannelData, numOutputChannels);
 	if (numInputChannels == lastNumChannels_ && numInputChannels > 0) {
-		// Check if some data in there...
-		bool silence = true;
-		for (int s = 0; s < numSamples; s++) {
-			if (fabs(inputChannelData[0][s]) > kSignalThreshold) {
-				hasFoundStart_ = true;
-				silence = false;
-				break;
+		if (automaticRecordFromSilenceToSilence_) {
+			bool silence = true;
+			// Check if some data in there...
+			for (int s = 0; s < numSamples; s++) {
+				if (fabs(inputChannelData[0][s]) > kSignalThreshold) {
+					hasFoundStart_ = true;
+					silence = false;
+					break;
+				}
+			}
+			if (silence) {
+				silenceDuration_ += numSamples;
+			}
+			else {
+				silenceDuration_ = 0;
 			}
 		}
+		else {
+			// Start immediately
+			hasFoundStart_ = true;
+		}
 
-		if (hasFoundStart_) {
-			if (writeThread_) {
-				saveBlock(inputChannelData, numSamples);
-			}
+		if (hasFoundStart_ && writeThread_) {
+			saveBlock(inputChannelData, numSamples);
 
-			if (silence) {
+			if (automaticRecordFromSilenceToSilence_ && silenceDuration_ > 0.01 * lastSampleRate_) {
 				// End of story 
 				writeThread_.reset();
 				MessageManager::callAsync([this]() { onSilence_();  });
@@ -198,8 +228,8 @@ void AudioRecorder::audioDeviceIOCallback(const float** inputChannelData, int nu
 void AudioRecorder::audioDeviceAboutToStart(AudioIODevice* device)
 {
 	auto inputChannelMask = device->getActiveInputChannels();
-	updateChannelInfo((int)device->getCurrentSampleRate(), inputChannelMask.countNumberOfSetBits());
 	hasFoundStart_ = false;
+	updateChannelInfo((int)device->getCurrentSampleRate(), inputChannelMask.countNumberOfSetBits());
 }
 
 void AudioRecorder::audioDeviceStopped()

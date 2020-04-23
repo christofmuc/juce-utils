@@ -20,7 +20,8 @@ public:
 	AudioRecorder(File directory, std::string const &baseFileName, RecordingType recordingType);
 	virtual ~AudioRecorder();
 
-	void setRecording(bool recordOn, std::function<void()> onSilence);
+	void startRecording(std::string const &filename, bool fromSilenceToSilence, std::function<void()> onSilence);
+	void stopRecording();
 	bool isRecording() const;
 
 	RelativeTime getElapsedTime() const;
@@ -53,6 +54,8 @@ private:
 	int lastNumChannels_;
 
 	bool hasFoundStart_;
+	bool automaticRecordFromSilenceToSilence_;
+	size_t silenceDuration_;
 	std::function<void()> onSilence_;
 };
 
