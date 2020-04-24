@@ -25,6 +25,7 @@ set(Sources
 	AudioRecorder.cpp AudioRecorder.h 
     Data.cpp Data.h
 	DebounceTimer.cpp DebounceTimer.h
+	FileHelpers.cpp FileHelpers.h
 	Logger.cpp Logger.h
 	MidiBankNumber.cpp MidiBankNumber.h
 	MidiChannel.h
