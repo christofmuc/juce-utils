@@ -23,6 +23,7 @@ public:
 	void startRecording(std::string const &filename, bool fromSilenceToSilence, std::function<void()> onSilence);
 	void stopRecording();
 	bool isRecording() const;
+	bool hasDetectedSignal() const;
 
 	RelativeTime getElapsedTime() const;
 	String getFilename() const;

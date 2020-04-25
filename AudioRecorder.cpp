@@ -53,6 +53,11 @@ bool AudioRecorder::isRecording() const
 	return writeThread_ != nullptr;
 }
 
+bool AudioRecorder::hasDetectedSignal() const
+{
+	return isRecording() && hasFoundStart_;
+}
+
 RelativeTime AudioRecorder::getElapsedTime() const
 {
 	return RelativeTime(samplesWritten_ / (double)lastSampleRate_);
