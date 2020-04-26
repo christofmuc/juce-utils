@@ -190,7 +190,24 @@ void AudioRecorder::setDirectory(File &directory)
 
 void AudioRecorder::audioDeviceIOCallback(const float** inputChannelData, int numInputChannels, float** outputChannelData, int numOutputChannels, int numSamples)
 {
-	ignoreUnused(outputChannelData, numOutputChannels);
+	// First of all, hand through all input channels to the output channels so you have a monitor signal
+	int nextInput = 0;
+	for (auto channel = 0; channel < numOutputChannels; ++channel)
+	{
+		if (outputChannelData[channel]) {
+			// Output not nullptr, needs filling. Find the next unsued input channel
+			while (nextInput < numInputChannels && inputChannelData[nextInput] == nullptr) nextInput++;
+			if (inputChannelData[nextInput] != nullptr) {
+				std::copy(inputChannelData[nextInput], inputChannelData[nextInput] + numSamples, outputChannelData[channel]);
+			}
+			else {
+				// No more inputs, clear output
+				std::fill(outputChannelData[channel], outputChannelData[channel] + numSamples, 0.0f);
+			}
+		}
+	}
+
+	// Now decide if we are going to record anything to disk
 	if (numInputChannels == lastNumChannels_ && numInputChannels > 0) {
 		if (automaticRecordFromSilenceToSilence_) {
 			bool silence = true;
