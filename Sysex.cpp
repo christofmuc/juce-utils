@@ -75,16 +75,23 @@ std::vector<juce::MidiMessage> Sysex::loadSysex(InputStream &inputStream)
 		inputStream.setPosition(0);
 		std::vector<uint8> data((size_t) inputStream.getTotalLength());
 		inputStream.read(&data[0], (int)inputStream.getTotalLength()); // 4 GB Limit
+		return vectorToMessages(data);
+	}
+	return messages;
+}
 
-		// Now produce the Sysex messages from the file
-		size_t inPointer = 0;
-		uint8 lastStatusByte = 0xf0; // Sysex message
-		while (inPointer < data.size()) {
-			int bytesUsed = 0;
-			//TODO - this crashes in case the data is not well formed sysex (example: Depeche Mode TI sound set, there is a message which ends on 0xff 0xff). 
-			messages.push_back(MidiMessage(&data[inPointer], (int)(data.size() - inPointer), bytesUsed, lastStatusByte, 0.0, false));
-			inPointer += bytesUsed;
-		}
+std::vector<juce::MidiMessage> Sysex::vectorToMessages(std::vector<uint8> const &midiData)
+{
+	std::vector<MidiMessage> messages;
+
+	// Now produce the Sysex messages from the file
+	size_t inPointer = 0;
+	uint8 lastStatusByte = 0xf0; // Sysex message
+	while (inPointer < midiData.size()) {
+		int bytesUsed = 0;
+		//TODO - this crashes in case the data is not well formed sysex (example: Depeche Mode TI sound set, there is a message which ends on 0xff 0xff). 
+		messages.push_back(MidiMessage(&midiData[inPointer], (int)(midiData.size() - inPointer), bytesUsed, lastStatusByte, 0.0, false));
+		inPointer += bytesUsed;
 	}
 	return messages;
 }
