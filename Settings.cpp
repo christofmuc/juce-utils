@@ -35,6 +35,11 @@ void Settings::set(std::string const &key, std::string const &value)
 	properties_.getUserSettings()->setNeedsToBeSaved(true);
 }
 
+bool Settings::keyIsSet(std::string const &key) 
+{
+	return properties_.getUserSettings()->containsKey(key);
+}
+
 File Settings::getSessionStorageDir() const
 {
 	auto dir = File(File::getSpecialLocation(File::userDocumentsDirectory).getFullPathName() + "/JammerNetzSession");

@@ -12,6 +12,7 @@ public:
 
 	std::string get(std::string const &key, std::string const &defaultValue = std::string());
 	void set(std::string const &key, std::string const &value);
+	bool keyIsSet(std::string const &key);
 
 	File getSessionStorageDir() const;
 
