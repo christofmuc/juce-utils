@@ -8,16 +8,18 @@
 
 #include <string>
 
+#include "MidiChannel.h"
+
 struct MidiNetworkLocation {
 
-	MidiNetworkLocation() {}
+	MidiNetworkLocation() : midiChannel(MidiChannel::invalidChannel()) {}
 
-	MidiNetworkLocation(std::string const &inputName, std::string const &outputName, int midiChannel) :
+	MidiNetworkLocation(std::string const &inputName, std::string const &outputName, MidiChannel midiChannel) :
 		valid(true), inputName(inputName), outputName(outputName), midiChannel(midiChannel) {}
 
 	bool valid = false;
 	std::string inputName;
 	std::string outputName;
-	int midiChannel;
+	MidiChannel midiChannel;
 };
 
