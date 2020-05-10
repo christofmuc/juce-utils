@@ -40,7 +40,7 @@ set(Sources
 	Settings.cpp Settings.h
 	StreamLogger.cpp StreamLogger.h
 	Sysex.cpp Sysex.h
-	TypedNamedValue.h
+	TypedNamedValue.cpp TypedNamedValue.h 
 	WaitForEvent.cpp WaitForEvent.h
 	README.md
 	LICENSE.md
