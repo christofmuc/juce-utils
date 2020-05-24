@@ -56,6 +56,7 @@ protected:
 class TypedNamedValueSet : public std::vector<std::shared_ptr<TypedNamedValue>> {
 public:
 	std::shared_ptr<TypedNamedValue> typedNamedValueByName(std::string const &name); //TODO - suboptimal linear search
+	bool hasValue(std::string const &name);
 	Value &valueByName(std::string const &name); //TODO - suboptimal linear search
 };
 

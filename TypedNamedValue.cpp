@@ -115,6 +115,16 @@ std::shared_ptr<TypedNamedValue> TypedNamedValueSet::typedNamedValueByName(std::
 	return {};
 }
 
+bool TypedNamedValueSet::hasValue(std::string const &name)
+{
+	for (auto tnv : *this) {
+		if (tnv->name().toStdString() == name) {
+			return true;
+		}
+	}
+	return false;
+}
+
 juce::Value &TypedNamedValueSet::valueByName(std::string const &name)
 {
 	for (auto tnv : *this) {
