@@ -31,7 +31,7 @@ private:
 		isValid_ = zerobasedChannel >= 0 && zerobasedChannel < 16;
 	};
 
-	MidiChannel() : zerobasedChannel_(-1), isValid_(false) {
+	MidiChannel() : zerobasedChannel_(-1), isValid_(false), isOmni_(false) {
 	}
 };
 
