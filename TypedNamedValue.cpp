@@ -134,3 +134,12 @@ juce::Value &TypedNamedValueSet::valueByName(std::string const &name)
 	}
 	throw std::runtime_error("Illegal argument - key does not exist");
 }
+
+void TypedNamedValueSet::addToValueTree(ValueTree &tree)
+{
+	for (auto param : *this) {
+		tree.setProperty(param->name(), param->value().getValue(), nullptr);
+		auto v = tree.getPropertyAsValue(Identifier(param->name()), nullptr, false);
+		param->value().referTo(v);
+	}
+}
