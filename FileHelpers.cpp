@@ -14,3 +14,17 @@ juce::File getOrCreateSubdirectory(File dir, String const &name)
 	}
 	return subdir;
 }
+
+int FileDateComparatorOldestFirst::compareElements(File const &first, File const &second)
+{
+	if (first.getLastModificationTime() < second.getLastModificationTime()) return -1;
+	if (first.getLastModificationTime() > second.getLastModificationTime()) return 1;
+	return 0;
+}
+
+int FileDateComparatorNewestFirst::compareElements(File const &first, File const &second)
+{
+	if (first.getLastModificationTime() < second.getLastModificationTime()) return 1;
+	if (first.getLastModificationTime() > second.getLastModificationTime()) return -1;
+	return 0;
+}

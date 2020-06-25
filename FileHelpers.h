@@ -10,3 +10,14 @@
 
 //! Do get the file for the subdirectory, if it doesn't exist create a directory and return it
 File getOrCreateSubdirectory(File dir, String const &name);
+
+// We might want to sort files by date
+class FileDateComparatorOldestFirst {
+public:
+	static int compareElements(File const &first, File const &second);
+};
+
+class FileDateComparatorNewestFirst {
+public:
+	static int compareElements(File const &first, File const &second);
+};
