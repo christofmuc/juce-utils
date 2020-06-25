@@ -28,3 +28,25 @@ int FileDateComparatorNewestFirst::compareElements(File const &first, File const
 	if (first.getLastModificationTime() > second.getLastModificationTime()) return -1;
 	return 0;
 }
+
+TemporaryDirectory::TemporaryDirectory()
+{
+	File tempDir = File::getSpecialLocation(File::tempDirectory);
+	dir_ = tempDir.getNonexistentChildFile("knobkraft", "tmp");
+	dir_.createDirectory();
+}
+
+TemporaryDirectory::~TemporaryDirectory() {
+	dir_.deleteRecursively(false);
+}
+
+juce::File TemporaryDirectory::asFile()
+{
+	return dir_;
+}
+
+std::string TemporaryDirectory::name()
+{
+	return dir_.getFullPathName().toStdString();
+}
+

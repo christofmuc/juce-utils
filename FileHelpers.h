@@ -21,3 +21,15 @@ class FileDateComparatorNewestFirst {
 public:
 	static int compareElements(File const &first, File const &second);
 };
+
+class TemporaryDirectory {
+public:
+	TemporaryDirectory();
+	virtual ~TemporaryDirectory();
+
+	File asFile();
+	std::string name();
+
+private:
+	File dir_;
+};
