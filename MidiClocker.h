@@ -19,7 +19,10 @@ public:
 	double getCurrentBPM();
 
 	void processClockMessage(String const & midiSource, MidiMessage const &message);
+	size_t numInputsWithClock() const;
+	std::vector<String> inputsWithClock() const;
 
 private:
+	juce::CriticalSection lock_;
 	std::map<String, std::deque<double>> clockTimes_;
 };

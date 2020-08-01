@@ -14,6 +14,8 @@ MidiClocker::MidiClocker()
 
 double MidiClocker::getCurrentBPM()
 {
+	ScopedLock lock(lock_);
+
 	// Do we have at least one clock source?
 	if (clockTimes_.size() == 0) {
 		return -1;
@@ -38,6 +40,8 @@ double MidiClocker::getCurrentBPM()
 
 void MidiClocker::processClockMessage(String const & midiSource, MidiMessage const &message)
 {
+	ScopedLock lock(lock_);	
+
 	if (clockTimes_.find(midiSource) == clockTimes_.end()) {
 		// First clock signal on this source!
 		if (clockTimes_.size() > 0) {
@@ -45,6 +49,26 @@ void MidiClocker::processClockMessage(String const & midiSource, MidiMessage con
 		}
 		clockTimes_[midiSource] = std::deque<double>();
 	}
+	if (clockTimes_[midiSource].size() > 0) {
+		if (clockTimes_[midiSource].back() == message.getTimeStamp()) {
+			// Duplicate message?
+			return;
+		}
+	}
 	clockTimes_[midiSource].push_back(message.getTimeStamp());
 	while (clockTimes_[midiSource].size() > kNumAverageClockTicks) clockTimes_[midiSource].pop_front();
+}
+
+size_t MidiClocker::numInputsWithClock() const
+{
+	return clockTimes_.size();
+}
+
+std::vector<juce::String> MidiClocker::inputsWithClock() const
+{
+	std::vector<juce::String> result;
+	for (auto clock = clockTimes_.cbegin(); clock != clockTimes_.end(); clock++) {
+		result.push_back(clock->first);
+	}
+	return result;
 }
