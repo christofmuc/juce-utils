@@ -24,5 +24,6 @@ public:
 private:
 	static SimpleLogger *instance_;
 	std::unique_ptr<Logger> fileLogger_;
+	static bool hasBeenShutdown_;
 };
 

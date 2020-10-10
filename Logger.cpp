@@ -12,6 +12,7 @@ SimpleLogger::SimpleLogger()
 		throw new std::runtime_error("This is a singleton, can't create twice");
 	}
 	instance_ = this;
+	hasBeenShutdown_ = false;
 
 	fileLogger_.reset(FileLogger::createDefaultAppLogger("knobkraft", "knobkraft.log", "Starting KnobKraft Version unknown"));
 	FileLogger::setCurrentLogger(fileLogger_.get());
@@ -23,14 +24,18 @@ SimpleLogger::~SimpleLogger()
 
 SimpleLogger * SimpleLogger::instance()
 {
-	return instance_;
+	if (!hasBeenShutdown_) {
+		return instance_;
+	}
+	else {
+		return nullptr;
+	}
 }
 
 void SimpleLogger::shutdown()
 {
 	Logger::setCurrentLogger(nullptr);
-	//delete instance_;
-	//instance_ = nullptr;
+	hasBeenShutdown_ = true; // To prevent logging during destruction
 }
 
 void SimpleLogger::markBenchmarkPoint(const String &message)
@@ -47,3 +52,4 @@ void SimpleLogger::writeToFile(const String &message)
 }
 
 SimpleLogger * SimpleLogger::instance_ = nullptr;
+bool SimpleLogger::hasBeenShutdown_ = false;
