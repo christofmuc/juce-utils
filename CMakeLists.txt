@@ -6,19 +6,7 @@
 
 project(juce-utils)
 
-# Find JUCE, and add the components we need
-IF(NOT DEFINED JUCE_LIBRARIES)
-	SET(JUCE_DIR_HINT "${CMAKE_CURRENT_LIST_DIR}/../thirdparty")
-	find_package(JUCE REQUIRED 
-		COMPONENTS 
-			juce_core		
-			juce_events
-			juce_audio_basics
-			juce_audio_devices
-			juce_audio_formats
-			juce_data_structures
-	)
-ENDIF()
+# We need a library called juce-static defined providing JUCE 6
 
 # Define the sources for the static library
 set(Sources
@@ -26,6 +14,7 @@ set(Sources
     Data.cpp Data.h
 	DebounceTimer.cpp DebounceTimer.h
 	FileHelpers.cpp FileHelpers.h
+	JuceHeader.h
 	Logger.cpp Logger.h
 	MidiBankNumber.cpp MidiBankNumber.h
 	MidiChannel.h
@@ -49,7 +38,8 @@ set(Sources
 
 # Setup library
 add_library(juce-utils ${Sources})
-target_include_directories(juce-utils INTERFACE ${CMAKE_CURRENT_LIST_DIR} PRIVATE ${JUCE_INCLUDES})
+target_include_directories(juce-utils INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(juce-utils PUBLIC juce-static)
 
 # Pedantic about warnings
 if (MSVC)
