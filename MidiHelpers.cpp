@@ -107,3 +107,15 @@ juce::uint8 MidiHelpers::checksum7bit(std::vector<uint8> const &data)
 	std::for_each(data.begin(), data.end(), [&](uint8 byte) { sum += byte;  });
 	return sum & 0x7f;
 }
+
+juce::MidiBuffer MidiHelpers::removeEmptySysexMessages(MidiBuffer const &midiBuffer)
+{
+	MidiBuffer filtered;
+	for (auto message : midiBuffer) {
+		auto m = message.getMessage();
+		// Suppress empty sysex messages, they seem to confuse vintage hardware (e.g the Kawai K3 in particular)
+		if (m.isSysEx() && m.getSysExDataSize() == 0) continue;		
+		filtered.addEvent(m, message.samplePosition);
+	}
+	return filtered;
+}
