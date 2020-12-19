@@ -18,7 +18,7 @@ enum class RecordingType {
 class AudioRecorder : public AudioIODeviceCallback {
 public:
 	AudioRecorder(File directory, std::string const &baseFileName, RecordingType recordingType);
-	virtual ~AudioRecorder();
+	virtual ~AudioRecorder() override;
 
 	void startRecording(std::string const &filename, bool fromSilenceToSilence, std::function<void()> onSilence);
 	void stopRecording();
