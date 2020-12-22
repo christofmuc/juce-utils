@@ -11,6 +11,8 @@ public:
 	static MidiProgramNumber fromOneBase(int programNumber);
 	static MidiProgramNumber fromZeroBase(int programNumber);
 
+	MidiProgramNumber() : programNo_(0) {}
+
 	int toZeroBased() const;
 	int toOneBased() const;
 
