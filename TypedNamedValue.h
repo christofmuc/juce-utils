@@ -12,7 +12,10 @@ enum class ValueType {
 	Integer,
 	Bool,
 	String,
-	Lookup
+	Lookup,
+	Filename,
+	Pathname,
+	Color,
 };
 
 class TypedNamedValue {
@@ -25,6 +28,10 @@ public:
 	TypedNamedValue(String const &name, String const &sectionName, int defaultValue, int minValue, int maxValue);
 	//! Construct a lookup value type
 	TypedNamedValue(String const &name, String const &sectionName, int defaultValue, std::map<int, std::string> const &lookup);
+	//! Construct a Filepath value type
+	TypedNamedValue(String const &name, String const &sectionName, File const &defaultValue, bool isDirectory);
+	//! Construct a color value type
+	TypedNamedValue(String const &name, String const &sectionName, Colour defaultValue);
 
 	virtual ~TypedNamedValue() = default;
 

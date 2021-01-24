@@ -37,6 +37,18 @@ TypedNamedValue::TypedNamedValue(String const &name, String const &sectionName, 
 	enabled_ = true;
 }
 
+TypedNamedValue::TypedNamedValue(String const &name, String const &sectionName, File const &defaultValue, bool isDirectory) : name_(name), sectionName_(sectionName), valueType_(isDirectory ? ValueType::Pathname : ValueType::Filename)
+{
+	value_ = Value(defaultValue.getFullPathName());
+	enabled_ = true;
+}
+
+TypedNamedValue::TypedNamedValue(String const &name, String const &sectionName, Colour defaultValue) : name_(name), sectionName_(sectionName), valueType_(ValueType::Color)
+{
+	value_ = Value(defaultValue.toString());
+	enabled_ = true;
+}
+
 juce::Value &TypedNamedValue::value()
 {
 	return value_;
