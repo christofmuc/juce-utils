@@ -17,6 +17,7 @@ juce::MidiBuffer MidiHelpers::bufferFromMessages(std::vector<MidiMessage> const 
 	MidiBuffer buffer;
 	int num = 0;
 	for (auto message : messages) {
+		jassert(message.getRawDataSize() <= 65535);
 		buffer.addEvent(message, num++);
 	}
 	return buffer;
@@ -108,13 +109,18 @@ juce::uint8 MidiHelpers::checksum7bit(std::vector<uint8> const &data)
 	return sum & 0x7f;
 }
 
+bool MidiHelpers::isEmptySysex(MidiMessage const &m) {
+	return 	m.isSysEx() && m.getSysExDataSize() == 0;
+}
+
 juce::MidiBuffer MidiHelpers::removeEmptySysexMessages(MidiBuffer const &midiBuffer)
 {
 	MidiBuffer filtered;
 	for (auto message : midiBuffer) {
 		auto m = message.getMessage();
 		// Suppress empty sysex messages, they seem to confuse vintage hardware (e.g the Kawai K3 in particular)
-		if (m.isSysEx() && m.getSysExDataSize() == 0) continue;		
+		if (isEmptySysex(m)) continue;		
+		jassert(m.getRawDataSize() <= 65535);
 		filtered.addEvent(m, message.samplePosition);
 	}
 	return filtered;

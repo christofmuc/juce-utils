@@ -15,6 +15,7 @@ public:
 	static std::vector<MidiMessage> generateRPN(int midiChannel, int parameterNumber, int value, bool isNRPN, bool use14BitValue, bool MSBbeforeLSB);	
 	static uint8 checksum7bit(std::vector<uint8> const &data);
 
+	static bool isEmptySysex(MidiMessage const &m);
 	static MidiBuffer removeEmptySysexMessages(MidiBuffer const &midiBuffer);
 
 	static bool equalSysexMessageContent(MidiMessage const &message1, MidiMessage const &message2, int digitsToCompare = -1);
