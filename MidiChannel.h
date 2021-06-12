@@ -29,7 +29,7 @@ private:
 	// Don't call the constructor with an int, you wouldn't know what you mean. This is why it is private
 	MidiChannel(int zerobasedChannel, bool isOmni = false) : zerobasedChannel_(zerobasedChannel), isOmni_(isOmni) {
 		isValid_ = zerobasedChannel >= 0 && zerobasedChannel < 16;
-	};
+	}
 
 	MidiChannel() : zerobasedChannel_(-1), isValid_(false), isOmni_(false) {
 	}
