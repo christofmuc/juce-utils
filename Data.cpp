@@ -16,13 +16,18 @@ Data & Data::instance()
 	return instance_;
 }
 
-Data::Data() : tree_(Identifier("Setup"))
+Data::Data() : tree_(Identifier("Setup")), ephemeralTree_(Identifier("AppStateNotStored"))
 {
 }
 
 juce::ValueTree & Data::get()
 {
 	return tree_;
+}
+
+juce::ValueTree& Data::getEphemeral()
+{
+	return ephemeralTree_;
 }
 
 void Data::initializeFromSettings()
@@ -38,3 +43,4 @@ void Data::saveToSettings()
 {
 	Settings::instance().set("ClientSettings", tree_.toXmlString().toStdString());
 }
+
