@@ -12,7 +12,8 @@ class Data {
 public:
 	static Data &instance();
 
-	ValueTree &get();
+	ValueTree& get();
+	ValueTree& getEphemeral();
 
 	void initializeFromSettings();
 	void saveToSettings();
@@ -23,4 +24,5 @@ private:
 	static Data instance_;
 
 	ValueTree tree_;
+	ValueTree ephemeralTree_;
 };
