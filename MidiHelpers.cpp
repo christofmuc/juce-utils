@@ -90,11 +90,11 @@ bool MidiHelpers::isSysexMessageMatching(MidiMessage const &message, std::vector
 
 	for (auto const &condition : indexAndContentCondition) {
 		// Check if the value at index (first) equals content (second). Do check index access first!
-		if (message.getSysExDataSize() <= condition.first) {
+		if ((size_t)message.getSysExDataSize() <= condition.first) {
 			// Index out of range
 			return false;
 		}
-		if (message.getSysExData()[condition.first] != condition.second) {
+		if ((size_t)message.getSysExData()[condition.first] != condition.second) {
 			// Value mismatch
 			return false;
 		}
@@ -118,7 +118,7 @@ juce::MidiBuffer MidiHelpers::removeEmptySysexMessages(MidiBuffer const &midiBuf
 	MidiBuffer filtered;
 	for (auto message : midiBuffer) {
 		auto m = message.getMessage();
-		// Suppress empty sysex messages, they seem to confuse vintage hardware (e.g the Kawai K3 in particular)
+		// Suppress empty sysex messages, they seem to confuse vintage hardware (e.g. the Kawai K3 in particular)
 		if (isEmptySysex(m)) continue;		
 		jassert(m.getRawDataSize() <= 65535);
 		filtered.addEvent(m, message.samplePosition);

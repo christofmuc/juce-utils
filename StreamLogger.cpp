@@ -63,9 +63,9 @@ StreamLogger &StreamLogger::operator<<(std::string const &string)
 	return *this;
 }
 
-StreamLogger & StreamLogger::operator<<(StandardEndLine manip)
+StreamLogger & StreamLogger::operator<<(StandardEndLine manipulator)
 {
-	buffer << manip;
+	buffer << manipulator;
 	flushBuffer();
 	return *this;
 }

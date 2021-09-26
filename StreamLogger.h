@@ -15,7 +15,7 @@ public:
 	StreamLogger &operator <<(const char *string);
 	StreamLogger &operator <<(std::string const &string);
 	StreamLogger &operator <<(juce::String const &string);
-	StreamLogger &operator <<(StandardEndLine manip);
+	StreamLogger &operator <<(StandardEndLine manipulator);
 	StreamLogger &operator <<(int value);
 	StreamLogger &operator <<(uint64 value);
 	StreamLogger &operator <<(double value);

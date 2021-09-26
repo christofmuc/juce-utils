@@ -11,7 +11,8 @@
 const float kSignalThreshold = 0.001f; // Signals below this value are considered noise (don't trigger recording)
 
 AudioRecorder::AudioRecorder(File directory, std::string const &baseFileName, RecordingType recordingType)
-	: directory_(directory), baseFileName_(baseFileName), writer_(nullptr), recordingType_(recordingType), samplesWritten_(0), automaticRecordFromSilenceToSilence_(false), silenceDuration_(0)
+	: samplesWritten_(0), directory_(directory), baseFileName_(baseFileName), recordingType_(recordingType), writer_(nullptr),
+    automaticRecordFromSilenceToSilence_(false), silenceDuration_(0)
 {
 	thread_ = std::make_unique<TimeSliceThread>("RecorderDiskWriter");
 	thread_->startThread();
@@ -108,7 +109,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels) {
 		return;
 	}
 
-	/*// Setup the channel layout
+	/*// Set up the channel layout
 	AudioChannelSet channels;
 	int numChannels = 0;
 	for (int c = 0; c < MAXCHANNELSPERCLIENT; c++) {
@@ -138,7 +139,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels) {
 		return;
 	}*/
 
-	// Setup a new audio file to write to
+	// Set up a new audio file to write to
 	startTime_ = Time::getCurrentTime();
 	if (activeFile_.getFullPathName().isEmpty()) {
 		return;
@@ -152,7 +153,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels) {
 
 	// Create the writer based on the format and file
 	StringPairArray metaData;
-	writer_ = audioFormat->createWriterFor(outStream, sampleRate, numChannels, bitDepthRequested, metaData, 1 /* unused by wav */);
+	writer_ = audioFormat->createWriterFor(outStream, sampleRate, (unsigned) numChannels, bitDepthRequested, metaData, 1 /* unused by wav */);
 	if (!writer_) {
 		jassert(false);
 		delete outStream;
@@ -172,7 +173,7 @@ void AudioRecorder::saveBlock(const float* const* data, int numSamples) {
 			//TODO - need a smarter strategy than that
 			SimpleLogger::instance()->postMessage("Ups, FIFO full and can't write block to disk, lost it!");
 		}
-		samplesWritten_ += numSamples;
+		samplesWritten_ += (uint64) numSamples;
 	}
 }
 
@@ -190,7 +191,7 @@ void AudioRecorder::setDirectory(File &directory)
 
 void AudioRecorder::audioDeviceIOCallback(const float** inputChannelData, int numInputChannels, float** outputChannelData, int numOutputChannels, int numSamples)
 {
-	// First of all, hand through all input channels to the output channels so you have a monitor signal
+	// First, hand through all input channels to the output channels so you have a monitor signal
 	int nextInput = 0;
 	for (auto channel = 0; channel < numOutputChannels; ++channel)
 	{
@@ -220,7 +221,7 @@ void AudioRecorder::audioDeviceIOCallback(const float** inputChannelData, int nu
 				}
 			}
 			if (silence) {
-				silenceDuration_ += numSamples;
+				silenceDuration_ += (size_t) numSamples;
 			}
 			else {
 				silenceDuration_ = 0;
