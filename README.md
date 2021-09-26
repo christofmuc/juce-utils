@@ -1,6 +1,6 @@
 # Introduction
 
-This is a utility library with some very subjective helper functions for the awesome [JUCE](https://github.com/WeAreROLI/JUCE) cross-platform C++ programming framework.
+This is a utility library with some very subjective helper functions for the awesome [JUCE](https://github.com/juce-framework/JUCE) cross-platform C++ programming framework.
 
 ## Usage
 
