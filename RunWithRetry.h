@@ -10,10 +10,10 @@
 
 class RunWithRetry : public Timer {
 public:
-	static void start(std::function<void()> action, std::function<bool()> retryRequired, int numretries, int retryIntervalMS, std::string const &message);
+	static void start(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, int retryIntervalMS, std::string const &message);
 
 private:
-	RunWithRetry(std::function<void()> action, std::function<bool()> retryRequired, int numretries, std::string const &message);
+	RunWithRetry(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, std::string const &message);
 
 	void timerCallback() override;
 
@@ -21,7 +21,7 @@ private:
 
 	std::function<void()> action_;
 	std::function<bool()> retryRequiredPredicate_;
-	int numretries_;
+	int numRetries_;
 	std::string message_;
 	int retries_;
 };

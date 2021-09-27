@@ -8,14 +8,14 @@
 
 #include "Logger.h"
 
-void RunWithRetry::start(std::function<void()> action, std::function<bool()> retryRequired, int numretries, int retryIntervalMS, std::string const &message)
+void RunWithRetry::start(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, int retryIntervalMS, std::string const &message)
 {
-	retryObjects_.push_back(new RunWithRetry(action, retryRequired, numretries, message));
+	retryObjects_.push_back(new RunWithRetry(action, retryRequired, numRetries, message));
 	action();
 	retryObjects_.back()->startTimer(retryIntervalMS);
 }
 
-RunWithRetry::RunWithRetry(std::function<void()> action, std::function<bool()> retryRequired, int numretries, std::string const &message) : action_(action), retryRequiredPredicate_(retryRequired), numretries_(numretries), message_(message)
+RunWithRetry::RunWithRetry(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, std::string const &message) : action_(action), retryRequiredPredicate_(retryRequired), numRetries_(numRetries), message_(message)
 {
 	retries_ = 0;
 }
@@ -24,7 +24,7 @@ void RunWithRetry::timerCallback()
 {
 	if (retryRequiredPredicate_()) {
 		retries_++;
-		if (retries_ <= numretries_) {
+		if (retries_ <= numRetries_) {
 			action_();
 		}
 		else {
