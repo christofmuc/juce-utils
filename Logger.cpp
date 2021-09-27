@@ -6,14 +6,38 @@
 
 #include "Logger.h"
 
+class BootstrapLogger : public SimpleLogger {
+public:
+	virtual void postMessage(const String& message) override;
+	virtual void postMessageOncePerRun(const String& message) override;
+
+	std::vector<String> getLogMessagesDuringBoot();
+
+private:
+	std::vector<String> logMessagesDuringBoot_;
+};
+
 SimpleLogger::SimpleLogger()
 {
 	if (instance_ != nullptr) {
-		throw new std::runtime_error("This is a singleton, can't create twice");
+		// Replace the BootstrapLogger with the real logger
+		BootstrapLogger* bootstrap = dynamic_cast<BootstrapLogger*>(instance_);
+		if (bootstrap == nullptr) {
+			throw new std::runtime_error("This is a singleton, can't create twice");
+		}
+
+		// Don't do this immediately, but rather when the message queue runs!
+		MessageManager::callAsync([this, bootstrap]() {
+			for (auto const& text : bootstrap->getLogMessagesDuringBoot()) {
+				postMessage(text);
+			}
+			delete bootstrap;
+		});
 	}
 	instance_ = this;
 	hasBeenShutdown_ = false;
 
+	//TODO this code doesn't belong here...
 	fileLogger_.reset(FileLogger::createDefaultAppLogger("knobkraft", "knobkraft.log", "Starting KnobKraft Version unknown"));
 	FileLogger::setCurrentLogger(fileLogger_.get());
 }
@@ -51,5 +75,21 @@ void SimpleLogger::writeToFile(const String &message)
 	fileLogger_->writeToLog(message);
 }
 
-SimpleLogger * SimpleLogger::instance_ = nullptr;
+SimpleLogger * SimpleLogger::instance_ = new BootstrapLogger();
 bool SimpleLogger::hasBeenShutdown_ = false;
+
+void BootstrapLogger::postMessage(const String& message)
+{
+	logMessagesDuringBoot_.push_back(message);
+}
+
+void BootstrapLogger::postMessageOncePerRun(const String& message)
+{
+	jassertfalse;
+	logMessagesDuringBoot_.push_back(message);
+}
+
+std::vector<String> BootstrapLogger::getLogMessagesDuringBoot()
+{
+	return logMessagesDuringBoot_;
+}
