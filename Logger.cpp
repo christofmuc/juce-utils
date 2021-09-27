@@ -38,8 +38,8 @@ SimpleLogger::SimpleLogger()
 	hasBeenShutdown_ = false;
 
 	//TODO this code doesn't belong here...
-	fileLogger_.reset(FileLogger::createDefaultAppLogger("knobkraft", "knobkraft.log", "Starting KnobKraft Version unknown"));
-	FileLogger::setCurrentLogger(fileLogger_.get());
+	/*fileLogger_.reset(FileLogger::createDefaultAppLogger("knobkraft", "knobkraft.log", "Starting KnobKraft Version unknown"));
+	FileLogger::setCurrentLogger(fileLogger_.get());*/
 }
 
 SimpleLogger::~SimpleLogger()
