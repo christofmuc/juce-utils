@@ -16,6 +16,26 @@ Data & Data::instance()
 	return instance_;
 }
 
+const juce::var& Data::getProperty(const Identifier& name)
+{
+	return Data::instance().get().getProperty(name);
+}
+
+const juce::var& Data::getEphemeralProperty(const Identifier& name)
+{
+	return Data::instance().getEphemeral().getProperty(name);
+}
+
+juce::Value Data::getPropertyAsValue(const Identifier& name)
+{
+	return Data::instance().get().getPropertyAsValue(name, nullptr);
+}
+
+juce::Value Data::getEphemeralPropertyAsValue(const Identifier& name)
+{
+	return Data::instance().getEphemeral().getPropertyAsValue(name, nullptr);
+}
+
 Data::Data() : tree_(Identifier("Setup")), ephemeralTree_(Identifier("AppStateNotStored"))
 {
 }

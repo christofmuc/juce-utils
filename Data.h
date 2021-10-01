@@ -12,6 +12,11 @@ class Data {
 public:
 	static Data &instance();
 
+	static const var& getProperty(const Identifier& name); // Convenience function for instance().get().getProperty()
+	static const var& getEphemeralProperty(const Identifier& name);
+	static Value getPropertyAsValue(const Identifier& name); // Convenience function for instance().get().getPropertyAsValue()
+	static Value getEphemeralPropertyAsValue(const Identifier& name);
+
 	ValueTree& get();
 	ValueTree& getEphemeral();
 
