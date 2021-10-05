@@ -8,7 +8,7 @@
 
 #include "JuceHeader.h"
 
-class SimpleLogger {
+class SimpleLogger : private Logger {
 public:
 	SimpleLogger();
 	virtual ~SimpleLogger();
@@ -22,9 +22,13 @@ public:
 	
 	void writeToFile(const String &message);
 
+protected:
+	void logMessage(const String& message) override;
+
 private:
 	static SimpleLogger *instance_;
 	std::unique_ptr<Logger> fileLogger_;
 	static bool hasBeenShutdown_;
+
 };
 

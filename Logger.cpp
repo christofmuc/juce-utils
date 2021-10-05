@@ -35,6 +35,7 @@ SimpleLogger::SimpleLogger()
 		});
 	}
 	instance_ = this;
+	juce::Logger::setCurrentLogger(instance_);
 	hasBeenShutdown_ = false;
 
 	//TODO this code doesn't belong here...
@@ -77,6 +78,11 @@ void SimpleLogger::writeToFile(const String &message)
 
 SimpleLogger * SimpleLogger::instance_ = new BootstrapLogger();
 bool SimpleLogger::hasBeenShutdown_ = false;
+
+void SimpleLogger::logMessage(const String& message)
+{
+	postMessage(message);
+}
 
 void BootstrapLogger::postMessage(const String& message)
 {
