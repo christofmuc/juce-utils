@@ -27,6 +27,7 @@ set(Sources
 	MidiTuning.cpp MidiTuning.h
 	PackedDataFormatInfo.cpp PackedDataFormatInfo.h
 	ProgressHandler.h
+	RingBuffer.cpp RingBuffer.h
 	RunWithRetry.cpp RunWithRetry.h
 	Settings.cpp Settings.h
 	StreamLogger.cpp StreamLogger.h
