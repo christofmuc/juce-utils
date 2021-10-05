@@ -12,34 +12,34 @@ RingBuffer::RingBuffer(int numChannelsToAllocate, int numSamplesToAllocate) : Ab
 	ringBuffer_.clear();
 }
 
-void RingBuffer::write(const float* const* channelPointers, int numSamples)
+void RingBuffer::write(const float* const* channelPointers, int numChannels, int numSamples)
 {
 	int startIndex1, blockSize1, startIndex2, blockSize2;
 	prepareToWrite(numSamples, startIndex1, blockSize1, startIndex2, blockSize2);
 	if (blockSize1 > 0) {
-		for (int c = 0; c < ringBuffer_.getNumChannels(); c++) {
+		for (int c = 0; c < std::min(numChannels, ringBuffer_.getNumChannels()); c++) {
 			ringBuffer_.copyFrom(c, startIndex1, channelPointers[c], blockSize1);
 		}
 	}
 	if (blockSize2 > 0) {
-		for (int c = 0; c < ringBuffer_.getNumChannels(); ++c) {
+		for (int c = 0; c < std::min(numChannels, ringBuffer_.getNumChannels()); ++c) {
 			ringBuffer_.copyFrom(c, startIndex2, channelPointers[c] + blockSize1, blockSize2);
 		}
 	}
 	finishedWrite(blockSize1 + blockSize2);
 }
 
-void RingBuffer::read(float** channelPointers, int numSamples)
+void RingBuffer::read(float** channelPointers, int numChannels, int numSamples)
 {
 	int startIndex1, blockSize1, startIndex2, blockSize2;
 	prepareToRead(numSamples, startIndex1, blockSize1, startIndex2, blockSize2);
 	if (blockSize1 > 0) {
-		for (int c = 0; c < ringBuffer_.getNumChannels(); ++c) {
+		for (int c = 0; c < std::min(numChannels, ringBuffer_.getNumChannels()); ++c) {
 			FloatVectorOperations::copy(channelPointers[c], ringBuffer_.getReadPointer(c, startIndex1), blockSize1);
 		}
 	}
 	if (blockSize2 > 0) {
-		for (int c = 0; c < ringBuffer_.getNumChannels(); ++c) {
+		for (int c = 0; c < std::min(numChannels, ringBuffer_.getNumChannels()); ++c) {
 			FloatVectorOperations::copy(channelPointers[c] + blockSize1, ringBuffer_.getReadPointer(c, blockSize2), blockSize2);
 		}
 	}
