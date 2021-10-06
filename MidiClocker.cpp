@@ -40,7 +40,7 @@ double MidiClocker::getCurrentBPM()
 
 void MidiClocker::processClockMessage(String const & midiSource, MidiMessage const &message)
 {
-	ScopedLock lock(lock_);	
+	ScopedLock lock(lock_);
 
 	if (clockTimes_.find(midiSource) == clockTimes_.end()) {
 		// First clock signal on this source!

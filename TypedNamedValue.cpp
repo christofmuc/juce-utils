@@ -99,7 +99,7 @@ int TypedNamedValue::indexOfValue(std::string const &text) const
 	return 0;
 }
 
-std::string TypedNamedValue::lookupValue() 
+std::string TypedNamedValue::lookupValue()
 {
 	return lookup_[int(value_.getValue())];
 }

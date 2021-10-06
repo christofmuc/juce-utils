@@ -10,7 +10,7 @@ project(juce-utils)
 
 # Define the sources for the static library
 set(Sources
-	AudioRecorder.cpp AudioRecorder.h 
+	AudioRecorder.cpp AudioRecorder.h
     Data.cpp Data.h
 	DebounceTimer.cpp DebounceTimer.h
 	FileHelpers.cpp FileHelpers.h
@@ -32,7 +32,7 @@ set(Sources
 	Settings.cpp Settings.h
 	StreamLogger.cpp StreamLogger.h
 	Sysex.cpp Sysex.h
-	TypedNamedValue.cpp TypedNamedValue.h 
+	TypedNamedValue.cpp TypedNamedValue.h
 	WaitForEvent.cpp WaitForEvent.h
 	README.md
 	LICENSE.md

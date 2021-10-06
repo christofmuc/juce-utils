@@ -19,7 +19,7 @@ public:
 	virtual void postMessage(const String& message) = 0;
 	virtual void postMessageOncePerRun(const String& message) = 0;
 	virtual void markBenchmarkPoint(const String &message);
-	
+
 	void writeToFile(const String &message);
 
 protected:
@@ -31,4 +31,3 @@ private:
 	static bool hasBeenShutdown_;
 
 };
-

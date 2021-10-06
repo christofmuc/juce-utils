@@ -25,6 +25,3 @@ private:
 	std::string message_;
 	int retries_;
 };
-
-
-

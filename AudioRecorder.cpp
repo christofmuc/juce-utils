@@ -236,7 +236,7 @@ void AudioRecorder::audioDeviceIOCallback(const float** inputChannelData, int nu
 			saveBlock(inputChannelData, numSamples);
 
 			if (automaticRecordFromSilenceToSilence_ && silenceDuration_ > 0.01 * lastSampleRate_) {
-				// End of story 
+				// End of story
 				writeThread_.reset();
 				MessageManager::callAsync([this]() { onSilence_();  });
 				hasFoundStart_ = false;

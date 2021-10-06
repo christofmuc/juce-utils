@@ -66,10 +66,10 @@ std::vector<MidiMessage> MidiHelpers::generateRPN(int midiChannel,
 bool MidiHelpers::equalSysexMessageContent(MidiMessage const &message1, MidiMessage const &message2, int digitsToCompare /* = -1 */)
 {
 	if (!(message1.isSysEx() & message2.isSysEx())) return false;
-	if (digitsToCompare == -1) { 
+	if (digitsToCompare == -1) {
 		if (message1.getSysExDataSize() != message2.getSysExDataSize()) return false;
 		// The complete message should be compared
-		digitsToCompare = message1.getSysExDataSize(); 
+		digitsToCompare = message1.getSysExDataSize();
 	}
 	else {
 		if (message1.getSysExDataSize() < digitsToCompare || message2.getSysExDataSize() < digitsToCompare) return false;
@@ -119,7 +119,7 @@ juce::MidiBuffer MidiHelpers::removeEmptySysexMessages(MidiBuffer const &midiBuf
 	for (auto message : midiBuffer) {
 		auto m = message.getMessage();
 		// Suppress empty sysex messages, they seem to confuse vintage hardware (e.g. the Kawai K3 in particular)
-		if (isEmptySysex(m)) continue;		
+		if (isEmptySysex(m)) continue;
 		jassert(m.getRawDataSize() <= 65535);
 		filtered.addEvent(m, message.samplePosition);
 	}

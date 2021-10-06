@@ -29,4 +29,3 @@ private:
 	std::string name_; // Limited to 16 ASCII chars by the standard
 	TTuning tuning_;
 };
-

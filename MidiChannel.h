@@ -34,4 +34,3 @@ private:
 	MidiChannel() : zerobasedChannel_(-1), isValid_(false), isOmni_(false) {
 	}
 };
-

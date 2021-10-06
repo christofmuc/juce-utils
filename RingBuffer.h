@@ -24,4 +24,3 @@ public:
 private:
     juce::AudioBuffer<float> ringBuffer_;
 };
-

@@ -76,4 +76,3 @@ StreamLogger & StreamLogger::operator<<(uint64 value)
 	flushBuffer();
 	return *this;
 }
-

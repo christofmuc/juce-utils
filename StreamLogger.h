@@ -25,10 +25,8 @@ public:
 	StreamLogger(StreamLogger const &) = delete;
 	void operator=(StreamLogger const&) = delete;
 
-private:	
+private:
 	StreamLogger() {}
 
 	std::stringstream buffer;
 };
-
-

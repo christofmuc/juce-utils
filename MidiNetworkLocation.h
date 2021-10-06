@@ -22,4 +22,3 @@ struct MidiNetworkLocation {
 	std::string outputName;
 	MidiChannel midiChannel;
 };
-

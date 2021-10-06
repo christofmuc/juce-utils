@@ -29,4 +29,3 @@ int MidiProgramNumber::toOneBased() const
 {
 	return programNo_ + 1;
 }
-

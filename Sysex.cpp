@@ -89,7 +89,7 @@ std::vector<juce::MidiMessage> Sysex::vectorToMessages(std::vector<uint8> const 
 	uint8 lastStatusByte = 0xf0; // Sysex message
 	while (inPointer < midiData.size()) {
 		int bytesUsed = 0;
-		//TODO - this crashes in case the data is not well formed sysex (example: Depeche Mode TI sound set, there is a message which ends on 0xff 0xff). 
+		//TODO - this crashes in case the data is not well formed sysex (example: Depeche Mode TI sound set, there is a message which ends on 0xff 0xff).
 		messages.push_back(MidiMessage(&midiData[inPointer], (int)(midiData.size() - inPointer), bytesUsed, lastStatusByte, 0.0, false));
 		inPointer += (size_t) bytesUsed;
 	}
@@ -103,7 +103,7 @@ std::vector<juce::MidiMessage> Sysex::memoryBlockToMessages(MemoryBlock const &m
 	uint8 lastStatusByte = 0xf0; // Sysex message
 	while (inPointer < midiData.getSize()) {
 		int bytesUsed = 0;
-		//TODO - this crashes in case the data is not well formed sysex (example: Depeche Mode TI sound set, there is a message which ends on 0xff 0xff). 
+		//TODO - this crashes in case the data is not well formed sysex (example: Depeche Mode TI sound set, there is a message which ends on 0xff 0xff).
 		messages.push_back(MidiMessage(&midiData[inPointer], (int)(midiData.getSize() - inPointer), bytesUsed, lastStatusByte, 0.0, false));
 		inPointer += (size_t) bytesUsed;
 	}
@@ -137,4 +137,3 @@ std::string Sysex::saveSysexIntoNewFile(std::string const &directory, std::strin
 	jassert(false);
 	return "Failure";
 }
-

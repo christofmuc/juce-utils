@@ -59,5 +59,3 @@ private:
 	size_t silenceDuration_;
 	std::function<void()> onSilence_;
 };
-
-

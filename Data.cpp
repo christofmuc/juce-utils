@@ -63,4 +63,3 @@ void Data::saveToSettings()
 {
 	Settings::instance().set("ClientSettings", tree_.toXmlString().toStdString());
 }
-

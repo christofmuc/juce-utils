@@ -12,7 +12,7 @@ std::vector<juce::uint8> PackedDataFormatInfo::applyMapping(std::vector<PackedDa
 		if (info.converter_) {
 			value = info.converter_(value);
 		}
-		// Poke it into the right place 
+		// Poke it into the right place
 		aprBlock[(size_t) info.targetParameter] |= value << info.targetBitIndex;
 	}
 	return aprBlock;

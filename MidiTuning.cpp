@@ -9,7 +9,7 @@
 #include "MidiHelpers.h"
 
 MidiMessage MidiTuning::createTuningDumpRequest(uint8 deviceID, MidiProgramNumber tuningBankNumber)
-{	
+{
 	// See e.g. http://www.microtonal-synthesis.com/MIDItuning.html
 	jassert(tuningBankNumber.toZeroBased() >= 0 && tuningBankNumber.toZeroBased() < 128);
 	return MidiHelpers::sysexMessage({ 0x7E, deviceID, 0x08 /* MIDI Tuning Standard */, 0x00 /* Micro tuning request */, (uint8) tuningBankNumber.toZeroBased() });
@@ -21,7 +21,7 @@ bool MidiTuning::isTuningDump(MidiMessage const &message)
 		if (message.getSysExDataSize() > 3) {
 			auto data = message.getSysExData();
 			if (data[0] == 0x7E && data[2] == 0x08 && data[3] == 0x01 /* Tuning dump reply*/) {
-				// Length of the message is not checked, it could be truncated 
+				// Length of the message is not checked, it could be truncated
 				return true;
 			}
 		}

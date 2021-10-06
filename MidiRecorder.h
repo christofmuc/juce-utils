@@ -32,7 +32,7 @@ private:
 	bool isRecording_;
 	double recordingStartTime_;
 
-	std::map<String, MidiInputCallback *>  callbacks_;	
+	std::map<String, MidiInputCallback *>  callbacks_;
 	AudioDeviceManager &deviceManager_;
 
 	std::shared_ptr<MidiClocker> clocker_; // To determine the BPM from the Midi Clock signals

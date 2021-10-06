@@ -49,4 +49,3 @@ std::string TemporaryDirectory::name()
 {
 	return dir_.getFullPathName().toStdString();
 }
-

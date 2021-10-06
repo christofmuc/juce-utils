@@ -67,4 +67,3 @@ public:
 	Value &valueByName(std::string const &name); //TODO - suboptimal linear search
 	void addToValueTree(ValueTree &tree);
 };
-

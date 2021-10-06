@@ -71,7 +71,7 @@ void SimpleLogger::markBenchmarkPoint(const String &message)
 	postMessage(result.str());
 }
 
-void SimpleLogger::writeToFile(const String &message) 
+void SimpleLogger::writeToFile(const String &message)
 {
 	fileLogger_->writeToLog(message);
 }

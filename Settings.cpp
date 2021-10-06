@@ -24,7 +24,7 @@ void Settings::setSettingsID(String const &id)
 	settingsID_ = id;
 }
 
-std::string Settings::get(std::string const &key, std::string const &defaultValue) 
+std::string Settings::get(std::string const &key, std::string const &defaultValue)
 {
 	return properties_.getUserSettings()->getValue(key, defaultValue).toStdString();
 }
@@ -35,7 +35,7 @@ void Settings::set(std::string const &key, std::string const &value)
 	properties_.getUserSettings()->setNeedsToBeSaved(true);
 }
 
-bool Settings::keyIsSet(std::string const &key) 
+bool Settings::keyIsSet(std::string const &key)
 {
 	return properties_.getUserSettings()->containsKey(key);
 }
@@ -76,4 +76,3 @@ void Settings::flush()
 {
 	properties_.saveIfNeeded();
 }
-
