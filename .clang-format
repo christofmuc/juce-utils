@@ -1,0 +1,24 @@
+# Format Style Options - Created with Clang Power Tools
+---
+AccessModifierOffset: -4
+AlignAfterOpenBracket: DontAlign
+AlignOperands: DontAlign
+AllowAllArgumentsOnNextLine: false
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: InlineOnly
+AllowShortIfStatementsOnASingleLine: WithoutElse
+BasedOnStyle: LLVM
+BitFieldColonSpacing: After
+BreakBeforeBraces: Stroustrup
+BreakBeforeInheritanceComma: true
+BreakInheritanceList: AfterColon
+BreakBeforeTernaryOperators: false
+BreakConstructorInitializers: AfterColon
+ColumnLimit: 120
+Cpp11BracedListStyle: false
+DerivePointerAlignment: true
+IndentWidth: 4
+MaxEmptyLinesToKeep: 2
+SpaceAfterCStyleCast: true
+SpaceBeforeCpp11BracedList: true
+...
