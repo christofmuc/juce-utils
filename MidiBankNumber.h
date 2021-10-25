@@ -28,16 +28,16 @@
 
 class MidiBankNumber {
 public:
-	static MidiBankNumber fromOneBase(int bankNo);
-	static MidiBankNumber fromZeroBase(int bankNo);
-	static MidiBankNumber invalid();
+    static MidiBankNumber fromOneBase(int bankNo);
+    static MidiBankNumber fromZeroBase(int bankNo);
+    static MidiBankNumber invalid();
 
-	int isValid() const;
-	int toZeroBased() const;
-	int toOneBased() const;
+    int isValid() const;
+    int toZeroBased() const;
+    int toOneBased() const;
 
 private:
-	MidiBankNumber(int zeroBasedNumber);
+    MidiBankNumber(int zeroBasedNumber);
 
-	int bankNo_;
+    int bankNo_;
 };

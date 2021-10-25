@@ -26,17 +26,17 @@
 
 MidiBankNumber MidiBankNumber::fromOneBase(int bankNo)
 {
-	return MidiBankNumber(bankNo - 1);
+    return MidiBankNumber(bankNo - 1);
 }
 
 MidiBankNumber MidiBankNumber::fromZeroBase(int bankNo)
 {
-	return MidiBankNumber(bankNo);
+    return MidiBankNumber(bankNo);
 }
 
 MidiBankNumber MidiBankNumber::invalid()
 {
-	return MidiBankNumber(-1);
+    return MidiBankNumber(-1);
 }
 
 MidiBankNumber::MidiBankNumber(int zeroBasedNumber) : bankNo_(zeroBasedNumber)
@@ -45,21 +45,21 @@ MidiBankNumber::MidiBankNumber(int zeroBasedNumber) : bankNo_(zeroBasedNumber)
 
 int MidiBankNumber::isValid() const
 {
-	return bankNo_ != -1;
+    return bankNo_ != -1;
 }
 
 int MidiBankNumber::toZeroBased() const
 {
-	if (!isValid()) {
-		throw new std::runtime_error("Illegal State");
-	}
-	return bankNo_;
+    if (!isValid()) {
+        throw new std::runtime_error("Illegal State");
+    }
+    return bankNo_;
 }
 
 int MidiBankNumber::toOneBased() const
 {
-	if (!isValid()) {
-		throw new std::runtime_error("Illegal State");
-	}
-	return bankNo_ + 1;
+    if (!isValid()) {
+        throw new std::runtime_error("Illegal State");
+    }
+    return bankNo_ + 1;
 }

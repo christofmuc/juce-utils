@@ -26,12 +26,12 @@
 
 MidiProgramNumber MidiProgramNumber::fromOneBase(int programNumber)
 {
-	return MidiProgramNumber(programNumber - 1);
+    return MidiProgramNumber(programNumber - 1);
 }
 
 MidiProgramNumber MidiProgramNumber::fromZeroBase(int programNumber)
 {
-	return MidiProgramNumber(programNumber);
+    return MidiProgramNumber(programNumber);
 }
 
 MidiProgramNumber::MidiProgramNumber(int zeroBasedNumber) : programNo_(zeroBasedNumber)
@@ -40,10 +40,10 @@ MidiProgramNumber::MidiProgramNumber(int zeroBasedNumber) : programNo_(zeroBased
 
 int MidiProgramNumber::toZeroBased() const
 {
-	return programNo_;
+    return programNo_;
 }
 
 int MidiProgramNumber::toOneBased() const
 {
-	return programNo_ + 1;
+    return programNo_ + 1;
 }

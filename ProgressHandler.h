@@ -28,9 +28,9 @@
 
 class ProgressHandler {
 public:
-	virtual bool shouldAbort() const = 0;
-	virtual void setProgressPercentage(double zeroToOne) = 0;
-	virtual void setMessage(std::string const &title) = 0;
-	virtual void onSuccess() = 0;
-	virtual void onCancel() = 0;
+    virtual bool shouldAbort() const = 0;
+    virtual void setProgressPercentage(double zeroToOne) = 0;
+    virtual void setMessage(std::string const &title) = 0;
+    virtual void onSuccess() = 0;
+    virtual void onCancel() = 0;
 };

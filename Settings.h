@@ -27,27 +27,27 @@
 
 class Settings {
 public:
-	static void setSettingsID(String const &id); // Call this before any call to instance
-	static Settings & instance();
-	static void shutdown();
-	void saveAndClose();
-	void flush();
+    static void setSettingsID(String const &id); // Call this before any call to instance
+    static Settings &instance();
+    static void shutdown();
+    void saveAndClose();
+    void flush();
 
-	std::string get(std::string const &key, std::string const &defaultValue = std::string());
-	void set(std::string const &key, std::string const &value);
-	bool keyIsSet(std::string const &key);
+    std::string get(std::string const &key, std::string const &defaultValue = std::string());
+    void set(std::string const &key, std::string const &value);
+    bool keyIsSet(std::string const &key);
 
-	File getSessionStorageDir() const;
+    File getSessionStorageDir() const;
 
-	// Singleton!
-	Settings(Settings const &) = delete;
-	void operator=(Settings const&) = delete;
+    // Singleton!
+    Settings(Settings const &) = delete;
+    void operator=(Settings const &) = delete;
 
-	// Can't be private because of unique_ptr
-	Settings();
+    // Can't be private because of unique_ptr
+    Settings();
 
 private:
-	static std::unique_ptr<Settings> instance_;
-	static String settingsID_;
-	ApplicationProperties properties_;
+    static std::unique_ptr<Settings> instance_;
+    static String settingsID_;
+    ApplicationProperties properties_;
 };

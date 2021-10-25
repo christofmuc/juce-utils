@@ -28,10 +28,10 @@
 
 class DebounceTimer : public Timer {
 public:
-	void callDebounced(std::function<void()> action, int milliseconds);
+    void callDebounced(std::function<void()> action, int milliseconds);
 
-	virtual void timerCallback() override;
+    virtual void timerCallback() override;
 
 private:
-	std::function<void()> action_;
+    std::function<void()> action_;
 };

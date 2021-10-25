@@ -32,22 +32,22 @@ File getOrCreateSubdirectory(File dir, String const &name);
 // We might want to sort files by date
 class FileDateComparatorOldestFirst {
 public:
-	static int compareElements(File const &first, File const &second);
+    static int compareElements(File const &first, File const &second);
 };
 
 class FileDateComparatorNewestFirst {
 public:
-	static int compareElements(File const &first, File const &second);
+    static int compareElements(File const &first, File const &second);
 };
 
 class TemporaryDirectory {
 public:
-	TemporaryDirectory();
-	virtual ~TemporaryDirectory();
+    TemporaryDirectory();
+    virtual ~TemporaryDirectory();
 
-	File asFile();
-	std::string name();
+    File asFile();
+    std::string name();
 
 private:
-	File dir_;
+    File dir_;
 };

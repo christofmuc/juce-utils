@@ -26,14 +26,14 @@
 
 void DebounceTimer::callDebounced(std::function<void()> action, int milliseconds)
 {
-	stopTimer();
-	action_ = action;
-	startTimer(milliseconds);
+    stopTimer();
+    action_ = action;
+    startTimer(milliseconds);
 }
 
 void DebounceTimer::timerCallback()
 {
-	// If we reached this, we can execute the function and stop the timer!
-	stopTimer();
-	action_();
+    // If we reached this, we can execute the function and stop the timer!
+    stopTimer();
+    action_();
 }

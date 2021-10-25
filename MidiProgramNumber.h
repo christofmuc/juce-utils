@@ -26,16 +26,16 @@
 
 class MidiProgramNumber {
 public:
-	static MidiProgramNumber fromOneBase(int programNumber);
-	static MidiProgramNumber fromZeroBase(int programNumber);
+    static MidiProgramNumber fromOneBase(int programNumber);
+    static MidiProgramNumber fromZeroBase(int programNumber);
 
-	MidiProgramNumber() : programNo_(0) {}
+    MidiProgramNumber() : programNo_(0) {}
 
-	int toZeroBased() const;
-	int toOneBased() const;
+    int toZeroBased() const;
+    int toOneBased() const;
 
 private:
-	MidiProgramNumber(int zeroBasedNumber);
+    MidiProgramNumber(int zeroBasedNumber);
 
-	int programNo_;
+    int programNo_;
 };

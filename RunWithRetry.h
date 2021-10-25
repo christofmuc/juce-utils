@@ -28,18 +28,18 @@
 
 class RunWithRetry : public Timer {
 public:
-	static void start(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, int retryIntervalMS, std::string const &message);
+    static void start(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, int retryIntervalMS, std::string const &message);
 
 private:
-	RunWithRetry(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, std::string const &message);
+    RunWithRetry(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, std::string const &message);
 
-	void timerCallback() override;
+    void timerCallback() override;
 
-	static std::vector<RunWithRetry *> retryObjects_;
+    static std::vector<RunWithRetry *> retryObjects_;
 
-	std::function<void()> action_;
-	std::function<bool()> retryRequiredPredicate_;
-	int numRetries_;
-	std::string message_;
-	int retries_;
+    std::function<void()> action_;
+    std::function<bool()> retryRequiredPredicate_;
+    int numRetries_;
+    std::string message_;
+    int retries_;
 };

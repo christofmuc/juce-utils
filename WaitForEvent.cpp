@@ -34,13 +34,13 @@ WaitForEvent::WaitForEvent(std::function<bool()> hasHappened) : Thread("WaitForE
 
 void WaitForEvent::run()
 {
-	while (!threadShouldExit()) {
-		sleep(100);
-		if (hasHappened_()) {
-			if (notify_) {
-				notify_->notify();
-				return;
-			}
-		}
-	}
+    while (!threadShouldExit()) {
+        sleep(100);
+        if (hasHappened_()) {
+            if (notify_) {
+                notify_->notify();
+                return;
+            }
+        }
+    }
 }

@@ -26,24 +26,24 @@
 
 #include "JuceHeader.h"
 
-#include "MidiProgramNumber.h"
 #include "MidiNote.h"
+#include "MidiProgramNumber.h"
 
 class MidiTuning {
 public:
-	using TTuning = std::vector<std::pair<MidiNote, double>>;
+    using TTuning = std::vector<std::pair<MidiNote, double>>;
 
-	static MidiMessage createTuningDumpRequest(uint8 deviceID, MidiProgramNumber tuningBankNumber);
-	static bool isTuningDump(MidiMessage const &message);
-	static bool fromMidiMessage(MidiMessage const &message, MidiTuning &tuningResult);
+    static MidiMessage createTuningDumpRequest(uint8 deviceID, MidiProgramNumber tuningBankNumber);
+    static bool isTuningDump(MidiMessage const &message);
+    static bool fromMidiMessage(MidiMessage const &message, MidiTuning &tuningResult);
 
-	MidiTuning(MidiProgramNumber program, std::string const &name, TTuning const &tuning);
-	MidiTuning();
+    MidiTuning(MidiProgramNumber program, std::string const &name, TTuning const &tuning);
+    MidiTuning();
 
-	std::string name() const;
+    std::string name() const;
 
 private:
-	MidiProgramNumber program_;
-	std::string name_; // Limited to 16 ASCII chars by the standard
-	TTuning tuning_;
+    MidiProgramNumber program_;
+    std::string name_; // Limited to 16 ASCII chars by the standard
+    TTuning tuning_;
 };

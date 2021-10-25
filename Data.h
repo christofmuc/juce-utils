@@ -28,24 +28,24 @@
 
 class Data {
 public:
-	static Data &instance();
+    static Data& instance();
 
-	static const var& getProperty(const Identifier& name); // Convenience function for instance().get().getProperty()
-	static const var& getEphemeralProperty(const Identifier& name);
-	static Value getPropertyAsValue(const Identifier& name); // Convenience function for instance().get().getPropertyAsValue()
-	static Value getEphemeralPropertyAsValue(const Identifier& name);
+    static const var& getProperty(const Identifier& name); // Convenience function for instance().get().getProperty()
+    static const var& getEphemeralProperty(const Identifier& name);
+    static Value getPropertyAsValue(const Identifier& name); // Convenience function for instance().get().getPropertyAsValue()
+    static Value getEphemeralPropertyAsValue(const Identifier& name);
 
-	ValueTree& get();
-	ValueTree& getEphemeral();
+    ValueTree& get();
+    ValueTree& getEphemeral();
 
-	void initializeFromSettings();
-	void saveToSettings();
+    void initializeFromSettings();
+    void saveToSettings();
 
 private:
-	Data();
+    Data();
 
-	static Data instance_;
+    static Data instance_;
 
-	ValueTree tree_;
-	ValueTree ephemeralTree_;
+    ValueTree tree_;
+    ValueTree ephemeralTree_;
 };

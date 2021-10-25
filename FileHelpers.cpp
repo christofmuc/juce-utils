@@ -26,44 +26,45 @@
 
 juce::File getOrCreateSubdirectory(File dir, String const &name)
 {
-	File subdir = dir.getChildFile(name);
-	if (!subdir.exists()) {
-		subdir.createDirectory();
-	}
-	return subdir;
+    File subdir = dir.getChildFile(name);
+    if (!subdir.exists()) {
+        subdir.createDirectory();
+    }
+    return subdir;
 }
 
 int FileDateComparatorOldestFirst::compareElements(File const &first, File const &second)
 {
-	if (first.getLastModificationTime() < second.getLastModificationTime()) return -1;
-	if (first.getLastModificationTime() > second.getLastModificationTime()) return 1;
-	return 0;
+    if (first.getLastModificationTime() < second.getLastModificationTime()) return -1;
+    if (first.getLastModificationTime() > second.getLastModificationTime()) return 1;
+    return 0;
 }
 
 int FileDateComparatorNewestFirst::compareElements(File const &first, File const &second)
 {
-	if (first.getLastModificationTime() < second.getLastModificationTime()) return 1;
-	if (first.getLastModificationTime() > second.getLastModificationTime()) return -1;
-	return 0;
+    if (first.getLastModificationTime() < second.getLastModificationTime()) return 1;
+    if (first.getLastModificationTime() > second.getLastModificationTime()) return -1;
+    return 0;
 }
 
 TemporaryDirectory::TemporaryDirectory()
 {
-	File tempDir = File::getSpecialLocation(File::tempDirectory);
-	dir_ = tempDir.getNonexistentChildFile("knobkraft", "tmp");
-	dir_.createDirectory();
+    File tempDir = File::getSpecialLocation(File::tempDirectory);
+    dir_ = tempDir.getNonexistentChildFile("knobkraft", "tmp");
+    dir_.createDirectory();
 }
 
-TemporaryDirectory::~TemporaryDirectory() {
-	dir_.deleteRecursively(false);
+TemporaryDirectory::~TemporaryDirectory()
+{
+    dir_.deleteRecursively(false);
 }
 
 juce::File TemporaryDirectory::asFile()
 {
-	return dir_;
+    return dir_;
 }
 
 std::string TemporaryDirectory::name()
 {
-	return dir_.getFullPathName().toStdString();
+    return dir_.getFullPathName().toStdString();
 }

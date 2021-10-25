@@ -14,7 +14,7 @@ BreakBeforeInheritanceComma: true
 BreakInheritanceList: AfterColon
 BreakBeforeTernaryOperators: false
 BreakConstructorInitializers: AfterColon
-ColumnLimit: 120
+ColumnLimit: 200
 Cpp11BracedListStyle: false
 DerivePointerAlignment: true
 IndentWidth: 4

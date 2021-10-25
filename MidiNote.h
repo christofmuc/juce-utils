@@ -28,20 +28,20 @@
 
 class MidiNote {
 public:
-	MidiNote(double frequency, double frequencyA4 = 440.0);
-	MidiNote(int noteNumber, double frequencyA4 = 440.0);
+    MidiNote(double frequency, double frequencyA4 = 440.0);
+    MidiNote(int noteNumber, double frequencyA4 = 440.0);
 
-	static int frequencyToNoteNumber(double frequency, double frequencyA4 = 440.0);
-	static double noteNumberToFrequency(int noteNumber, double frequencyA4 = 440.0);
+    static int frequencyToNoteNumber(double frequency, double frequencyA4 = 440.0);
+    static double noteNumberToFrequency(int noteNumber, double frequencyA4 = 440.0);
 
-	int noteNumber() const;
-	double frequency() const;
-	double cents();
+    int noteNumber() const;
+    double frequency() const;
+    double cents();
 
-	std::string name() const;
+    std::string name() const;
 
 private:
-	int midiNote_;
-	double frequency_;
-	double frequencyA4_;
+    int midiNote_;
+    double frequency_;
+    double frequencyA4_;
 };

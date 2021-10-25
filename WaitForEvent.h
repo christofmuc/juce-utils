@@ -28,12 +28,12 @@
 
 class WaitForEvent : public Thread {
 public:
-	WaitForEvent(std::function<bool()> hasHappened);
-	WaitForEvent(std::function<bool()> hasHappened, Thread *threadToBeNotified);
+    WaitForEvent(std::function<bool()> hasHappened);
+    WaitForEvent(std::function<bool()> hasHappened, Thread *threadToBeNotified);
 
-	virtual void run() override;
+    virtual void run() override;
 
 private:
-	std::function<bool()> hasHappened_;
-	Thread *notify_;
+    std::function<bool()> hasHappened_;
+    Thread *notify_;
 };

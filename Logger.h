@@ -28,24 +28,23 @@
 
 class SimpleLogger : private Logger {
 public:
-	SimpleLogger();
-	virtual ~SimpleLogger();
+    SimpleLogger();
+    virtual ~SimpleLogger();
 
-	static SimpleLogger *instance();
-	static void shutdown();
+    static SimpleLogger *instance();
+    static void shutdown();
 
-	virtual void postMessage(const String& message) = 0;
-	virtual void postMessageOncePerRun(const String& message) = 0;
-	virtual void markBenchmarkPoint(const String &message);
+    virtual void postMessage(const String &message) = 0;
+    virtual void postMessageOncePerRun(const String &message) = 0;
+    virtual void markBenchmarkPoint(const String &message);
 
-	void writeToFile(const String &message);
+    void writeToFile(const String &message);
 
 protected:
-	void logMessage(const String& message) override;
+    void logMessage(const String &message) override;
 
 private:
-	static SimpleLogger *instance_;
-	std::unique_ptr<Logger> fileLogger_;
-	static bool hasBeenShutdown_;
-
+    static SimpleLogger *instance_;
+    std::unique_ptr<Logger> fileLogger_;
+    static bool hasBeenShutdown_;
 };

@@ -30,17 +30,17 @@
 
 class MidiClocker {
 public:
-	const size_t kNumAverageClockTicks = 24; // One quarter note average
+    const size_t kNumAverageClockTicks = 24; // One quarter note average
 
-	MidiClocker();
+    MidiClocker();
 
-	double getCurrentBPM();
+    double getCurrentBPM();
 
-	void processClockMessage(String const & midiSource, MidiMessage const &message);
-	size_t numInputsWithClock() const;
-	std::vector<String> inputsWithClock() const;
+    void processClockMessage(String const &midiSource, MidiMessage const &message);
+    size_t numInputsWithClock() const;
+    std::vector<String> inputsWithClock() const;
 
 private:
-	juce::CriticalSection lock_;
-	std::map<String, std::deque<double>> clockTimes_;
+    juce::CriticalSection lock_;
+    std::map<String, std::deque<double>> clockTimes_;
 };
