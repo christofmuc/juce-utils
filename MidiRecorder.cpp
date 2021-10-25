@@ -78,7 +78,6 @@ void MidiRecorder::startRecording()
 void MidiRecorder::handleIncomingMidiMessage(MidiInput* source, const MidiMessage& message)
 {
     if (!message.isActiveSense() && !message.isMidiClock()) {
-        Time now = Time::getCurrentTime();
         StreamLogger::instance() << message.getTimeStamp() << " " << message.getDescription() << std::endl;
         MidiMessage relativeTimestampMessage = message;
         double deltaSeconds = message.getTimeStamp() - recordingStartTime_;
