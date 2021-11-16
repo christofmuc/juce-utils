@@ -29,7 +29,7 @@
 class SimpleLogger : private Logger {
 public:
 	SimpleLogger();
-	virtual ~SimpleLogger();
+	virtual ~SimpleLogger() override;
 
 	static SimpleLogger *instance();
 	static void shutdown();

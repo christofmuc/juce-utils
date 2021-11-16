@@ -31,7 +31,7 @@
 class MidiRecorder : private MidiInputCallback {
 public:
 	MidiRecorder(AudioDeviceManager &deviceManager);
-	~MidiRecorder();
+	virtual ~MidiRecorder() override;
 
 	void startRecording();
 	void saveToFile(String filename);
