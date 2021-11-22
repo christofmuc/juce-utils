@@ -54,6 +54,20 @@ juce::Value Data::getEphemeralPropertyAsValue(const Identifier& name)
     return Data::instance().getEphemeral().getPropertyAsValue(name, nullptr);
 }
 
+void Data::ensurePropertyExists(const Identifier &name, var defaultValue)
+{
+    if (!instance_.get().hasProperty(name)) {
+        instance_.get().setProperty(name, defaultValue, nullptr);
+    }
+}
+
+void Data::ensureEphemeralPropertyExists(const Identifier &name, var defaultValue)
+{
+    if (!instance_.getEphemeral().hasProperty(name)) {
+        instance_.getEphemeral().setProperty(name, defaultValue, nullptr);
+    }
+}
+
 Data::Data() : tree_(Identifier("Setup")), ephemeralTree_(Identifier("AppStateNotStored"))
 {
 }

@@ -34,6 +34,8 @@ public:
     static const var& getEphemeralProperty(const Identifier& name);
     static Value getPropertyAsValue(const Identifier& name); // Convenience function for instance().get().getPropertyAsValue()
     static Value getEphemeralPropertyAsValue(const Identifier& name);
+    static void ensurePropertyExists(const Identifier &name, var defaultValue);
+    static void ensureEphemeralPropertyExists(const Identifier &name, var defaultValue);
 
     ValueTree& get();
     ValueTree& getEphemeral();
