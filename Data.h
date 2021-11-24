@@ -36,6 +36,7 @@ public:
     static Value getEphemeralPropertyAsValue(const Identifier& name);
     static void ensurePropertyExists(const Identifier &name, var defaultValue);
     static void ensureEphemeralPropertyExists(const Identifier &name, var defaultValue);
+    static void reset();
 
     ValueTree& get();
     ValueTree& getEphemeral();
@@ -48,6 +49,6 @@ private:
 
     static Data instance_;
 
-    ValueTree tree_;
-    ValueTree ephemeralTree_;
+    std::unique_ptr<ValueTree> tree_;
+    std::unique_ptr<ValueTree> ephemeralTree_;
 };
