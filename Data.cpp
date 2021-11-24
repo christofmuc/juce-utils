@@ -36,22 +36,22 @@ Data& Data::instance()
 
 const juce::var& Data::getProperty(const Identifier& name)
 {
-    return Data::instance().get().getProperty(name);
+    return instance().get().getProperty(name);
 }
 
 const juce::var& Data::getEphemeralProperty(const Identifier& name)
 {
-    return Data::instance().getEphemeral().getProperty(name);
+    return instance().getEphemeral().getProperty(name);
 }
 
 juce::Value Data::getPropertyAsValue(const Identifier& name)
 {
-    return Data::instance().get().getPropertyAsValue(name, nullptr);
+    return instance().get().getPropertyAsValue(name, nullptr);
 }
 
 juce::Value Data::getEphemeralPropertyAsValue(const Identifier& name)
 {
-    return Data::instance().getEphemeral().getPropertyAsValue(name, nullptr);
+    return instance().getEphemeral().getPropertyAsValue(name, nullptr);
 }
 
 void Data::ensurePropertyExists(const Identifier &name, var defaultValue)
@@ -68,18 +68,25 @@ void Data::ensureEphemeralPropertyExists(const Identifier &name, var defaultValu
     }
 }
 
-Data::Data() : tree_(Identifier("Setup")), ephemeralTree_(Identifier("AppStateNotStored"))
+void Data::reset()
 {
+    instance_.tree_ = std::make_unique<ValueTree>(Identifier("Setup"));
+    instance_.ephemeralTree_ = std::make_unique<ValueTree>(Identifier("AppStateNotStored"));
 }
+
+Data::Data() 
+    : tree_{std::make_unique<ValueTree>(Identifier("Setup"))}
+    , ephemeralTree_{std::make_unique<ValueTree>(Identifier("AppStateNotStored"))}
+{}
 
 juce::ValueTree& Data::get()
 {
-    return tree_;
+    return *tree_;
 }
 
 juce::ValueTree& Data::getEphemeral()
 {
-    return ephemeralTree_;
+    return *ephemeralTree_;
 }
 
 void Data::initializeFromSettings()
@@ -87,11 +94,11 @@ void Data::initializeFromSettings()
     auto xmlDoc = Settings::instance().get("ClientSettings", "");
     auto topLevel = juce::parseXML(xmlDoc);
     if (topLevel) {
-        tree_ = ValueTree::fromXml(*topLevel);
+        *tree_ = ValueTree::fromXml(*topLevel);
     }
 }
 
 void Data::saveToSettings()
 {
-    Settings::instance().set("ClientSettings", tree_.toXmlString().toStdString());
+    Settings::instance().set("ClientSettings", tree_->toXmlString().toStdString());
 }
