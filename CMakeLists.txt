@@ -61,6 +61,12 @@ add_library(juce-utils ${Sources})
 target_include_directories(juce-utils INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(juce-utils PUBLIC juce-static)
 
+target_precompile_headers(juce-utils 
+PUBLIC
+	"JuceHeader.h"
+	<string>
+)
+
 # Pedantic about warnings
 if (MSVC)
     # warning level 4 and all warnings as errors
