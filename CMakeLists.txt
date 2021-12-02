@@ -62,7 +62,7 @@ target_include_directories(juce-utils INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(juce-utils PUBLIC juce-static)
 
 target_precompile_headers(juce-utils 
-PUBLIC
+PRIVATE
 	"JuceHeader.h"
 	<string>
 )
