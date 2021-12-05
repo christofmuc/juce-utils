@@ -31,7 +31,7 @@ public:
 	static MidiChannel fromZeroBase(int zeroBasedInt) { return MidiChannel(zeroBasedInt); }
 	static MidiChannel fromOneBase(int oneBasedInt) { return MidiChannel(oneBasedInt - 1); }
 	static MidiChannel omniChannel() { return MidiChannel(0, true); } // For now, assume Omni is channel 1
-	static MidiChannel MPEmode() { return MidiChannel(0, false, true); } // Set MPE mode to channel 1, but make it a valid channel!
+	static MidiChannel MPEmode(int zerobasedChannel) { return MidiChannel(zerobasedChannel, false, true); } // Set MPE mode to a specific channel, but make it a valid channel!
 	static MidiChannel invalidChannel() { return MidiChannel(); }
 
 	int toZeroBasedInt() const { return zerobasedChannel_; }
