@@ -28,24 +28,29 @@
 
 class MidiChannel {
 public:
-    static MidiChannel fromZeroBase(int zeroBasedInt) { return MidiChannel(zeroBasedInt); }
-    static MidiChannel fromOneBase(int oneBasedInt) { return MidiChannel(oneBasedInt - 1); }
-    static MidiChannel omniChannel() { return MidiChannel(0, true); } // For now, assume Omni is channel 1
-    static MidiChannel invalidChannel() { return MidiChannel(); }
+	static MidiChannel fromZeroBase(int zeroBasedInt) { return MidiChannel(zeroBasedInt); }
+	static MidiChannel fromOneBase(int oneBasedInt) { return MidiChannel(oneBasedInt - 1); }
+	static MidiChannel omniChannel() { return MidiChannel(0, true); } // For now, assume Omni is channel 1
+	static MidiChannel MPEmode(int zerobasedChannel) { return MidiChannel(zerobasedChannel, false, true); } // Set MPE mode to a specific channel, but make it a valid channel!
+	static MidiChannel invalidChannel() { return MidiChannel(); }
 
-    int toZeroBasedInt() const { return zerobasedChannel_; }
-    int toOneBasedInt() const { return zerobasedChannel_ + 1; }
+	int toZeroBasedInt() const { return zerobasedChannel_; }
+	int toOneBasedInt() const { return zerobasedChannel_ + 1; }
 
-    bool isValid() const { return isValid_; }
-    bool isOmni() const { return isOmni_; }
+	bool isValid() const { return isValid_; }
+	bool isOmni() const { return isOmni_; }
 
 private:
-    int zerobasedChannel_;
-    bool isValid_;
-    bool isOmni_;
+	int zerobasedChannel_;
+	bool isValid_;
+	bool isOmni_;
+	bool isMPE_; // Sequential synths can be switched to MPE mode where they react to multiple MIDI channels
 
-    // Don't call the constructor with an int, you wouldn't know what you mean. This is why it is private
-    MidiChannel(int zerobasedChannel, bool isOmni = false) : zerobasedChannel_(zerobasedChannel), isOmni_(isOmni) { isValid_ = zerobasedChannel >= 0 && zerobasedChannel < 16; }
+	// Don't call the constructor with an int, you wouldn't know what you mean. This is why it is private
+	MidiChannel(int zerobasedChannel, bool isOmni = false, bool isMPE = false) : zerobasedChannel_(zerobasedChannel), isOmni_(isOmni), isMPE_(isMPE) {
+		isValid_ = zerobasedChannel >= 0 && zerobasedChannel < 16;
+	}
 
-    MidiChannel() : zerobasedChannel_(-1), isValid_(false), isOmni_(false) {}
+	MidiChannel() : zerobasedChannel_(-1), isValid_(false), isOmni_(false), isMPE_(false) {
+	}
 };
