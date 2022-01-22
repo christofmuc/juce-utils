@@ -32,6 +32,7 @@ RingBuffer::RingBuffer(int numChannelsToAllocate, int numSamplesToAllocate) : Ab
 
 void RingBuffer::write(const float* const* channelPointers, int numChannels, int numSamples)
 {
+    jassert(numChannels == ringBuffer_.getNumChannels());
     int startIndex1, blockSize1, startIndex2, blockSize2;
     prepareToWrite(numSamples, startIndex1, blockSize1, startIndex2, blockSize2);
     if (blockSize1 > 0) {
@@ -49,6 +50,7 @@ void RingBuffer::write(const float* const* channelPointers, int numChannels, int
 
 void RingBuffer::read(float** channelPointers, int numChannels, int numSamples)
 {
+    jassert(numChannels == ringBuffer_.getNumChannels());
     int startIndex1, blockSize1, startIndex2, blockSize2;
     prepareToRead(numSamples, startIndex1, blockSize1, startIndex2, blockSize2);
     if (blockSize1 > 0) {
