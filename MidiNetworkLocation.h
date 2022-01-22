@@ -32,10 +32,10 @@ struct MidiNetworkLocation {
 
     MidiNetworkLocation() : midiChannel(MidiChannel::invalidChannel()) {}
 
-    MidiNetworkLocation(std::string const &inputName, std::string const &outputName, MidiChannel midiChannel) : valid(true), inputName(inputName), outputName(outputName), midiChannel(midiChannel) {}
+    MidiNetworkLocation(juce::MidiDeviceInfo const &input, juce::MidiDeviceInfo const &output, MidiChannel midiChannel) : valid(true), input(input), output(output), midiChannel(midiChannel) {}
 
     bool valid = false;
-    std::string inputName;
-    std::string outputName;
+    juce::MidiDeviceInfo input;
+    juce::MidiDeviceInfo output;
     MidiChannel midiChannel;
 };

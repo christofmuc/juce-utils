@@ -30,7 +30,7 @@
 MidiRecorder::MidiRecorder(AudioDeviceManager &deviceManager) : isRecording_(false), deviceManager_(deviceManager)
 {
 	// Just enable *all* Midi devices. Not sure if that's smart in the long run, but hey...
-	auto devices = MidiInput::getDevices();
+	auto devices = MidiInput::getAvailableDevices();
 	for (int i = 0; i < devices.size(); i++) {
 		enableMidiInput(devices[i]);
 	}
@@ -64,7 +64,7 @@ MidiRecorder::~MidiRecorder()
 {
 	// Remove all registered callbacks
 	for (auto callback : callbacks_) {
-		deviceManager_.removeMidiInputCallback(callback.first, callback.second);
+		deviceManager_.removeMidiInputDeviceCallback(callback.first, callback.second);
 	}
 	saveToFile("sessionMidi");
 }
@@ -98,28 +98,28 @@ void MidiRecorder::handlePartialSysexMessage(MidiInput* source, const uint8* mes
 	ignoreUnused(source, messageData, numBytesSoFar, timestamp);
 }
 
-void MidiRecorder::enableMidiInput(String name)
+void MidiRecorder::enableMidiInput(MidiDeviceInfo info)
 {
 	// Only enable and register once
-	if (!deviceManager_.isMidiInputEnabled(name)) {
-		deviceManager_.setMidiInputEnabled(name, true);
+	if (!deviceManager_.isMidiInputDeviceEnabled(info.identifier)) {
+		deviceManager_.setMidiInputDeviceEnabled(info.identifier, true);
 	}
-	if (callbacks_.find(name) == callbacks_.end()) {
-		deviceManager_.addMidiInputCallback(name, this);
-		callbacks_[name] = this;
+	if (callbacks_.find(info.identifier) == callbacks_.end()) {
+		deviceManager_.addMidiInputDeviceCallback(info.identifier, this);
+		callbacks_[info.identifier] = this;
 	}
-	if (recorded_.find(name) == recorded_.end()) {
-		recorded_[name] = MidiMessageSequence();
+	if (recorded_.find(info.identifier) == recorded_.end()) {
+		recorded_[info.identifier] = juce::MidiMessageSequence();
 	}
 }
 
-void MidiRecorder::disableMidiInput(String input)
+void MidiRecorder::disableMidiInput(MidiDeviceInfo info)
 {
-	if (deviceManager_.isMidiInputEnabled(input)) {
-		deviceManager_.setMidiInputEnabled(input, false);
+	if (deviceManager_.isMidiInputDeviceEnabled(info.identifier)) {
+		deviceManager_.setMidiInputDeviceEnabled(info.identifier, false);
 	}
-	if (callbacks_.find(input) == callbacks_.end()) {
-		deviceManager_.removeMidiInputCallback(input, callbacks_[input]);
-		callbacks_.erase(input);
+	if (callbacks_.find(info.identifier) == callbacks_.end()) {
+		deviceManager_.removeMidiInputDeviceCallback(info.identifier, callbacks_[info.identifier]);
+		callbacks_.erase(info.identifier);
 	}
 }
