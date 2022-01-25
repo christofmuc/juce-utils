@@ -64,10 +64,7 @@ void switchDisplayLanguage(const char* languageID)
 	// Windows famously ignores the setlocale, but rather insists on reading the environment. Additionally, Windows uses de-DE and not de_DE like Posix.
 	// We discard country specific language at this point to keep it simple
 	std::string cleanupId(languageID);
-	auto found = cleanupId.find("-");
-	if (found != std::string::npos) {
-		cleanupId = cleanupId.substr(0, found);
-	}
+	std::replace(cleanupId.begin(), cleanupId.end(), '-', '_');
 	localeToSet = cleanupId.c_str();
 	_putenv_s("LC_ALL", localeToSet);
 #else
