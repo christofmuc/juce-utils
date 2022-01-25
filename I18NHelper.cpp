@@ -28,50 +28,60 @@
 
 #include "Logger.h"
 
-#ifdef WIN32
-#include <windows.h>
-#include <WinNls.h>
-#endif
-
 #ifndef USE_GETTEXT_TEXT_DOMAIN
 #define USE_GETTEXT_TEXT_DOMAIN "juceutils"
 #endif
 
 #ifdef GETTEXT_AVAILABLE
 
+File gLocalePath;
+
 void globalSetupLocale()
 {
 	File executablePath = File::getSpecialLocation(File::SpecialLocationType::currentExecutableFile).getParentDirectory();
-	File localePath = executablePath.getChildFile("share");
+	gLocalePath = executablePath.getChildFile("share");
 	// Normal case - the share directory with the gmo files is a subdirectory of the executable directory
-	if (localePath.exists()) {
-	}
-	else {
+	if (!gLocalePath.exists()) {
 		// Special case - if we are building with a multi-config generator and are running a development version, the share path could be one directory up!
 		File alternativeLocalePath = executablePath.getParentDirectory().getChildFile("share");
 		if (!alternativeLocalePath.exists()) {
-			SimpleLogger::instance()->postMessage("Translation files not found at " + localePath.getFullPathName() + ", turning off translations!");
+			SimpleLogger::instance()->postMessage("Translation files not found at " + gLocalePath.getFullPathName() + ", turning off translations!");
 			return;
 		}
-		localePath = alternativeLocalePath;
+		gLocalePath = alternativeLocalePath;
 	}
-	auto result = bindtextdomain(USE_GETTEXT_TEXT_DOMAIN, localePath.getFullPathName().getCharPointer());
+	auto result = bindtextdomain(USE_GETTEXT_TEXT_DOMAIN, gLocalePath.getFullPathName().getCharPointer());
 	SimpleLogger::instance()->postMessage("Bindtext domain gave us " + String(result));
 	auto displayLocale = juce::SystemStats::getDisplayLanguage();
-	displayLocale = "de";
 	switchDisplayLanguage(displayLocale.getCharPointer());
 }
 
 void switchDisplayLanguage(const char* languageID)
 {
+	const char* localeToSet;
+
 #ifdef WIN32
-//::SetThreadLocale(MAKELCID(languageID, SORT_DEFAULT));
-	auto localeSet = setlocale(LC_ALL, "");
+	// Windows famously ignores the setlocale, but rather insists on reading the environment. Additionally, Windows uses de-DE and not de_DE like Posix.
+	// We discard country specific language at this point to keep it simple
+	std::string cleanupId(languageID);
+	auto found = cleanupId.find("-");
+	if (found != std::string::npos) {
+		cleanupId = cleanupId.substr(0, found);
+	}
+	localeToSet = cleanupId.c_str();
+	_putenv_s("LC_ALL", localeToSet);
 #else
-	auto localeSet = setlocale(LC_ALL, languageID);
+	localeToSet = setlocale(LC_ALL, languageID);
 #endif
+
+	// Make sure there is a directory of that ID
+	if (!gLocalePath.getChildFile(localeToSet).exists()) {
+		jassertfalse;
+		SimpleLogger::instance()->postMessage("User locale " + String(localeToSet) + " requested but no matching directory at " + gLocalePath.getFullPathName());
+	}
+
 	textdomain(USE_GETTEXT_TEXT_DOMAIN);
-	SimpleLogger::instance()->postMessage("Setting user language to " + String(languageID) + " reported to " + String(localeSet));
+	SimpleLogger::instance()->postMessage("Setting user language to " + String(languageID) + " reported to " + String(localeToSet));
 }
 
 #endif
