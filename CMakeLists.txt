@@ -32,6 +32,7 @@ set(Sources
     Data.cpp Data.h
 	DebounceTimer.cpp DebounceTimer.h
 	FileHelpers.cpp FileHelpers.h
+	I18NHelper.cpp I18NHelper.h
 	JuceHeader.h
 	Logger.cpp Logger.h
 	MidiBankNumber.cpp MidiBankNumber.h
@@ -56,10 +57,21 @@ set(Sources
 	LICENSE.md
 )
 
+option(GETTEXT_AVAILABLE "Set this to true if package gettext is available and you want to build the I18NHelpers" OFF)
+
 # Setup library
 add_library(juce-utils ${Sources})
+
+if (GETTEXT_AVAILABLE)
+	target_compile_definitions(juce-utils PUBLIC GETTEXT_AVAILABLE)
+	target_compile_definitions(juce-utils PUBLIC USE_GETTEXT_TEXT_DOMAIN="digitalStagePC")
+	find_package(gettext)
+	find_package(Intl)
+	set(I18NLib Intl::Intl)
+endif()
+
 target_include_directories(juce-utils INTERFACE ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(juce-utils PUBLIC juce-static)
+target_link_libraries(juce-utils PUBLIC ${I18NLib} juce-static)
 
 # Pedantic about warnings and precompiled headers
 if (MSVC)
