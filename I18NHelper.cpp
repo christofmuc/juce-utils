@@ -36,6 +36,11 @@
 
 File gLocalePath;
 
+juce::String U8(const char* translatedString)
+{
+	return juce::String::fromUTF8(translatedString);
+}
+
 void globalSetupLocale()
 {
 	File executablePath = File::getSpecialLocation(File::SpecialLocationType::currentExecutableFile).getParentDirectory();

@@ -30,6 +30,7 @@
 
 #define _(STRING) gettext(STRING)
 
+String U8(const char* translatedString);
 void globalSetupLocale();
 void switchDisplayLanguage(const char *languageID);
 #endif
