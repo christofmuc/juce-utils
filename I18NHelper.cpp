@@ -78,7 +78,6 @@ void switchDisplayLanguage(const char* languageID)
 
 	// Make sure there is a directory of that ID
 	if (!gLocalePath.getChildFile(localeToSet).exists()) {
-		jassertfalse;
 		SimpleLogger::instance()->postMessage("User locale " + String(localeToSet) + " requested but no matching directory at " + gLocalePath.getFullPathName());
 	}
 
