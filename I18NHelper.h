@@ -25,6 +25,8 @@
 #pragma once
 
 #ifdef GETTEXT_AVAILABLE
+#include "JuceHeader.h"
+
 #include <libintl.h>
 #include <locale.h>
 
