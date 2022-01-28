@@ -57,8 +57,12 @@ void globalSetupLocale()
 	}
 	auto result = bindtextdomain(USE_GETTEXT_TEXT_DOMAIN, gLocalePath.getFullPathName().getCharPointer());
 	SimpleLogger::instance()->postMessage("Bindtext domain gave us " + String(result));
-	auto displayLocale = juce::SystemStats::getDisplayLanguage();
-	switchDisplayLanguage(displayLocale.getCharPointer());
+#ifdef WIN32
+	auto displayLocale = juce::SystemStats::getDisplayLanguage().getCharPointer();
+#else
+    auto displayLocale = ::setlocale (LC_MESSAGES, "");
+#endif
+	switchDisplayLanguage(displayLocale);
 }
 
 void switchDisplayLanguage(const char* languageID)
@@ -73,7 +77,8 @@ void switchDisplayLanguage(const char* languageID)
 	localeToSet = cleanupId.c_str();
 	_putenv_s("LC_ALL", localeToSet);
 #else
-	localeToSet = setlocale(LC_ALL, languageID);
+	::setlocale(LC_MESSAGES, languageID);
+    localeToSet = languageID;
 #endif
 
 	// Make sure there is a directory of that ID
