@@ -57,18 +57,12 @@ void globalSetupLocale()
 	}
 	auto result = bindtextdomain(USE_GETTEXT_TEXT_DOMAIN, gLocalePath.getFullPathName().getCharPointer());
 	SimpleLogger::instance()->postMessage("Bindtext domain gave us " + String(result));
-#ifdef WIN32
-	auto displayLocale = juce::SystemStats::getDisplayLanguage();
-	switchDisplayLanguage(displayLocale.getCharPointer());
+#if defined(WIN32) || defined(__APPLE__)
+	auto displayLocale = juce::SystemStats::getDisplayLanguage().getCharPointer();
 #else
-#ifdef __APPLE__
-    auto displayLocale = juce::SystemStats::getDisplayLanguage();
-	switchDisplayLanguage(displayLocale.getCharPointer());
-#else
-    auto userLocale = ::setlocale(LC_MESSAGES, "");
-    switchDisplayLanguage(userLocale);
+    auto displayLocale = ::setlocale (LC_MESSAGES, "");
 #endif
-#endif
+	switchDisplayLanguage(displayLocale);
 }
 
 void switchDisplayLanguage(const char* languageID)
