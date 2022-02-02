@@ -66,12 +66,12 @@ void globalSetupLocale()
 	auto result = bindtextdomain(USE_GETTEXT_TEXT_DOMAIN, gLocalePath.getFullPathName().getCharPointer());
 	SimpleLogger::instance()->postMessage("Bindtext domain gave us " + String(result));
 #if defined(WIN32) || defined(__APPLE__)
-	auto displayLocale = juce::SystemStats::getDisplayLanguage().getCharPointer();
+	std::string displayLocale = juce::SystemStats::getDisplayLanguage().getCharPointer();
     bind_textdomain_codeset(USE_GETTEXT_TEXT_DOMAIN, "utf-8");
 #else
     auto displayLocale = ::setlocale (LC_MESSAGES, "");
 #endif
-	switchDisplayLanguage(displayLocale);
+	switchDisplayLanguage(displayLocale.c_str());
 }
 
 void switchDisplayLanguage(const char* languageID)
