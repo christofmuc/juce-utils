@@ -79,6 +79,11 @@ File Settings::getSessionStorageDir() const
     return dir;
 }
 
+File const & Settings::getPropertiesFile() noexcept
+{
+    return properties_.getUserSettings()->getFile();
+}
+
 Settings::Settings()
 {
     PropertiesFile::Options options;
