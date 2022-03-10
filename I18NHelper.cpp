@@ -67,10 +67,10 @@ void globalSetupLocale()
 	SimpleLogger::instance()->postMessage("Bindtext domain gave us " + String(result));
 #if defined(WIN32) || defined(__APPLE__)
 	std::string displayLocale = juce::SystemStats::getDisplayLanguage().toStdString();
-    bind_textdomain_codeset(USE_GETTEXT_TEXT_DOMAIN, "utf-8");
 #else
 	std::string displayLocale = ::setlocale (LC_MESSAGES, "");
 #endif
+    bind_textdomain_codeset(USE_GETTEXT_TEXT_DOMAIN, "utf-8");
 	switchDisplayLanguage(displayLocale.c_str());
 }
 
@@ -90,7 +90,10 @@ void switchDisplayLanguage(const char* languageID)
     setenv("LANG", localeToSet, 1);
 #endif
 #else
-	::setlocale(LC_MESSAGES, languageID);
+	auto returnValue = ::setlocale(LC_MESSAGES, languageID);
+    if (returnValue == nullptr) {
+        SimpleLogger::instance()->postMessage("User locale " + String(languageID) + " requested but error returned");
+    }
     localeToSet = languageID;
 #endif
 
