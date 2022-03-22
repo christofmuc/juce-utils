@@ -83,6 +83,12 @@ void RingBuffer::readPastData(std::shared_ptr<AudioBuffer<float>> outBuffer, int
         return;
     }
 
+    // Discard all data older than our read pointer, else we get that instead!
+    int tooMuchData = getNumReady() - samplesOffset;
+    if (tooMuchData > 0) {
+        discard(tooMuchData);
+    }
+
     if (samplesOffset <= getNumReady()) {
         int dataToReallyRead = outBuffer->getNumSamples();
 
