@@ -34,9 +34,13 @@ public:
     void write(const float* const* channelPointers, int numChannels, int numSamples);
     void read(float** channelPointers, int numChannels, int numSamples);
 
+    void addBuffer(std::shared_ptr<AudioBuffer<float>> bufferToAdd);
+    void readPastData(std::shared_ptr<AudioBuffer<float>> outBuffer, int samplesOffset);
+
     void discard(int numSamples);
 
     void clear();
+    void zeroReset();
 
 private:
     juce::AudioBuffer<float> ringBuffer_;
