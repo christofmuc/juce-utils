@@ -113,7 +113,7 @@ void RingBuffer::discard(int numSamples)
 {
     jassert(getNumReady() >= numSamples);
     int startIndex1, blockSize1, startIndex2, blockSize2;
-    prepareToWrite(numSamples, startIndex1, blockSize1, startIndex2, blockSize2);
+    prepareToRead(numSamples, startIndex1, blockSize1, startIndex2, blockSize2);
     finishedRead(blockSize1 + blockSize2);
 }
 
