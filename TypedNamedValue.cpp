@@ -69,6 +69,11 @@ TypedNamedValue::TypedNamedValue(String const &name, String const &sectionName, 
     enabled_ = true;
 }
 
+void TypedNamedValue::setEnabled(bool enabled)
+{
+    enabled_ = enabled;
+}
+
 juce::Value &TypedNamedValue::value()
 {
     return value_;
