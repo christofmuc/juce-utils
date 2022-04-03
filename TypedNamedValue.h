@@ -54,6 +54,8 @@ public:
 
     virtual ~TypedNamedValue() = default;
 
+    void setEnabled(bool enabled);
+
     Value &value();
     String name() const;
     String sectionName() const;
