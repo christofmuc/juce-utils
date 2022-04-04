@@ -77,11 +77,13 @@ target_link_libraries(juce-utils PUBLIC ${I18NLib} juce-static)
 if (MSVC)
     # warning level 4 and all warnings as errors
     target_compile_options(juce-utils PRIVATE /W4 /WX)
-    target_precompile_headers(juce-utils 
-		PRIVATE
-			"JuceHeader.h"
-			<string>
-		)
+	if(REALLY_USE_PRECOMPILED_HEADERS)
+		target_precompile_headers(juce-utils 
+			PRIVATE
+				"JuceHeader.h"
+				<string>
+			)
+	endif()
 else()
     # lots of warnings and all warnings as errors
     #target_compile_options(juce-utils PRIVATE -Wall -Wextra -pedantic -Werror)
