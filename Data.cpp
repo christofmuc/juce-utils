@@ -88,13 +88,13 @@ void Data::ensureRuntimePropertyExists(const Identifier &name, var defaultValue)
 void Data::reset()
 {
     instance_.tree_ = std::make_unique<ValueTree>(Identifier("Setup"));
-    instance_.ephemeralTree_ = std::make_unique<ValueTree>(Identifier("AppStateNotStored"));
+    instance_.ephemeralTree_ = std::make_unique<ValueTree>(Identifier("Ephemeral"));
 }
 
 Data::Data() 
     : tree_{std::make_unique<ValueTree>(Identifier("Setup"))}
-    , ephemeralTree_{std::make_unique<ValueTree>(Identifier("AppStateNotStored"))}
-    , runtimeTree_{std::make_unique<ValueTree>(Identifier("AppStateNotStoredSurvivingReset"))}
+    , ephemeralTree_{std::make_unique<ValueTree>(Identifier("Ephemeral"))}
+    , runtimeTree_{std::make_unique<ValueTree>(Identifier("EphemeralSurvivingReset"))}
 {}
 
 juce::ValueTree& Data::get()
