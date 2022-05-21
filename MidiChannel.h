@@ -39,6 +39,7 @@ public:
 
 	bool isValid() const { return isValid_; }
 	bool isOmni() const { return isOmni_; }
+	bool isMPE() const { return isMPE_; }
 
 private:
 	int zerobasedChannel_;
@@ -47,7 +48,7 @@ private:
 	bool isMPE_; // Sequential synths can be switched to MPE mode where they react to multiple MIDI channels
 
 	// Don't call the constructor with an int, you wouldn't know what you mean. This is why it is private
-	MidiChannel(int zerobasedChannel, bool isOmni = false, bool isMPE = false) : zerobasedChannel_(zerobasedChannel), isOmni_(isOmni), isMPE_(isMPE) {
+	explicit MidiChannel(int zerobasedChannel, bool isOmni = false, bool isMPE = false) : zerobasedChannel_(zerobasedChannel), isOmni_(isOmni), isMPE_(isMPE) {
 		isValid_ = zerobasedChannel >= 0 && zerobasedChannel < 16;
 	}
 
