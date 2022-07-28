@@ -34,6 +34,7 @@ public:
     void flush();
 
     std::string get(std::string const &key, std::string const &defaultValue = std::string());
+    int get(std::string const &key, int defaultValue);
     void set(std::string const &key, std::string const &value);
     bool keyIsSet(std::string const &key);
 

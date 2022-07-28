@@ -52,6 +52,12 @@ std::string Settings::get(std::string const &key, std::string const &defaultValu
     return properties_.getUserSettings()->getValue(key, defaultValue).toStdString();
 }
 
+int Settings::get(std::string const &key, int defaultValue)
+{
+    auto int_as_text = properties_.getUserSettings()->getValue(key, String(defaultValue)).toStdString();
+    return atoi(int_as_text.c_str());
+}
+
 void Settings::set(std::string const &key, std::string const &value)
 {
     properties_.getUserSettings()->setValue(key, String(value));
