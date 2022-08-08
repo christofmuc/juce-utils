@@ -43,8 +43,8 @@ private:
 	virtual void handleIncomingMidiMessage(MidiInput* source, const MidiMessage& message) override;
 	virtual void handlePartialSysexMessage(MidiInput* source, const uint8* messageData, int numBytesSoFar, double timestamp) override;
 
-	void enableMidiInput(String name);
-	void disableMidiInput(String input);
+	void enableMidiInput(MidiDeviceInfo name);
+	void disableMidiInput(MidiDeviceInfo input);
 
 	std::map<String, MidiMessageSequence> recorded_;
 	bool isRecording_;
