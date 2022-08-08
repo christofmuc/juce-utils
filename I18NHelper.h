@@ -24,24 +24,21 @@
 
 #pragma once
 
+#ifdef GETTEXT_AVAILABLE
 #include "JuceHeader.h"
 
-// Use the JUCE AbstractFifo class to build the most minimalistic RingBuffer for sample data
-class RingBuffer : public AbstractFifo {
-public:
-    RingBuffer(int numChannelsToAllocate, int numSamplesToAllocate);
+#include <libintl.h>
+#include <locale.h>
 
-    void write(const float* const* channelPointers, int numChannels, int numSamples);
-    void read(float** channelPointers, int numChannels, int numSamples);
+#define _(STRING) gettext(STRING)
 
-    void addBuffer(std::shared_ptr<AudioBuffer<float>> bufferToAdd);
-    void readPastData(std::shared_ptr<AudioBuffer<float>> outBuffer, int samplesOffset);
+String U8(const char* translatedString);
+void globalSetupLocale();
+void switchDisplayLanguage(const char *languageID);
+#endif
 
-    void discard(int numSamples);
 
-    void clear();
-    void zeroReset();
 
-private:
-    juce::AudioBuffer<float> ringBuffer_;
-};
+
+
+

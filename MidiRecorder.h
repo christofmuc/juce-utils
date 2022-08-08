@@ -28,30 +28,30 @@
 
 #include "MidiClocker.h"
 
-class MidiRecorder : private MidiInputCallback {
+class MidiRecorder : private juce::MidiInputCallback {
 public:
-	MidiRecorder(AudioDeviceManager &deviceManager);
+	MidiRecorder(juce::AudioDeviceManager &deviceManager);
 	virtual ~MidiRecorder() override;
 
 	void startRecording();
-	void saveToFile(String filename);
+	void saveToFile(juce::String filename);
 
 	std::weak_ptr<MidiClocker> getClocker();
 
 private:
 	// Midi Input Callback
-	virtual void handleIncomingMidiMessage(MidiInput* source, const MidiMessage& message) override;
-	virtual void handlePartialSysexMessage(MidiInput* source, const uint8* messageData, int numBytesSoFar, double timestamp) override;
+	virtual void handleIncomingMidiMessage(juce::MidiInput* source, const juce::MidiMessage& message) override;
+	virtual void handlePartialSysexMessage(juce::MidiInput* source, const juce::uint8* messageData, int numBytesSoFar, double timestamp) override;
 
-	void enableMidiInput(MidiDeviceInfo name);
-	void disableMidiInput(MidiDeviceInfo input);
+	void enableMidiInput(juce::MidiDeviceInfo info);
+	void disableMidiInput(juce::MidiDeviceInfo info);
 
-	std::map<String, MidiMessageSequence> recorded_;
+	std::map<juce::String, juce::MidiMessageSequence> recorded_;
 	bool isRecording_;
 	double recordingStartTime_;
 
-	std::map<String, MidiInputCallback *>  callbacks_;
-	AudioDeviceManager &deviceManager_;
+	std::map<String, juce::MidiInputCallback *>  callbacks_;
+	juce::AudioDeviceManager &deviceManager_;
 
 	std::shared_ptr<MidiClocker> clocker_; // To determine the BPM from the Midi Clock signals
 };

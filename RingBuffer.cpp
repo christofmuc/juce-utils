@@ -32,7 +32,7 @@ RingBuffer::RingBuffer(int numChannelsToAllocate, int numSamplesToAllocate) : Ab
 
 void RingBuffer::write(const float* const* channelPointers, int numChannels, int numSamples)
 {
-    jassert(numChannels == ringBuffer_.getNumChannels());
+    jassert(numChannels <= ringBuffer_.getNumChannels());
     int startIndex1, blockSize1, startIndex2, blockSize2;
     prepareToWrite(numSamples, startIndex1, blockSize1, startIndex2, blockSize2);
     if (blockSize1 > 0) {
@@ -66,11 +66,60 @@ void RingBuffer::read(float** channelPointers, int numChannels, int numSamples)
     finishedRead(blockSize1 + blockSize2);
 }
 
+void RingBuffer::addBuffer(std::shared_ptr<AudioBuffer<float>> bufferToAdd)
+{
+    write(bufferToAdd->getArrayOfReadPointers(), bufferToAdd->getNumChannels(), bufferToAdd->getNumSamples());
+}
+
+void RingBuffer::readPastData(std::shared_ptr<AudioBuffer<float>> outBuffer, int samplesOffset)
+{
+    outBuffer->clear();
+
+    // We want to read past (old) data from the ring buffer - this is implemented by preparing to read everything from back then to now,
+    // and then really copying only the old data we need!
+    jassert(samplesOffset <= getTotalSize());
+    if (samplesOffset > getTotalSize()) {
+        // That wouldn't work, output nothing
+        return;
+    }
+
+    // Discard all data older than our read pointer, else we get that instead!
+    int tooMuchData = getNumReady() - samplesOffset;
+    if (tooMuchData > 0) {
+        discard(tooMuchData);
+    }
+
+    if (samplesOffset <= getNumReady()) {
+        int dataToReallyRead = outBuffer->getNumSamples();
+
+        // We have enough data to read from in our ring buffer (but we won't need all of it!)
+        int startIndex1, blockSize1, startIndex2, blockSize2;
+        prepareToRead(samplesOffset, startIndex1, blockSize1, startIndex2, blockSize2);
+        
+        if (blockSize1 > 0) {
+            int dataToReadFromBlock1 = std::min(dataToReallyRead, blockSize1);
+            for (int c = 0; c < std::min(outBuffer->getNumChannels(), ringBuffer_.getNumChannels()); ++c) {
+                FloatVectorOperations::copy(outBuffer->getWritePointer(c), ringBuffer_.getReadPointer(c, startIndex1), dataToReadFromBlock1);
+            }
+        }
+        if (blockSize2 > 0 && dataToReallyRead > blockSize1) {
+            int dataToReadFromBlock2 = std::min(dataToReallyRead - blockSize1, blockSize2);
+            for (int c = 0; c < std::min(outBuffer->getNumChannels(), ringBuffer_.getNumChannels()); ++c) {
+                FloatVectorOperations::copy(outBuffer->getWritePointer(c), ringBuffer_.getReadPointer(c, startIndex2), dataToReadFromBlock2);
+            }
+        }
+    }
+    else {
+        // Partial read... This should not happen when the buffer is filled with 0!
+        jassertfalse;
+    }
+}
+
 void RingBuffer::discard(int numSamples)
 {
     jassert(getNumReady() >= numSamples);
     int startIndex1, blockSize1, startIndex2, blockSize2;
-    prepareToWrite(numSamples, startIndex1, blockSize1, startIndex2, blockSize2);
+    prepareToRead(numSamples, startIndex1, blockSize1, startIndex2, blockSize2);
     finishedRead(blockSize1 + blockSize2);
 }
 
@@ -78,4 +127,10 @@ void RingBuffer::clear()
 {
     ringBuffer_.clear();
     reset();
+}
+
+void RingBuffer::zeroReset()
+{
+    clear();
+    finishedWrite(getFreeSpace());
 }

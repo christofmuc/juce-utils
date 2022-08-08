@@ -30,16 +30,20 @@ class Data {
 public:
     static Data& instance();
 
-    static const var& getProperty(const Identifier& name); // Convenience function for instance().get().getProperty()
-    static const var& getEphemeralProperty(const Identifier& name);
+    static const var getProperty(const Identifier& name); // Convenience function for instance().get().getProperty()
+    static const var getEphemeralProperty(const Identifier& name);
+    static const var getRuntimeProperty(const Identifier& name);
     static Value getPropertyAsValue(const Identifier& name); // Convenience function for instance().get().getPropertyAsValue()
     static Value getEphemeralPropertyAsValue(const Identifier& name);
+    static Value getRuntimePropertyAsValue(const Identifier& name);
     static void ensurePropertyExists(const Identifier &name, var defaultValue);
     static void ensureEphemeralPropertyExists(const Identifier &name, var defaultValue);
+    static void ensureRuntimePropertyExists(const Identifier &name, var defaultValue);
     static void reset();
 
     ValueTree& get();
     ValueTree& getEphemeral();
+    ValueTree& getRuntime();
 
     void initializeFromSettings();
     void saveToSettings();
@@ -51,4 +55,5 @@ private:
 
     std::unique_ptr<ValueTree> tree_;
     std::unique_ptr<ValueTree> ephemeralTree_;
+    std::unique_ptr<ValueTree> runtimeTree_;
 };

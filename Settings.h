@@ -39,6 +39,7 @@ public:
     bool keyIsSet(std::string const &key);
 
     File getSessionStorageDir() const;
+    File const & getPropertiesFile() noexcept;
 
     // Singleton!
     Settings(Settings const &) = delete;

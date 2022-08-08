@@ -34,14 +34,19 @@ Data& Data::instance()
     return instance_;
 }
 
-const juce::var& Data::getProperty(const Identifier& name)
+const juce::var Data::getProperty(const Identifier& name)
 {
     return instance().get().getProperty(name);
 }
 
-const juce::var& Data::getEphemeralProperty(const Identifier& name)
+const juce::var Data::getEphemeralProperty(const Identifier& name)
 {
     return instance().getEphemeral().getProperty(name);
+}
+
+const juce::var Data::getRuntimeProperty(const Identifier& name)
+{
+    return instance().getRuntime().getProperty(name);
 }
 
 juce::Value Data::getPropertyAsValue(const Identifier& name)
@@ -52,6 +57,11 @@ juce::Value Data::getPropertyAsValue(const Identifier& name)
 juce::Value Data::getEphemeralPropertyAsValue(const Identifier& name)
 {
     return instance().getEphemeral().getPropertyAsValue(name, nullptr);
+}
+
+juce::Value Data::getRuntimePropertyAsValue(const Identifier& name)
+{
+    return instance().getRuntime().getPropertyAsValue(name, nullptr);
 }
 
 void Data::ensurePropertyExists(const Identifier &name, var defaultValue)
@@ -68,15 +78,23 @@ void Data::ensureEphemeralPropertyExists(const Identifier &name, var defaultValu
     }
 }
 
+void Data::ensureRuntimePropertyExists(const Identifier &name, var defaultValue)
+{
+    if (!instance_.getRuntime().hasProperty(name)) {
+        instance_.getRuntime().setProperty(name, defaultValue, nullptr);
+    }
+}
+
 void Data::reset()
 {
     instance_.tree_ = std::make_unique<ValueTree>(Identifier("Setup"));
-    instance_.ephemeralTree_ = std::make_unique<ValueTree>(Identifier("AppStateNotStored"));
+    instance_.ephemeralTree_ = std::make_unique<ValueTree>(Identifier("Ephemeral"));
 }
 
 Data::Data() 
     : tree_{std::make_unique<ValueTree>(Identifier("Setup"))}
-    , ephemeralTree_{std::make_unique<ValueTree>(Identifier("AppStateNotStored"))}
+    , ephemeralTree_{std::make_unique<ValueTree>(Identifier("Ephemeral"))}
+    , runtimeTree_{std::make_unique<ValueTree>(Identifier("EphemeralSurvivingReset"))}
 {}
 
 juce::ValueTree& Data::get()
@@ -87,6 +105,11 @@ juce::ValueTree& Data::get()
 juce::ValueTree& Data::getEphemeral()
 {
     return *ephemeralTree_;
+}
+
+juce::ValueTree& Data::getRuntime()
+{
+    return *runtimeTree_;
 }
 
 void Data::initializeFromSettings()
