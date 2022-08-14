@@ -26,16 +26,34 @@
 
 MidiProgramNumber MidiProgramNumber::fromOneBase(int programNumber)
 {
-    return MidiProgramNumber(programNumber - 1);
+    return MidiProgramNumber(programNumber - 1, MidiBankNumber::invalid());
 }
 
 MidiProgramNumber MidiProgramNumber::fromZeroBase(int programNumber)
 {
-    return MidiProgramNumber(programNumber);
+    return MidiProgramNumber(programNumber, MidiBankNumber::invalid());
 }
 
-MidiProgramNumber::MidiProgramNumber(int zeroBasedNumber) : programNo_(zeroBasedNumber)
+MidiProgramNumber MidiProgramNumber::fromOneBaseWithBank(MidiBankNumber bank, int programNumber)
 {
+    return MidiProgramNumber(programNumber - 1, bank);
+}
+
+MidiProgramNumber MidiProgramNumber::fromZeroBaseWithBank(MidiBankNumber bank, int programNumber)
+{
+    return MidiProgramNumber(programNumber, bank);
+}
+
+MidiProgramNumber::MidiProgramNumber(int zeroBasedNumber, MidiBankNumber bank) : programNo_(zeroBasedNumber)
+{
+    bank_ = bank;
+    if (bank_.isValid()) {
+        if (programNo_ > bank_.bankSize()) {
+            jassertfalse;
+            // This should better be normalized
+            programNo_ = programNo_ % bank_.bankSize();
+        }
+    }
 }
 
 int MidiProgramNumber::toZeroBased() const
@@ -46,4 +64,30 @@ int MidiProgramNumber::toZeroBased() const
 int MidiProgramNumber::toOneBased() const
 {
     return programNo_ + 1;
+}
+
+int MidiProgramNumber::toZeroBasedWithBank() const
+{
+    if (bank_.isValid()) {
+        return programNo_ + bank_.toZeroBased() * bank_.bankSize();
+    }
+    else {
+        return programNo_;
+    }
+}
+
+int MidiProgramNumber::toOneBasedWithBank() const
+{
+    return toZeroBasedWithBank() + 1;
+}
+
+
+bool MidiProgramNumber::isBankKnown() const 
+{
+    return bank_.isValid();
+}
+
+MidiBankNumber MidiProgramNumber::bank() const
+{
+    return bank_;
 }
