@@ -41,7 +41,12 @@ MidiProgramNumber MidiProgramNumber::fromOneBaseWithBank(MidiBankNumber bank, in
 
 MidiProgramNumber MidiProgramNumber::fromZeroBaseWithBank(MidiBankNumber bank, int programNumber)
 {
-    return MidiProgramNumber(programNumber % bank.bankSize(), bank);
+    if (bank.isValid()) {
+        return MidiProgramNumber(programNumber % bank.bankSize(), bank);
+    }
+    else {
+        return fromZeroBase(programNumber);
+    }
 }
 
 MidiProgramNumber::MidiProgramNumber(int zeroBasedNumber, MidiBankNumber bank) : programNo_(zeroBasedNumber)
