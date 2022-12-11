@@ -53,7 +53,16 @@ public:
     File getDirectory() const;
     void setDirectory(File& directory);
 
+#if JUCE_VERSION < 0x070000
     virtual void audioDeviceIOCallback(const float** inputChannelData, int numInputChannels, float** outputChannelData, int numOutputChannels, int numSamples) override;
+#else
+    virtual void audioDeviceIOCallbackWithContext (const float* const* inputChannelData,
+                                                   int numInputChannels,
+                                                   float* const* outputChannelData,
+                                                   int numOutputChannels,
+                                                   int numSamples,
+                                                   const AudioIODeviceCallbackContext& context) override;
+#endif
     virtual void audioDeviceAboutToStart(AudioIODevice* device) override;
     virtual void audioDeviceStopped() override;
 
