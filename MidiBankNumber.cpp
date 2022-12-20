@@ -24,22 +24,22 @@
 
 #include "MidiBankNumber.h"
 
-MidiBankNumber MidiBankNumber::fromOneBase(int bankNo)
+MidiBankNumber MidiBankNumber::fromOneBase(int bankNo, int banksize)
 {
-    return MidiBankNumber(bankNo - 1);
+    return MidiBankNumber(bankNo - 1, banksize);
 }
 
-MidiBankNumber MidiBankNumber::fromZeroBase(int bankNo)
+MidiBankNumber MidiBankNumber::fromZeroBase(int bankNo, int banksize)
 {
-    return MidiBankNumber(bankNo);
+    return MidiBankNumber(bankNo, banksize);
 }
 
 MidiBankNumber MidiBankNumber::invalid()
 {
-    return MidiBankNumber(-1);
+    return MidiBankNumber(-1, 0);
 }
 
-MidiBankNumber::MidiBankNumber(int zeroBasedNumber) : bankNo_(zeroBasedNumber)
+MidiBankNumber::MidiBankNumber(int zeroBasedNumber, int banksize) : bankNo_(zeroBasedNumber), bankSize_(banksize)
 {
 }
 
@@ -62,4 +62,9 @@ int MidiBankNumber::toOneBased() const
         throw new std::runtime_error("Illegal State");
     }
     return bankNo_ + 1;
+}
+
+int MidiBankNumber::bankSize() const
+{
+    return bankSize_;
 }

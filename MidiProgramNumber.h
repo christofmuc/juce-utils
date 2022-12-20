@@ -24,18 +24,28 @@
 
 #pragma once
 
+#include "MidiBankNumber.h"
+
 class MidiProgramNumber {
 public:
     static MidiProgramNumber fromOneBase(int programNumber);
     static MidiProgramNumber fromZeroBase(int programNumber);
+    static MidiProgramNumber fromOneBaseWithBank(MidiBankNumber bank, int programNumber);
+    static MidiProgramNumber fromZeroBaseWithBank(MidiBankNumber bank, int programNumber);
 
     MidiProgramNumber() : programNo_(0) {}
 
     int toZeroBased() const;
     int toOneBased() const;
+    int toZeroBasedWithBank() const;
+    int toOneBasedWithBank() const;
+
+    bool isBankKnown() const;
+    MidiBankNumber bank() const;
 
 private:
-    MidiProgramNumber(int zeroBasedNumber);
+    MidiProgramNumber(int zeroBasedNumber, MidiBankNumber bank);
 
     int programNo_;
+    MidiBankNumber bank_ = MidiBankNumber::invalid();
 };

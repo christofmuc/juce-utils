@@ -24,20 +24,21 @@
 
 #pragma once
 
-#include <stdexcept>
-
 class MidiBankNumber {
 public:
-    static MidiBankNumber fromOneBase(int bankNo);
-    static MidiBankNumber fromZeroBase(int bankNo);
+    static MidiBankNumber fromOneBase(int bankNo, int banksize);
+    static MidiBankNumber fromZeroBase(int bankNo, int banksize);
     static MidiBankNumber invalid();
 
     int isValid() const;
     int toZeroBased() const;
     int toOneBased() const;
 
+    int bankSize() const;
+
 private:
-    MidiBankNumber(int zeroBasedNumber);
+    MidiBankNumber(int zeroBasedNumber, int banksize);
 
     int bankNo_;
+    int bankSize_;
 };
