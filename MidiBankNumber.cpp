@@ -24,6 +24,8 @@
 
 #include "MidiBankNumber.h"
 
+#include <stdexcept>
+
 MidiBankNumber MidiBankNumber::fromOneBase(int bankNo, int banksize)
 {
     return MidiBankNumber(bankNo - 1, banksize);
