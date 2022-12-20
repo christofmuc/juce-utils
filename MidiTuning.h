@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_audio_basics/juce_audio_basics.h>
 
 #include "MidiNote.h"
 #include "MidiProgramNumber.h"
@@ -33,9 +33,9 @@ class MidiTuning {
 public:
     using TTuning = std::vector<std::pair<MidiNote, double>>;
 
-    static MidiMessage createTuningDumpRequest(uint8 deviceID, MidiProgramNumber tuningBankNumber);
-    static bool isTuningDump(MidiMessage const &message);
-    static bool fromMidiMessage(MidiMessage const &message, MidiTuning &tuningResult);
+    static juce::MidiMessage createTuningDumpRequest(juce::uint8 deviceID, MidiProgramNumber tuningBankNumber);
+    static bool isTuningDump(juce::MidiMessage const &message);
+    static bool fromMidiMessage(juce::MidiMessage const &message, MidiTuning &tuningResult);
 
     MidiTuning(MidiProgramNumber program, std::string const &name, TTuning const &tuning);
     MidiTuning();

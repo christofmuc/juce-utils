@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,10 +28,10 @@
 
 const float kSignalThreshold = 0.001f; // Signals below this value are considered noise (don't trigger recording)
 
-AudioRecorder::AudioRecorder(File directory, std::string const& baseFileName, RecordingType recordingType) :
+AudioRecorder::AudioRecorder(juce::File directory, std::string const& baseFileName, RecordingType recordingType) :
     samplesWritten_(0), directory_(directory), baseFileName_(baseFileName), recordingType_(recordingType), writer_(nullptr), automaticRecordFromSilenceToSilence_(false), silenceDuration_(0)
 {
-    thread_ = std::make_unique<TimeSliceThread>("RecorderDiskWriter");
+    thread_ = std::make_unique<juce::TimeSliceThread>("RecorderDiskWriter");
     thread_->startThread();
 }
 
@@ -47,7 +47,7 @@ AudioRecorder::~AudioRecorder()
 void AudioRecorder::startRecording(std::string const& filename, bool fromSilenceToSilence, std::function<void()> onSilence)
 {
     automaticRecordFromSilenceToSilence_ = fromSilenceToSilence;
-    activeFile_ = File(filename);
+    activeFile_ = juce::File(filename);
     onSilence_ = onSilence;
     if (isRecording()) {
         // Stop current recorder first
@@ -76,9 +76,9 @@ bool AudioRecorder::hasDetectedSignal() const
     return isRecording() && hasFoundStart_;
 }
 
-RelativeTime AudioRecorder::getElapsedTime() const
+juce::RelativeTime AudioRecorder::getElapsedTime() const
 {
-    return RelativeTime(samplesWritten_ / (double) lastSampleRate_);
+    return juce::RelativeTime(samplesWritten_ / (double) lastSampleRate_);
 }
 
 juce::String AudioRecorder::getFilename() const
@@ -101,19 +101,19 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels)
     writeThread_.reset();
 
     // Create the audio format writer
-    std::unique_ptr<AudioFormat> audioFormat;
+    std::unique_ptr<juce::AudioFormat> audioFormat;
     std::string fileExtension;
     switch (recordingType_) {
     case RecordingType::WAV:
-        audioFormat = std::make_unique<WavAudioFormat>();
+        audioFormat = std::make_unique<juce::WavAudioFormat>();
         fileExtension = ".wav";
         break;
     case RecordingType::FLAC:
-        audioFormat = std::make_unique<FlacAudioFormat>();
+        audioFormat = std::make_unique<juce::FlacAudioFormat>();
         fileExtension = ".flac";
         break;
     case RecordingType::AIFF:
-        audioFormat = std::make_unique<AiffAudioFormat>();
+        audioFormat = std::make_unique<juce::AiffAudioFormat>();
         fileExtension = ".aiff";
         break;
     }
@@ -125,7 +125,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels)
         if (allowed == bitDepthRequested) bitsOk = true;
     if (!bitsOk) {
         jassert(false);
-        SimpleLogger::instance()->postMessage("Error: trying to create a file with a bit depth that is not supported by the format: " + String(bitDepthRequested));
+        SimpleLogger::instance()->postMessage("Error: trying to create a file with a bit depth that is not supported by the format: " + juce::String(bitDepthRequested));
         return;
     }
 
@@ -134,7 +134,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels)
         if (rate == sampleRate) rateOk = true;
     if (!rateOk) {
         jassert(false);
-        SimpleLogger::instance()->postMessage("Error: trying to create a file with a sample rate that is not supported by the format: " + String(sampleRate));
+        SimpleLogger::instance()->postMessage("Error: trying to create a file with a sample rate that is not supported by the format: " + juce::String(sampleRate));
         return;
     }
 
@@ -169,7 +169,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels)
     }*/
 
     // Set up a new audio file to write to
-    startTime_ = Time::getCurrentTime();
+    startTime_ = juce::Time::getCurrentTime();
     if (activeFile_.getFullPathName().isEmpty()) {
         return;
         // activeFile_ = directory_.getNonexistentChildFile(String(baseFileName_) + startTime_.formatted("-%Y-%m-%d-%H-%M-%S"), fileExtension, false);
@@ -178,10 +178,10 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels)
         SimpleLogger::instance()->postMessage("Overwriting file " + activeFile_.getFullPathName());
         activeFile_.deleteFile();
     }
-    OutputStream* outStream = new FileOutputStream(activeFile_, 16384);
+    juce::OutputStream* outStream = new juce::FileOutputStream(activeFile_, 16384);
 
     // Create the writer based on the format and file
-    StringPairArray metaData;
+    juce::StringPairArray metaData;
     writer_ = audioFormat->createWriterFor(outStream, sampleRate, (unsigned) numChannels, bitDepthRequested, metaData, 1 /* unused by wav */);
     if (!writer_) {
         jassert(false);
@@ -191,7 +191,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels)
     }
 
     // Finally, create the new writer associating it with the background thread
-    writeThread_ = std::make_unique<AudioFormatWriter::ThreadedWriter>(writer_, *thread_, 16384);
+    writeThread_ = std::make_unique<juce::AudioFormatWriter::ThreadedWriter>(writer_, *thread_, 16384);
     samplesWritten_ = 0;
 }
 
@@ -203,7 +203,7 @@ void AudioRecorder::saveBlock(const float* const* data, int numSamples)
             // TODO - need a smarter strategy than that
             SimpleLogger::instance()->postMessage("Ups, FIFO full and can't write block to disk, lost it!");
         }
-        samplesWritten_ += (uint64) numSamples;
+        samplesWritten_ += (juce::uint64) numSamples;
     }
 }
 
@@ -212,15 +212,22 @@ juce::File AudioRecorder::getDirectory() const
     return directory_;
 }
 
-void AudioRecorder::setDirectory(File& directory)
+void AudioRecorder::setDirectory(juce::File& directory)
 {
     // Stop writing if any
     writeThread_.reset();
     directory_ = directory;
 }
 
+#if JUCE_VERSION < 0x070000
 void AudioRecorder::audioDeviceIOCallback(const float** inputChannelData, int numInputChannels, float** outputChannelData, int numOutputChannels, int numSamples)
 {
+#else
+void AudioRecorder::audioDeviceIOCallbackWithContext(const float* const* inputChannelData, int numInputChannels, float* const* outputChannelData, int numOutputChannels, int numSamples,
+    const juce::AudioIODeviceCallbackContext& context)
+{
+    ignoreUnused(context);
+#endif
     // First, hand through all input channels to the output channels so you have a monitor signal
     int nextInput = 0;
     for (auto channel = 0; channel < numOutputChannels; ++channel) {
@@ -268,7 +275,7 @@ void AudioRecorder::audioDeviceIOCallback(const float** inputChannelData, int nu
             if (automaticRecordFromSilenceToSilence_ && silenceDuration_ > 0.01 * lastSampleRate_) {
                 // End of story
                 writeThread_.reset();
-                MessageManager::callAsync([this]() { onSilence_(); });
+                juce::MessageManager::callAsync([this]() { onSilence_(); });
                 hasFoundStart_ = false;
             }
         }
@@ -278,7 +285,7 @@ void AudioRecorder::audioDeviceIOCallback(const float** inputChannelData, int nu
     }
 }
 
-void AudioRecorder::audioDeviceAboutToStart(AudioIODevice* device)
+void AudioRecorder::audioDeviceAboutToStart(juce::AudioIODevice* device)
 {
     auto inputChannelMask = device->getActiveInputChannels();
     hasFoundStart_ = false;

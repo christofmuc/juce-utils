@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,22 +23,23 @@
  */
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_data_structures/juce_data_structures.h>
 
 class Settings {
 public:
-    static void setSettingsID(String const &id); // Call this before any call to instance
+    static void setSettingsID(juce::String const &id); // Call this before any call to instance
     static Settings &instance();
     static void shutdown();
     void saveAndClose();
     void flush();
 
     std::string get(std::string const &key, std::string const &defaultValue = std::string());
+    int get(std::string const &key, int defaultValue);
     void set(std::string const &key, std::string const &value);
     bool keyIsSet(std::string const &key);
 
-    File getSessionStorageDir() const;
-    File const & getPropertiesFile() noexcept;
+    juce::File getSessionStorageDir() const;
+    juce::File const &getPropertiesFile() noexcept;
 
     // Singleton!
     Settings(Settings const &) = delete;
@@ -49,6 +50,6 @@ public:
 
 private:
     static std::unique_ptr<Settings> instance_;
-    static String settingsID_;
-    ApplicationProperties properties_;
+    static juce::String settingsID_;
+    juce::ApplicationProperties properties_;
 };

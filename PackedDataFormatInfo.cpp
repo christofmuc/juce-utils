@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,14 +23,14 @@
  */
 #include "PackedDataFormatInfo.h"
 
-std::vector<juce::uint8> PackedDataFormatInfo::applyMapping(std::vector<PackedDataFormatInfo> const &kToneFormatDefinition, std::vector<uint8> const &source, size_t sizeDestination)
+std::vector<uint8_t> PackedDataFormatInfo::applyMapping(std::vector<PackedDataFormatInfo> const &kToneFormatDefinition, std::vector<uint8_t> const &source, size_t sizeDestination)
 {
     // Build up the APR tone record, which will be our preferred internal format and the one to store stuff in the database
     // If I trust the documentation correctly, this is also a message the MKS-50 will recognize without the user pressing a front panel button
-    std::vector<uint8> aprBlock(sizeDestination, 0);
+    std::vector<uint8_t> aprBlock(sizeDestination, 0);
     for (auto info : kToneFormatDefinition) {
         // Read the value from the input block
-        uint8 value = (source[(size_t) info.byteIndex] >> info.lsbIndex) & ((1 << info.bitCount) - 1);
+        uint8_t value = (source[(size_t) info.byteIndex] >> info.lsbIndex) & ((1 << info.bitCount) - 1);
         // Map it!
         if (info.converter_) {
             value = info.converter_(value);

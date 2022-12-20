@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,48 +24,50 @@
 
 #include "TypedNamedValue.h"
 
-TypedNamedValue::TypedNamedValue(String const &name, String const &sectionName, bool defaultValue) : name_(name), sectionName_(sectionName), valueType_(ValueType::Bool)
+TypedNamedValue::TypedNamedValue(juce::String const &name, juce::String const &sectionName, bool defaultValue) : name_(name), sectionName_(sectionName), valueType_(ValueType::Bool)
 {
-    value_ = Value(defaultValue);
+    value_ = juce::Value(defaultValue);
     minValue_ = 0;
     maxValue_ = 1;
     enabled_ = true;
 }
 
-TypedNamedValue::TypedNamedValue(String const &name, String const &sectionName, String const &defaultValue, int maxLength) : name_(name), sectionName_(sectionName), valueType_(ValueType::String)
+TypedNamedValue::TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::String const &defaultValue, int maxLength) :
+    name_(name), sectionName_(sectionName), valueType_(ValueType::String)
 {
-    value_ = Value(defaultValue);
+    value_ = juce::Value(defaultValue);
     minValue_ = 0;
     maxValue_ = maxLength;
     enabled_ = true;
 }
 
-TypedNamedValue::TypedNamedValue(String const &name, String const &sectionName, int defaultValue, int minValue, int maxValue) : name_(name), sectionName_(sectionName), valueType_(ValueType::Integer)
+TypedNamedValue::TypedNamedValue(juce::String const &name, juce::String const &sectionName, int defaultValue, int minValue, int maxValue) :
+    name_(name), sectionName_(sectionName), valueType_(ValueType::Integer)
 {
-    value_ = Value(defaultValue);
+    value_ = juce::Value(defaultValue);
     minValue_ = minValue;
     maxValue_ = maxValue;
     enabled_ = true;
 }
 
-TypedNamedValue::TypedNamedValue(String const &name, String const &sectionName, int defaultValue, std::map<int, std::string> const &lookup) :
+TypedNamedValue::TypedNamedValue(juce::String const &name, juce::String const &sectionName, int defaultValue, std::map<int, std::string> const &lookup) :
     name_(name), sectionName_(sectionName), valueType_(ValueType::Lookup)
 {
     setLookup(lookup);
-    value_ = Value(defaultValue);
+    value_ = juce::Value(defaultValue);
     enabled_ = true;
 }
 
-TypedNamedValue::TypedNamedValue(String const &name, String const &sectionName, File const &defaultValue, bool isDirectory) :
+TypedNamedValue::TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::File const &defaultValue, bool isDirectory) :
     name_(name), sectionName_(sectionName), valueType_(isDirectory ? ValueType::Pathname : ValueType::Filename)
 {
-    value_ = Value(defaultValue.getFullPathName());
+    value_ = juce::Value(defaultValue.getFullPathName());
     enabled_ = true;
 }
 
-TypedNamedValue::TypedNamedValue(String const &name, String const &sectionName, Colour defaultValue) : name_(name), sectionName_(sectionName), valueType_(ValueType::Color)
+TypedNamedValue::TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::Colour defaultValue) : name_(name), sectionName_(sectionName), valueType_(ValueType::Color)
 {
-    value_ = Value(defaultValue.toString());
+    value_ = juce::Value(defaultValue.toString());
     enabled_ = true;
 }
 
@@ -172,11 +174,11 @@ juce::Value &TypedNamedValueSet::valueByName(std::string const &name)
     throw std::runtime_error("Illegal argument - key does not exist");
 }
 
-void TypedNamedValueSet::addToValueTree(ValueTree &tree)
+void TypedNamedValueSet::addToValueTree(juce::ValueTree &tree)
 {
     for (auto param : *this) {
         tree.setProperty(param->name(), param->value().getValue(), nullptr);
-        auto v = tree.getPropertyAsValue(Identifier(param->name()), nullptr, false);
+        auto v = tree.getPropertyAsValue(juce::Identifier(param->name()), nullptr, false);
         param->value().referTo(v);
     }
 }

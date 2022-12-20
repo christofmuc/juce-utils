@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,19 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_audio_devices/juce_audio_devices.h>
+#include <juce_audio_formats/juce_audio_formats.h>
 
-enum class RecordingType
-{
+enum class RecordingType {
     WAV,
     FLAC,
     AIFF
 };
 
 
-class AudioRecorder : public AudioIODeviceCallback {
+class AudioRecorder : public juce::AudioIODeviceCallback {
 public:
-    AudioRecorder(File directory, std::string const& baseFileName, RecordingType recordingType);
+    AudioRecorder(juce::File directory, std::string const& baseFileName, RecordingType recordingType);
     virtual ~AudioRecorder() override;
 
     void startRecording(std::string const& filename, bool fromSilenceToSilence, std::function<void()> onSilence);
@@ -44,31 +44,36 @@ public:
     bool isRecording() const;
     bool hasDetectedSignal() const;
 
-    RelativeTime getElapsedTime() const;
-    String getFilename() const;
-    File getFile() const;
+    juce::RelativeTime getElapsedTime() const;
+    juce::String getFilename() const;
+    juce::File getFile() const;
 
     void updateChannelInfo(int sampleRate, int numChannels);
 
-    File getDirectory() const;
-    void setDirectory(File& directory);
+    juce::File getDirectory() const;
+    void setDirectory(juce::File& directory);
 
+#if JUCE_VERSION < 0x070000
     virtual void audioDeviceIOCallback(const float** inputChannelData, int numInputChannels, float** outputChannelData, int numOutputChannels, int numSamples) override;
-    virtual void audioDeviceAboutToStart(AudioIODevice* device) override;
+#else
+    virtual void audioDeviceIOCallbackWithContext(const float* const* inputChannelData, int numInputChannels, float* const* outputChannelData, int numOutputChannels, int numSamples,
+        const juce::AudioIODeviceCallbackContext& context) override;
+#endif
+    virtual void audioDeviceAboutToStart(juce::AudioIODevice* device) override;
     virtual void audioDeviceStopped() override;
 
 private:
     void saveBlock(const float* const* data, int numSamples);
 
-    Time startTime_;
-    uint64 samplesWritten_;
-    File activeFile_;
-    File directory_;
+    juce::Time startTime_;
+    juce::uint64 samplesWritten_;
+    juce::File activeFile_;
+    juce::File directory_;
     std::string baseFileName_;
     RecordingType recordingType_;
-    AudioFormatWriter* writer_;
-    std::unique_ptr<TimeSliceThread> thread_;
-    std::unique_ptr<AudioFormatWriter::ThreadedWriter> writeThread_;
+    juce::AudioFormatWriter* writer_;
+    std::unique_ptr<juce::TimeSliceThread> thread_;
+    std::unique_ptr<juce::AudioFormatWriter::ThreadedWriter> writeThread_;
 
     int lastSampleRate_;
     int lastNumChannels_;

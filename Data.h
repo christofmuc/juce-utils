@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,26 +24,27 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_core/juce_core.h>
+#include <juce_data_structures/juce_data_structures.h>
 
 class Data {
 public:
     static Data& instance();
 
-    static const var getProperty(const Identifier& name); // Convenience function for instance().get().getProperty()
-    static const var getEphemeralProperty(const Identifier& name);
-    static const var getRuntimeProperty(const Identifier& name);
-    static Value getPropertyAsValue(const Identifier& name); // Convenience function for instance().get().getPropertyAsValue()
-    static Value getEphemeralPropertyAsValue(const Identifier& name);
-    static Value getRuntimePropertyAsValue(const Identifier& name);
-    static void ensurePropertyExists(const Identifier &name, var defaultValue);
-    static void ensureEphemeralPropertyExists(const Identifier &name, var defaultValue);
-    static void ensureRuntimePropertyExists(const Identifier &name, var defaultValue);
+    static const juce::var getProperty(const juce::Identifier& name); // Convenience function for instance().get().getProperty()
+    static const juce::var getEphemeralProperty(const juce::Identifier& name);
+    static const juce::var getRuntimeProperty(const juce::Identifier& name);
+    static juce::Value getPropertyAsValue(const juce::Identifier& name); // Convenience function for instance().get().getPropertyAsValue()
+    static juce::Value getEphemeralPropertyAsValue(const juce::Identifier& name);
+    static juce::Value getRuntimePropertyAsValue(const juce::Identifier& name);
+    static void ensurePropertyExists(const juce::Identifier& name, juce::var defaultValue);
+    static void ensureEphemeralPropertyExists(const juce::Identifier& name, juce::var defaultValue);
+    static void ensureRuntimePropertyExists(const juce::Identifier& name, juce::var defaultValue);
     static void reset();
 
-    ValueTree& get();
-    ValueTree& getEphemeral();
-    ValueTree& getRuntime();
+    juce::ValueTree& get();
+    juce::ValueTree& getEphemeral();
+    juce::ValueTree& getRuntime();
 
     void initializeFromSettings();
     void saveToSettings();
@@ -53,7 +54,7 @@ private:
 
     static Data instance_;
 
-    std::unique_ptr<ValueTree> tree_;
-    std::unique_ptr<ValueTree> ephemeralTree_;
-    std::unique_ptr<ValueTree> runtimeTree_;
+    std::unique_ptr<juce::ValueTree> tree_;
+    std::unique_ptr<juce::ValueTree> ephemeralTree_;
+    std::unique_ptr<juce::ValueTree> runtimeTree_;
 };

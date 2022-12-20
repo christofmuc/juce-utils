@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,17 @@
 
 #include "Logger.h"
 
+#include <juce_events/juce_events.h>
+
 class BootstrapLogger : public SimpleLogger {
 public:
-    virtual void postMessage(const String& message) override;
-    virtual void postMessageOncePerRun(const String& message) override;
+    virtual void postMessage(const juce::String& message) override;
+    virtual void postMessageOncePerRun(const juce::String& message) override;
 
-    std::vector<String> getLogMessagesDuringBoot();
+    std::vector<juce::String> getLogMessagesDuringBoot();
 
 private:
-    std::vector<String> logMessagesDuringBoot_;
+    std::vector<juce::String> logMessagesDuringBoot_;
 };
 
 SimpleLogger::SimpleLogger()
@@ -45,7 +47,7 @@ SimpleLogger::SimpleLogger()
         }
 
         // Don't do this immediately, but rather when the message queue runs!
-        MessageManager::callAsync([this, bootstrap]() {
+        juce::MessageManager::callAsync([this, bootstrap]() {
             for (auto const& text : bootstrap->getLogMessagesDuringBoot()) {
                 postMessage(text);
             }
@@ -81,15 +83,15 @@ void SimpleLogger::shutdown()
     hasBeenShutdown_ = true; // To prevent logging during destruction
 }
 
-void SimpleLogger::markBenchmarkPoint(const String& message)
+void SimpleLogger::markBenchmarkPoint(const juce::String& message)
 {
-    Time now = Time::getCurrentTime();
+    juce::Time now = juce::Time::getCurrentTime();
     std::stringstream result;
     result << "Benchmark at " << now.toISO8601(true) << ": " << message;
     postMessage(result.str());
 }
 
-void SimpleLogger::writeToFile(const String& message)
+void SimpleLogger::writeToFile(const juce::String& message)
 {
     fileLogger_->writeToLog(message);
 }
@@ -97,23 +99,23 @@ void SimpleLogger::writeToFile(const String& message)
 SimpleLogger* SimpleLogger::instance_ = new BootstrapLogger();
 bool SimpleLogger::hasBeenShutdown_ = false;
 
-void SimpleLogger::logMessage(const String& message)
+void SimpleLogger::logMessage(const juce::String& message)
 {
     postMessage(message);
 }
 
-void BootstrapLogger::postMessage(const String& message)
+void BootstrapLogger::postMessage(const juce::String& message)
 {
     logMessagesDuringBoot_.push_back(message);
 }
 
-void BootstrapLogger::postMessageOncePerRun(const String& message)
+void BootstrapLogger::postMessageOncePerRun(const juce::String& message)
 {
-    jassertfalse;
+    // jassertfalse;
     logMessagesDuringBoot_.push_back(message);
 }
 
-std::vector<String> BootstrapLogger::getLogMessagesDuringBoot()
+std::vector<juce::String> BootstrapLogger::getLogMessagesDuringBoot()
 {
     return logMessagesDuringBoot_;
 }

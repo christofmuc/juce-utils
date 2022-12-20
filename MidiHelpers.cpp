@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,15 @@
 
 #include "MidiHelpers.h"
 
-juce::MidiMessage MidiHelpers::sysexMessage(std::vector<uint8> const &sysEx)
+juce::MidiMessage MidiHelpers::sysexMessage(std::vector<juce::uint8> const &sysEx)
 {
-    return MidiMessage::createSysExMessage(sysEx.data(), (int) sysEx.size());
+    return juce::MidiMessage::createSysExMessage(sysEx.data(), (int) sysEx.size());
 }
 
-juce::MidiBuffer MidiHelpers::bufferFromMessages(std::vector<MidiMessage> const &messages)
+juce::MidiBuffer MidiHelpers::bufferFromMessages(std::vector<juce::MidiMessage> const &messages)
 {
     // We assume the same timestamp for all messages in this little helper
-    MidiBuffer buffer;
+    juce::MidiBuffer buffer;
     int num = 0;
     for (auto message : messages) {
         jassert(message.getRawDataSize() <= 65535);
@@ -41,40 +41,40 @@ juce::MidiBuffer MidiHelpers::bufferFromMessages(std::vector<MidiMessage> const 
     return buffer;
 }
 
-std::vector<MidiMessage> MidiHelpers::generateRPN(int midiChannel, int parameterNumber, int value, bool isNRPN, bool use14BitValue, bool MSBbeforeLSB)
+std::vector<juce::MidiMessage> MidiHelpers::generateRPN(int midiChannel, int parameterNumber, int value, bool isNRPN, bool use14BitValue, bool MSBbeforeLSB)
 {
     jassert(midiChannel > 0 && midiChannel <= 16);
     jassert(parameterNumber >= 0 && parameterNumber < 16384);
     jassert(value >= 0 && value < (use14BitValue ? 16384 : 128));
 
-    uint8 parameterLSB = uint8(parameterNumber & 0x7f);
-    uint8 parameterMSB = uint8(parameterNumber >> 7);
+    juce::uint8 parameterLSB = juce::uint8(parameterNumber & 0x7f);
+    juce::uint8 parameterMSB = juce::uint8(parameterNumber >> 7);
 
-    uint8 valueLSB = use14BitValue ? uint8(value & 0x7f) : 0x00;
-    uint8 valueMSB = use14BitValue ? uint8(value >> 7) : uint8(value);
+    juce::uint8 valueLSB = use14BitValue ? juce::uint8(value & 0x7f) : 0x00;
+    juce::uint8 valueMSB = use14BitValue ? juce::uint8(value >> 7) : juce::uint8(value);
 
-    uint8 channelByte = uint8(0xb0 + midiChannel - 1);
+    juce::uint8 channelByte = juce::uint8(0xb0 + midiChannel - 1);
 
-    std::vector<MidiMessage> buffer;
+    std::vector<juce::MidiMessage> buffer;
 
     if (MSBbeforeLSB) {
-        buffer.push_back(MidiMessage(channelByte, isNRPN ? 0x63 : 0x65, parameterMSB));
-        buffer.push_back(MidiMessage(channelByte, isNRPN ? 0x62 : 0x64, parameterLSB));
-        buffer.push_back(MidiMessage(channelByte, 0x06, valueMSB));
-        if (use14BitValue) buffer.push_back(MidiMessage(channelByte, 0x26, valueLSB));
+        buffer.push_back(juce::MidiMessage(channelByte, isNRPN ? 0x63 : 0x65, parameterMSB));
+        buffer.push_back(juce::MidiMessage(channelByte, isNRPN ? 0x62 : 0x64, parameterLSB));
+        buffer.push_back(juce::MidiMessage(channelByte, 0x06, valueMSB));
+        if (use14BitValue) buffer.push_back(juce::MidiMessage(channelByte, 0x26, valueLSB));
     }
     else {
-        buffer.push_back(MidiMessage(channelByte, isNRPN ? 0x62 : 0x64, parameterLSB));
-        buffer.push_back(MidiMessage(channelByte, isNRPN ? 0x63 : 0x65, parameterMSB));
+        buffer.push_back(juce::MidiMessage(channelByte, isNRPN ? 0x62 : 0x64, parameterLSB));
+        buffer.push_back(juce::MidiMessage(channelByte, isNRPN ? 0x63 : 0x65, parameterMSB));
         // sending the value LSB is optional, but must come before sending the value MSB:
-        if (use14BitValue) buffer.push_back(MidiMessage(channelByte, 0x26, valueLSB));
-        buffer.push_back(MidiMessage(channelByte, 0x06, valueMSB));
+        if (use14BitValue) buffer.push_back(juce::MidiMessage(channelByte, 0x26, valueLSB));
+        buffer.push_back(juce::MidiMessage(channelByte, 0x06, valueMSB));
     }
 
     return buffer;
 }
 
-bool MidiHelpers::equalSysexMessageContent(MidiMessage const &message1, MidiMessage const &message2, int digitsToCompare /* = -1 */)
+bool MidiHelpers::equalSysexMessageContent(juce::MidiMessage const &message1, juce::MidiMessage const &message2, int digitsToCompare /* = -1 */)
 {
     if (!(message1.isSysEx() & message2.isSysEx())) return false;
     if (digitsToCompare == -1) {
@@ -93,7 +93,7 @@ bool MidiHelpers::equalSysexMessageContent(MidiMessage const &message1, MidiMess
     return true;
 }
 
-bool MidiHelpers::isSysexMessageMatching(MidiMessage const &message, std::vector<std::pair<size_t, uint8>> const &indexAndContentCondition)
+bool MidiHelpers::isSysexMessageMatching(juce::MidiMessage const &message, std::vector<std::pair<size_t, juce::uint8>> const &indexAndContentCondition)
 {
     if (!message.isSysEx()) {
         return false;
@@ -113,21 +113,21 @@ bool MidiHelpers::isSysexMessageMatching(MidiMessage const &message, std::vector
     return true;
 }
 
-juce::uint8 MidiHelpers::checksum7bit(std::vector<uint8> const &data)
+juce::uint8 MidiHelpers::checksum7bit(std::vector<juce::uint8> const &data)
 {
     int sum = 0;
-    std::for_each(data.begin(), data.end(), [&](uint8 byte) { sum += byte; });
+    std::for_each(data.begin(), data.end(), [&](juce::uint8 byte) { sum += byte; });
     return sum & 0x7f;
 }
 
-bool MidiHelpers::isEmptySysex(MidiMessage const &m)
+bool MidiHelpers::isEmptySysex(juce::MidiMessage const &m)
 {
     return m.isSysEx() && m.getSysExDataSize() == 0;
 }
 
-juce::MidiBuffer MidiHelpers::removeEmptySysexMessages(MidiBuffer const &midiBuffer)
+juce::MidiBuffer MidiHelpers::removeEmptySysexMessages(juce::MidiBuffer const &midiBuffer)
 {
-    MidiBuffer filtered;
+    juce::MidiBuffer filtered;
     for (auto message : midiBuffer) {
         auto m = message.getMessage();
         // Suppress empty sysex messages, they seem to confuse vintage hardware (e.g. the Kawai K3 in particular)

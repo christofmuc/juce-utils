@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,26 +23,25 @@
  */
 #pragma once
 
-#include "JuceHeader.h"
+#include <functional>
+#include <vector>
 
 // This is the definition of the tone data format, which is really bit packed with individual bits spread all over the place. RAM was expensive...
 class PackedDataFormatInfo {
 public:
-	PackedDataFormatInfo(int byteInd, int lsbInd, int bitCnt, int target, int targetBitInd = 0) :
-		byteIndex(byteInd), lsbIndex(lsbInd), bitCount(bitCnt), targetParameter(target), targetBitIndex(targetBitInd) {
-	}
+    PackedDataFormatInfo(int byteInd, int lsbInd, int bitCnt, int target, int targetBitInd = 0) :
+        byteIndex(byteInd), lsbIndex(lsbInd), bitCount(bitCnt), targetParameter(target), targetBitIndex(targetBitInd)
+    {
+    }
 
-	PackedDataFormatInfo(int byteInd, int lsbInd, int bitCnt, int target, std::function<uint8(uint8)> converter) :
-		PackedDataFormatInfo(byteInd, lsbInd, bitCnt, target) {
-		converter_ = converter;
-	}
+    PackedDataFormatInfo(int byteInd, int lsbInd, int bitCnt, int target, std::function<uint8_t(uint8_t)> converter) : PackedDataFormatInfo(byteInd, lsbInd, bitCnt, target) { converter_ = converter; }
 
-	int byteIndex;
-	int lsbIndex;
-	int bitCount;
-	int targetParameter;
-	int targetBitIndex;
-	std::function<uint8(uint8)> converter_;
+    int byteIndex;
+    int lsbIndex;
+    int bitCount;
+    int targetParameter;
+    int targetBitIndex;
+    std::function<uint8_t(uint8_t)> converter_;
 
-	static std::vector<uint8> applyMapping(std::vector<PackedDataFormatInfo> const &kToneFormatDefinition, std::vector<uint8> const &source, size_t sizeDestination);
+    static std::vector<uint8_t> applyMapping(std::vector<PackedDataFormatInfo> const &kToneFormatDefinition, std::vector<uint8_t> const &source, size_t sizeDestination);
 };

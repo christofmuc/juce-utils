@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  */
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_core/juce_core.h>
 
 class StreamLogger {
 public:
@@ -40,7 +40,7 @@ public:
     StreamLogger &operator<<(juce::String const &string);
     StreamLogger &operator<<(StandardEndLine manipulator);
     StreamLogger &operator<<(int value);
-    StreamLogger &operator<<(uint64 value);
+    StreamLogger &operator<<(uint64_t value);
     StreamLogger &operator<<(double value);
 
     void flushBuffer(bool force = false);

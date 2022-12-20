@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
  */
 
 #include "MidiNote.h"
+
+#include <juce_audio_basics/juce_audio_basics.h>
 
 #include <cmath>
 
@@ -78,7 +80,7 @@ std::string MidiNote::name() const
 {
     // Ok, JUCE can do this for us
     if (midiNote_ > 0) {
-        return MidiMessage::getMidiNoteName(midiNote_, true, true, 4).toStdString();
+        return juce::MidiMessage::getMidiNoteName(midiNote_, true, true, 4).toStdString();
     }
     else {
         return "-";

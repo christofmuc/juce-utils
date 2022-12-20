@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2022 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 
 #include "I18NHelper.h"
 
-#include "JuceHeader.h"
+#include <juce_core/juce_core.h>
 
 #include "Logger.h"
 
@@ -36,7 +36,7 @@
 
 #ifdef GETTEXT_AVAILABLE
 
-File gLocalePath;
+juce::File gLocalePath;
 
 juce::String U8(const char* translatedString)
 {
@@ -51,59 +51,59 @@ juce::String U8(const char* translatedString)
 
 void globalSetupLocale()
 {
-	File executablePath = File::getSpecialLocation(File::SpecialLocationType::currentExecutableFile).getParentDirectory();
-	gLocalePath = executablePath.getChildFile("share");
-	// Normal case - the share directory with the gmo files is a subdirectory of the executable directory
-	if (!gLocalePath.exists()) {
-		// Special case - if we are building with a multi-config generator and are running a development version, the share path could be one directory up!
-		File alternativeLocalePath = executablePath.getParentDirectory().getChildFile("share");
-		if (!alternativeLocalePath.exists()) {
-			SimpleLogger::instance()->postMessage("Translation files not found at " + gLocalePath.getFullPathName() + ", turning off translations!");
-			return;
-		}
-		gLocalePath = alternativeLocalePath;
-	}
-	auto result = bindtextdomain(USE_GETTEXT_TEXT_DOMAIN, gLocalePath.getFullPathName().getCharPointer());
-	SimpleLogger::instance()->postMessage("Bindtext domain gave us " + String(result));
+    juce::File executablePath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile).getParentDirectory();
+    gLocalePath = executablePath.getChildFile("share");
+    // Normal case - the share directory with the gmo files is a subdirectory of the executable directory
+    if (!gLocalePath.exists()) {
+        // Special case - if we are building with a multi-config generator and are running a development version, the share path could be one directory up!
+        juce::File alternativeLocalePath = executablePath.getParentDirectory().getChildFile("share");
+        if (!alternativeLocalePath.exists()) {
+            SimpleLogger::instance()->postMessage("Translation files not found at " + gLocalePath.getFullPathName() + ", turning off translations!");
+            return;
+        }
+        gLocalePath = alternativeLocalePath;
+    }
+    auto result = bindtextdomain(USE_GETTEXT_TEXT_DOMAIN, gLocalePath.getFullPathName().getCharPointer());
+    SimpleLogger::instance()->postMessage("Bindtext domain gave us " + juce::String(result));
 #if defined(WIN32) || defined(__APPLE__)
-	std::string displayLocale = juce::SystemStats::getDisplayLanguage().toStdString();
+    std::string displayLocale = juce::SystemStats::getDisplayLanguage().toStdString();
 #else
-	std::string displayLocale = ::setlocale (LC_MESSAGES, "");
+    std::string displayLocale = ::setlocale(LC_MESSAGES, "");
 #endif
     bind_textdomain_codeset(USE_GETTEXT_TEXT_DOMAIN, "utf-8");
-	switchDisplayLanguage(displayLocale.c_str());
+    switchDisplayLanguage(displayLocale.c_str());
 }
 
 void switchDisplayLanguage(const char* languageID)
 {
-	const char* localeToSet;
+    const char* localeToSet;
 
 #if defined(WIN32) || defined(__APPLE__)
-	// Windows famously ignores the setlocale, but rather insists on reading the environment. Additionally, Windows uses de-DE and not de_DE like Posix.
-	// We discard country specific language at this point to keep it simple
-	std::string cleanupId(languageID);
-	std::replace(cleanupId.begin(), cleanupId.end(), '-', '_');
-	localeToSet = cleanupId.c_str();
+    // Windows famously ignores the setlocale, but rather insists on reading the environment. Additionally, Windows uses de-DE and not de_DE like Posix.
+    // We discard country specific language at this point to keep it simple
+    std::string cleanupId(languageID);
+    std::replace(cleanupId.begin(), cleanupId.end(), '-', '_');
+    localeToSet = cleanupId.c_str();
 #ifdef WIN32
-	_putenv_s("LC_ALL", localeToSet);
+    _putenv_s("LC_ALL", localeToSet);
 #else
     setenv("LANG", localeToSet, 1);
 #endif
 #else
-	auto returnValue = ::setlocale(LC_MESSAGES, languageID);
+    auto returnValue = ::setlocale(LC_MESSAGES, languageID);
     if (returnValue == nullptr) {
-        SimpleLogger::instance()->postMessage("User locale " + String(languageID) + " requested but error returned");
+        SimpleLogger::instance()->postMessage("User locale " + juce::String(languageID) + " requested but error returned");
     }
     localeToSet = languageID;
 #endif
 
-	// Make sure there is a directory of that ID
-	if (!gLocalePath.getChildFile(localeToSet).exists()) {
-		SimpleLogger::instance()->postMessage("User locale " + String(localeToSet) + " requested but no matching directory at " + gLocalePath.getFullPathName());
-	}
+    // Make sure there is a directory of that ID
+    if (!gLocalePath.getChildFile(localeToSet).exists()) {
+        SimpleLogger::instance()->postMessage("User locale " + juce::String(localeToSet) + " requested but no matching directory at " + gLocalePath.getFullPathName());
+    }
 
-	textdomain(USE_GETTEXT_TEXT_DOMAIN);
-	SimpleLogger::instance()->postMessage("Setting user language to " + String(languageID) + " reported to " + String(localeToSet));
+    textdomain(USE_GETTEXT_TEXT_DOMAIN);
+    SimpleLogger::instance()->postMessage("Setting user language to " + juce::String(languageID) + " reported to " + juce::String(localeToSet));
 }
 
 #endif

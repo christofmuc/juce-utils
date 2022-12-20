@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,99 +27,99 @@
 #include "Settings.h"
 #include "StreamLogger.h"
 
-MidiRecorder::MidiRecorder(AudioDeviceManager &deviceManager) : isRecording_(false), deviceManager_(deviceManager)
+MidiRecorder::MidiRecorder(juce::AudioDeviceManager& deviceManager) : isRecording_(false), deviceManager_(deviceManager)
 {
-	// Just enable *all* Midi devices. Not sure if that's smart in the long run, but hey...
-	auto devices = MidiInput::getAvailableDevices();
-	for (int i = 0; i < devices.size(); i++) {
-		enableMidiInput(devices[i]);
-	}
-	clocker_ = std::make_shared<MidiClocker>();
+    // Just enable *all* Midi devices. Not sure if that's smart in the long run, but hey...
+    auto devices = juce::MidiInput::getAvailableDevices();
+    for (int i = 0; i < devices.size(); i++) {
+        enableMidiInput(devices[i]);
+    }
+    clocker_ = std::make_shared<MidiClocker>();
 }
 
-void MidiRecorder::saveToFile(String filename)
+void MidiRecorder::saveToFile(juce::String filename)
 {
-	Time now = Time::getCurrentTime();
-	File directory = Settings::instance().getSessionStorageDir();
-	File midFile = directory.getNonexistentChildFile(String(filename) + now.formatted("-%Y-%m-%d-%H-%M-%S"), ".mid", false);
-	MidiFile midiFile;
-	for (auto track : recorded_) {
-		if (track.second.getNumEvents() > 0) {
-			track.second.updateMatchedPairs();
-			midiFile.addTrack(track.second);
-		}
-	}
-	FileOutputStream outputStream(midFile, 16384);
-	//midiFile.setSmpteTimeFormat(25, 400); // Tenths of milliseconds at 25 fps
-	midiFile.setTicksPerQuarterNote(96);
-	midiFile.writeTo(outputStream);
+    juce::Time now = juce::Time::getCurrentTime();
+    juce::File directory = Settings::instance().getSessionStorageDir();
+    juce::File midFile = directory.getNonexistentChildFile(juce::String(filename) + now.formatted("-%Y-%m-%d-%H-%M-%S"), ".mid", false);
+    juce::MidiFile midiFile;
+    for (auto track : recorded_) {
+        if (track.second.getNumEvents() > 0) {
+            track.second.updateMatchedPairs();
+            midiFile.addTrack(track.second);
+        }
+    }
+    juce::FileOutputStream outputStream(midFile, 16384);
+    // midiFile.setSmpteTimeFormat(25, 400); // Tenths of milliseconds at 25 fps
+    midiFile.setTicksPerQuarterNote(96);
+    midiFile.writeTo(outputStream);
 }
 
-std::weak_ptr<MidiClocker>  MidiRecorder::getClocker()
+std::weak_ptr<MidiClocker> MidiRecorder::getClocker()
 {
-	return clocker_;
+    return clocker_;
 }
 
 MidiRecorder::~MidiRecorder()
 {
-	// Remove all registered callbacks
-	for (auto callback : callbacks_) {
-		deviceManager_.removeMidiInputDeviceCallback(callback.first, callback.second);
-	}
-	saveToFile("sessionMidi");
+    // Remove all registered callbacks
+    for (auto callback : callbacks_) {
+        deviceManager_.removeMidiInputDeviceCallback(callback.first, callback.second);
+    }
+    saveToFile("sessionMidi");
 }
 
 void MidiRecorder::startRecording()
 {
-	recordingStartTime_ = Time::getMillisecondCounterHiRes() / 1000.0;
-	isRecording_ = true;
+    recordingStartTime_ = juce::Time::getMillisecondCounterHiRes() / 1000.0;
+    isRecording_ = true;
 }
 
-void MidiRecorder::handleIncomingMidiMessage(MidiInput* source, const MidiMessage& message)
+void MidiRecorder::handleIncomingMidiMessage(juce::MidiInput* source, const juce::MidiMessage& message)
 {
-	if (!message.isActiveSense() && !message.isMidiClock()) {
-		StreamLogger::instance() << message.getTimeStamp() << " " << message.getDescription() << std::endl;
-		MidiMessage relativeTimestampMessage = message;
-		double deltaSeconds = message.getTimeStamp() - recordingStartTime_;
-		double deltaTicksPerBeat = deltaSeconds * 120 * 96 / 60; // 96 Ticks per quarter note at 120 bpm
-		relativeTimestampMessage.setTimeStamp(deltaTicksPerBeat);
-		recorded_[source->getName()].addEvent(relativeTimestampMessage);
-	}
-	else if (message.isMidiClock()) {
-		if (clocker_) {
-			clocker_->processClockMessage(source->getName(), message);
-		}
-	}
+    if (!message.isActiveSense() && !message.isMidiClock()) {
+        StreamLogger::instance() << message.getTimeStamp() << " " << message.getDescription() << std::endl;
+        juce::MidiMessage relativeTimestampMessage = message;
+        double deltaSeconds = message.getTimeStamp() - recordingStartTime_;
+        double deltaTicksPerBeat = deltaSeconds * 120 * 96 / 60; // 96 Ticks per quarter note at 120 bpm
+        relativeTimestampMessage.setTimeStamp(deltaTicksPerBeat);
+        recorded_[source->getName()].addEvent(relativeTimestampMessage);
+    }
+    else if (message.isMidiClock()) {
+        if (clocker_) {
+            clocker_->processClockMessage(source->getName(), message);
+        }
+    }
 }
 
-void MidiRecorder::handlePartialSysexMessage(MidiInput* source, const uint8* messageData, int numBytesSoFar, double timestamp)
+void MidiRecorder::handlePartialSysexMessage(juce::MidiInput* source, const juce::uint8* messageData, int numBytesSoFar, double timestamp)
 {
-	 // What to do with this one?
-	ignoreUnused(source, messageData, numBytesSoFar, timestamp);
+    // What to do with this one?
+    ignoreUnused(source, messageData, numBytesSoFar, timestamp);
 }
 
-void MidiRecorder::enableMidiInput(MidiDeviceInfo info)
+void MidiRecorder::enableMidiInput(juce::MidiDeviceInfo device)
 {
-	// Only enable and register once
-	if (!deviceManager_.isMidiInputDeviceEnabled(info.identifier)) {
-		deviceManager_.setMidiInputDeviceEnabled(info.identifier, true);
-	}
-	if (callbacks_.find(info.identifier) == callbacks_.end()) {
-		deviceManager_.addMidiInputDeviceCallback(info.identifier, this);
-		callbacks_[info.identifier] = this;
-	}
-	if (recorded_.find(info.identifier) == recorded_.end()) {
-		recorded_[info.identifier] = juce::MidiMessageSequence();
-	}
+    // Only enable and register once
+    if (!deviceManager_.isMidiInputDeviceEnabled(device.identifier)) {
+        deviceManager_.setMidiInputDeviceEnabled(device.identifier, true);
+    }
+    if (callbacks_.find(device.identifier) == callbacks_.end()) {
+        deviceManager_.addMidiInputDeviceCallback(device.identifier, this);
+        callbacks_[device.identifier] = this;
+    }
+    if (recorded_.find(device.identifier) == recorded_.end()) {
+        recorded_[device.identifier] = juce::MidiMessageSequence();
+    }
 }
 
-void MidiRecorder::disableMidiInput(MidiDeviceInfo info)
+void MidiRecorder::disableMidiInput(juce::MidiDeviceInfo input)
 {
-	if (deviceManager_.isMidiInputDeviceEnabled(info.identifier)) {
-		deviceManager_.setMidiInputDeviceEnabled(info.identifier, false);
-	}
-	if (callbacks_.find(info.identifier) == callbacks_.end()) {
-		deviceManager_.removeMidiInputDeviceCallback(info.identifier, callbacks_[info.identifier]);
-		callbacks_.erase(info.identifier);
-	}
+    if (deviceManager_.isMidiInputDeviceEnabled(input.identifier)) {
+        deviceManager_.setMidiInputDeviceEnabled(input.identifier, false);
+    }
+    if (callbacks_.find(input.identifier) == callbacks_.end()) {
+        deviceManager_.removeMidiInputDeviceCallback(input.identifier, callbacks_[input.identifier]);
+        callbacks_.erase(input.identifier);
+    }
 }

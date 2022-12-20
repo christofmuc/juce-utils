@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ MidiClocker::MidiClocker()
 
 double MidiClocker::getCurrentBPM()
 {
-    ScopedLock lock(lock_);
+    juce::ScopedLock lock(lock_);
 
     // Do we have at least one clock source?
     if (clockTimes_.size() == 0) {
@@ -56,9 +56,9 @@ double MidiClocker::getCurrentBPM()
     return 60.0 / averageSecondsPerBPM / 24; // MIDI Clock sends at 24 pulses per quarter note (ppqn)
 }
 
-void MidiClocker::processClockMessage(String const &midiSource, MidiMessage const &message)
+void MidiClocker::processClockMessage(juce::String const &midiSource, juce::MidiMessage const &message)
 {
-    ScopedLock lock(lock_);
+    juce::ScopedLock lock(lock_);
 
     if (clockTimes_.find(midiSource) == clockTimes_.end()) {
         // First clock signal on this source!

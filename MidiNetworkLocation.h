@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include <juce_audio_devices/juce_audio_devices.h>
+
 #include <string>
 
 #include "MidiChannel.h"
@@ -32,7 +34,7 @@ struct MidiNetworkLocation {
 
     MidiNetworkLocation() : midiChannel(MidiChannel::invalidChannel()) {}
 
-    MidiNetworkLocation(juce::MidiDeviceInfo const &input, juce::MidiDeviceInfo const &output, MidiChannel midiChannel) : valid(true), input(input), output(output), midiChannel(midiChannel) {}
+    MidiNetworkLocation(juce::MidiDeviceInfo const &inputP, juce::MidiDeviceInfo const &outputP, MidiChannel midiChannelP) : valid(true), input(inputP), output(outputP), midiChannel(midiChannelP) {}
 
     bool valid = false;
     juce::MidiDeviceInfo input;
