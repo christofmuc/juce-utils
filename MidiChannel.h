@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,30 +28,30 @@
 
 class MidiChannel {
 public:
-	static MidiChannel fromZeroBase(int zeroBasedInt) { return MidiChannel(zeroBasedInt); }
-	static MidiChannel fromOneBase(int oneBasedInt) { return MidiChannel(oneBasedInt - 1); }
-	static MidiChannel omniChannel() { return MidiChannel(0, true); } // For now, assume Omni is channel 1
-	static MidiChannel MPEmode(int zerobasedChannel) { return MidiChannel(zerobasedChannel, false, true); } // Set MPE mode to a specific channel, but make it a valid channel!
-	static MidiChannel invalidChannel() { return MidiChannel(); }
+    static MidiChannel fromZeroBase(int zeroBasedInt) { return MidiChannel(zeroBasedInt); }
+    static MidiChannel fromOneBase(int oneBasedInt) { return MidiChannel(oneBasedInt - 1); }
+    static MidiChannel omniChannel() { return MidiChannel(0, true); }                                       // For now, assume Omni is channel 1
+    static MidiChannel MPEmode(int zerobasedChannel) { return MidiChannel(zerobasedChannel, false, true); } // Set MPE mode to a specific channel, but make it a valid channel!
+    static MidiChannel invalidChannel() { return MidiChannel(); }
 
-	int toZeroBasedInt() const { return zerobasedChannel_; }
-	int toOneBasedInt() const { return zerobasedChannel_ + 1; }
+    int toZeroBasedInt() const { return zerobasedChannel_; }
+    int toOneBasedInt() const { return zerobasedChannel_ + 1; }
 
-	bool isValid() const { return isValid_; }
-	bool isOmni() const { return isOmni_; }
-	bool isMPE() const { return isMPE_; }
+    bool isValid() const { return isValid_; }
+    bool isOmni() const { return isOmni_; }
+    bool isMPE() const { return isMPE_; }
 
 private:
-	int zerobasedChannel_;
-	bool isValid_;
-	bool isOmni_;
-	bool isMPE_; // Sequential synths can be switched to MPE mode where they react to multiple MIDI channels
+    int zerobasedChannel_;
+    bool isValid_;
+    bool isOmni_;
+    bool isMPE_; // Sequential synths can be switched to MPE mode where they react to multiple MIDI channels
 
-	// Don't call the constructor with an int, you wouldn't know what you mean. This is why it is private
-	explicit MidiChannel(int zerobasedChannel, bool isOmni = false, bool isMPE = false) : zerobasedChannel_(zerobasedChannel), isOmni_(isOmni), isMPE_(isMPE) {
-		isValid_ = zerobasedChannel >= 0 && zerobasedChannel < 16;
-	}
+    // Don't call the constructor with an int, you wouldn't know what you mean. This is why it is private
+    explicit MidiChannel(int zerobasedChannel, bool isOmni = false, bool isMPE = false) : zerobasedChannel_(zerobasedChannel), isOmni_(isOmni), isMPE_(isMPE)
+    {
+        isValid_ = zerobasedChannel >= 0 && zerobasedChannel < 16;
+    }
 
-	MidiChannel() : zerobasedChannel_(-1), isValid_(false), isOmni_(false), isMPE_(false) {
-	}
+    MidiChannel() : zerobasedChannel_(-1), isValid_(false), isOmni_(false), isMPE_(false) {}
 };

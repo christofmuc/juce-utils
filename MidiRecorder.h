@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,28 +30,28 @@
 
 class MidiRecorder : private juce::MidiInputCallback {
 public:
-	MidiRecorder(juce::AudioDeviceManager &deviceManager);
-	virtual ~MidiRecorder() override;
+    MidiRecorder(juce::AudioDeviceManager& deviceManager);
+    virtual ~MidiRecorder() override;
 
-	void startRecording();
-	void saveToFile(juce::String filename);
+    void startRecording();
+    void saveToFile(juce::String filename);
 
-	std::weak_ptr<MidiClocker> getClocker();
+    std::weak_ptr<MidiClocker> getClocker();
 
 private:
-	// Midi Input Callback
-	virtual void handleIncomingMidiMessage(juce::MidiInput* source, const juce::MidiMessage& message) override;
-	virtual void handlePartialSysexMessage(juce::MidiInput* source, const juce::uint8* messageData, int numBytesSoFar, double timestamp) override;
+    // Midi Input Callback
+    virtual void handleIncomingMidiMessage(juce::MidiInput* source, const juce::MidiMessage& message) override;
+    virtual void handlePartialSysexMessage(juce::MidiInput* source, const juce::uint8* messageData, int numBytesSoFar, double timestamp) override;
 
-	void enableMidiInput(juce::MidiDeviceInfo info);
-	void disableMidiInput(juce::MidiDeviceInfo info);
+    void enableMidiInput(juce::MidiDeviceInfo info);
+    void disableMidiInput(juce::MidiDeviceInfo info);
 
-	std::map<juce::String, juce::MidiMessageSequence> recorded_;
-	bool isRecording_;
-	double recordingStartTime_;
+    std::map<juce::String, juce::MidiMessageSequence> recorded_;
+    bool isRecording_;
+    double recordingStartTime_;
 
-	std::map<juce::String, juce::MidiInputCallback*> callbacks_;
-	juce::AudioDeviceManager &deviceManager_;
+    std::map<juce::String, juce::MidiInputCallback*> callbacks_;
+    juce::AudioDeviceManager& deviceManager_;
 
-	std::shared_ptr<MidiClocker> clocker_; // To determine the BPM from the Midi Clock signals
+    std::shared_ptr<MidiClocker> clocker_; // To determine the BPM from the Midi Clock signals
 };

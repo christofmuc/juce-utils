@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,7 @@
 #include <juce_audio_devices/juce_audio_devices.h>
 #include <juce_audio_formats/juce_audio_formats.h>
 
-enum class RecordingType
-{
+enum class RecordingType {
     WAV,
     FLAC,
     AIFF
@@ -57,12 +56,8 @@ public:
 #if JUCE_VERSION < 0x070000
     virtual void audioDeviceIOCallback(const float** inputChannelData, int numInputChannels, float** outputChannelData, int numOutputChannels, int numSamples) override;
 #else
-    virtual void audioDeviceIOCallbackWithContext (const float* const* inputChannelData,
-                                                   int numInputChannels,
-                                                   float* const* outputChannelData,
-                                                   int numOutputChannels,
-                                                   int numSamples,
-                                                   const juce::AudioIODeviceCallbackContext& context) override;
+    virtual void audioDeviceIOCallbackWithContext(const float* const* inputChannelData, int numInputChannels, float* const* outputChannelData, int numOutputChannels, int numSamples,
+        const juce::AudioIODeviceCallbackContext& context) override;
 #endif
     virtual void audioDeviceAboutToStart(juce::AudioIODevice* device) override;
     virtual void audioDeviceStopped() override;

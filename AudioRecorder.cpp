@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2021 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -223,14 +223,10 @@ void AudioRecorder::setDirectory(juce::File& directory)
 void AudioRecorder::audioDeviceIOCallback(const float** inputChannelData, int numInputChannels, float** outputChannelData, int numOutputChannels, int numSamples)
 {
 #else
-void AudioRecorder::audioDeviceIOCallbackWithContext (const float* const* inputChannelData,
-                                               int numInputChannels,
-                                               float* const* outputChannelData,
-                                               int numOutputChannels,
-                                               int numSamples,
-                                               const juce::AudioIODeviceCallbackContext& context)
-                                               {
-                                                   ignoreUnused(context);
+void AudioRecorder::audioDeviceIOCallbackWithContext(const float* const* inputChannelData, int numInputChannels, float* const* outputChannelData, int numOutputChannels, int numSamples,
+    const juce::AudioIODeviceCallbackContext& context)
+{
+    ignoreUnused(context);
 #endif
     // First, hand through all input channels to the output channels so you have a monitor signal
     int nextInput = 0;
