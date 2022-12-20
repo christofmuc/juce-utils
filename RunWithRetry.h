@@ -24,9 +24,9 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_events/juce_events.h>
 
-class RunWithRetry : public Timer {
+class RunWithRetry : public juce::Timer {
 public:
     static void start(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, int retryIntervalMS, std::string const &message);
 

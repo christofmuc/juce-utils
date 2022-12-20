@@ -24,30 +24,30 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_core/juce_core.h>
 
 //! Do get the file for the subdirectory, if it doesn't exist create a directory and return it
-File getOrCreateSubdirectory(File dir, String const &name);
+juce::File getOrCreateSubdirectory(juce::File dir, juce::String const &name);
 
 // We might want to sort files by date
 class FileDateComparatorOldestFirst {
 public:
-    static int compareElements(File const &first, File const &second);
+    static int compareElements(juce::File const &first, juce::File const &second);
 };
 
 class FileDateComparatorNewestFirst {
 public:
-    static int compareElements(File const &first, File const &second);
+    static int compareElements(juce::File const &first, juce::File const &second);
 };
 
 class TemporaryDirectory {
 public:
-    TemporaryDirectory();
+    TemporaryDirectory(juce::String prefix, juce::String suffix);
     virtual ~TemporaryDirectory();
 
-    File asFile();
+    juce::File asFile();
     std::string name();
 
 private:
-    File dir_;
+    juce::File dir_;
 };

@@ -24,11 +24,11 @@
 
 #include "WaitForEvent.h"
 
-WaitForEvent::WaitForEvent(std::function<bool()> hasHappened, Thread *threadToBeNotified) : Thread("WaitForEvent"), hasHappened_(hasHappened), notify_(threadToBeNotified)
+WaitForEvent::WaitForEvent(std::function<bool()> hasHappened, juce::Thread *threadToBeNotified) : juce::Thread("WaitForEvent"), hasHappened_(hasHappened), notify_(threadToBeNotified)
 {
 }
 
-WaitForEvent::WaitForEvent(std::function<bool()> hasHappened) : Thread("WaitForEvent"), hasHappened_(hasHappened), notify_(nullptr)
+WaitForEvent::WaitForEvent(std::function<bool()> hasHappened) : juce::Thread("WaitForEvent"), hasHappened_(hasHappened), notify_(nullptr)
 {
 }
 

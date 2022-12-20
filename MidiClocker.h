@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_audio_basics/juce_audio_basics.h>
 
 #include <deque>
 
@@ -36,11 +36,11 @@ public:
 
     double getCurrentBPM();
 
-    void processClockMessage(String const &midiSource, MidiMessage const &message);
+    void processClockMessage(juce::String const &midiSource, juce::MidiMessage const &message);
     size_t numInputsWithClock() const;
-    std::vector<String> inputsWithClock() const;
+    std::vector<juce::String> inputsWithClock() const;
 
 private:
     juce::CriticalSection lock_;
-    std::map<String, std::deque<double>> clockTimes_;
+    std::map<juce::String, std::deque<double>> clockTimes_;
 };

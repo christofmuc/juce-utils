@@ -24,6 +24,8 @@
 
 #include "MidiNote.h"
 
+#include <juce_audio_basics/juce_audio_basics.h>
+
 #include <cmath>
 
 MidiNote::MidiNote(double frequency, double frequencyA4 /* = 440.0 */) : frequency_(frequency), frequencyA4_(frequencyA4)
@@ -78,7 +80,7 @@ std::string MidiNote::name() const
 {
     // Ok, JUCE can do this for us
     if (midiNote_ > 0) {
-        return MidiMessage::getMidiNoteName(midiNote_, true, true, 4).toStdString();
+        return juce::MidiMessage::getMidiNoteName(midiNote_, true, true, 4).toStdString();
     }
     else {
         return "-";

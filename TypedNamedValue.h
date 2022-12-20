@@ -24,7 +24,8 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_core/juce_core.h>
+#include <juce_gui_basics/juce_gui_basics.h>
 
 enum class ValueType
 {
@@ -40,25 +41,25 @@ enum class ValueType
 class TypedNamedValue {
 public:
     //! Construct a Bool type
-    TypedNamedValue(String const &name, String const &sectionName, bool defaultValue);
-    //! Construct a String type (edit field)
-    TypedNamedValue(String const &name, String const &sectionName, String const &defaultValue, int maxLength);
+    TypedNamedValue(juce::String const &name, juce::String const &sectionName, bool defaultValue);
+    //! Construct a juce::String type (edit field)
+    TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::String const &defaultValue, int maxLength);
     //! Construct an Integer type
-    TypedNamedValue(String const &name, String const &sectionName, int defaultValue, int minValue, int maxValue);
+    TypedNamedValue(juce::String const &name, juce::String const &sectionName, int defaultValue, int minValue, int maxValue);
     //! Construct a lookup value type
-    TypedNamedValue(String const &name, String const &sectionName, int defaultValue, std::map<int, std::string> const &lookup);
+    TypedNamedValue(juce::String const &name, juce::String const &sectionName, int defaultValue, std::map<int, std::string> const &lookup);
     //! Construct a Filepath value type
-    TypedNamedValue(String const &name, String const &sectionName, File const &defaultValue, bool isDirectory);
+    TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::File const &defaultValue, bool isDirectory);
     //! Construct a color value type
-    TypedNamedValue(String const &name, String const &sectionName, Colour defaultValue);
+    TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::Colour defaultValue);
 
     virtual ~TypedNamedValue() = default;
 
     void setEnabled(bool enabled);
 
-    Value &value();
-    String name() const;
-    String sectionName() const;
+    juce::Value &value();
+    juce::String name() const;
+    juce::String sectionName() const;
     ValueType valueType() const;
     int minValue() const;
     int maxValue() const;
@@ -71,9 +72,9 @@ public:
     void setLookup(std::map<int, std::string> const &newLookup);
 
 protected:
-    String name_;
-    String sectionName_;
-    Value value_;
+    juce::String name_;
+    juce::String sectionName_;
+    juce::Value value_;
     ValueType valueType_;
     int minValue_;
     int maxValue_;
@@ -85,6 +86,6 @@ class TypedNamedValueSet : public std::vector<std::shared_ptr<TypedNamedValue>> 
 public:
     std::shared_ptr<TypedNamedValue> typedNamedValueByName(std::string const &name); // TODO - suboptimal linear search
     bool hasValue(std::string const &name);
-    Value &valueByName(std::string const &name); // TODO - suboptimal linear search
-    void addToValueTree(ValueTree &tree);
+    juce::Value &valueByName(std::string const &name); // TODO - suboptimal linear search
+    void addToValueTree(juce::ValueTree &tree);
 };

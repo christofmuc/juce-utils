@@ -27,29 +27,29 @@
 #include "Settings.h"
 #include "StreamLogger.h"
 
-MidiRecorder::MidiRecorder(AudioDeviceManager &deviceManager) : isRecording_(false), deviceManager_(deviceManager)
+MidiRecorder::MidiRecorder(juce::AudioDeviceManager &deviceManager) : isRecording_(false), deviceManager_(deviceManager)
 {
 	// Just enable *all* Midi devices. Not sure if that's smart in the long run, but hey...
-	auto devices = MidiInput::getAvailableDevices();
+    auto devices = juce::MidiInput::getAvailableDevices();
 	for (int i = 0; i < devices.size(); i++) {
 		enableMidiInput(devices[i]);
 	}
 	clocker_ = std::make_shared<MidiClocker>();
 }
 
-void MidiRecorder::saveToFile(String filename)
+void MidiRecorder::saveToFile(juce::String filename)
 {
-	Time now = Time::getCurrentTime();
-	File directory = Settings::instance().getSessionStorageDir();
-	File midFile = directory.getNonexistentChildFile(String(filename) + now.formatted("-%Y-%m-%d-%H-%M-%S"), ".mid", false);
-	MidiFile midiFile;
+    juce::Time now = juce::Time::getCurrentTime();
+    juce::File directory = Settings::instance().getSessionStorageDir();
+    juce::File midFile = directory.getNonexistentChildFile(juce::String(filename) + now.formatted("-%Y-%m-%d-%H-%M-%S"), ".mid", false);
+    juce::MidiFile midiFile;
 	for (auto track : recorded_) {
 		if (track.second.getNumEvents() > 0) {
 			track.second.updateMatchedPairs();
 			midiFile.addTrack(track.second);
 		}
 	}
-	FileOutputStream outputStream(midFile, 16384);
+    juce::FileOutputStream outputStream(midFile, 16384);
 	//midiFile.setSmpteTimeFormat(25, 400); // Tenths of milliseconds at 25 fps
 	midiFile.setTicksPerQuarterNote(96);
 	midiFile.writeTo(outputStream);
@@ -71,15 +71,15 @@ MidiRecorder::~MidiRecorder()
 
 void MidiRecorder::startRecording()
 {
-	recordingStartTime_ = Time::getMillisecondCounterHiRes() / 1000.0;
+	recordingStartTime_ = juce::Time::getMillisecondCounterHiRes() / 1000.0;
 	isRecording_ = true;
 }
 
-void MidiRecorder::handleIncomingMidiMessage(MidiInput* source, const MidiMessage& message)
+void MidiRecorder::handleIncomingMidiMessage(juce::MidiInput* source, const juce::MidiMessage& message)
 {
 	if (!message.isActiveSense() && !message.isMidiClock()) {
 		StreamLogger::instance() << message.getTimeStamp() << " " << message.getDescription() << std::endl;
-		MidiMessage relativeTimestampMessage = message;
+        juce::MidiMessage relativeTimestampMessage = message;
 		double deltaSeconds = message.getTimeStamp() - recordingStartTime_;
 		double deltaTicksPerBeat = deltaSeconds * 120 * 96 / 60; // 96 Ticks per quarter note at 120 bpm
 		relativeTimestampMessage.setTimeStamp(deltaTicksPerBeat);
@@ -92,13 +92,13 @@ void MidiRecorder::handleIncomingMidiMessage(MidiInput* source, const MidiMessag
 	}
 }
 
-void MidiRecorder::handlePartialSysexMessage(MidiInput* source, const uint8* messageData, int numBytesSoFar, double timestamp)
+void MidiRecorder::handlePartialSysexMessage(juce::MidiInput* source, const juce::uint8* messageData, int numBytesSoFar, double timestamp)
 {
 	 // What to do with this one?
 	ignoreUnused(source, messageData, numBytesSoFar, timestamp);
 }
 
-void MidiRecorder::enableMidiInput(MidiDeviceInfo device)
+void MidiRecorder::enableMidiInput(juce::MidiDeviceInfo device)
 {
 	// Only enable and register once
 	if (!deviceManager_.isMidiInputDeviceEnabled(device.identifier)) {
@@ -109,11 +109,11 @@ void MidiRecorder::enableMidiInput(MidiDeviceInfo device)
 		callbacks_[device.identifier] = this;
 	}
 	if (recorded_.find(device.identifier) == recorded_.end()) {
-		recorded_[device.identifier] = MidiMessageSequence();
+        recorded_[device.identifier] = juce::MidiMessageSequence();
 	}
 }
 
-void MidiRecorder::disableMidiInput(MidiDeviceInfo input)
+void MidiRecorder::disableMidiInput(juce::MidiDeviceInfo input)
 {
 	if (deviceManager_.isMidiInputDeviceEnabled(input.identifier)) {
 		deviceManager_.setMidiInputDeviceEnabled(input.identifier, false);

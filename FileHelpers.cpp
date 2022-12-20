@@ -24,33 +24,33 @@
 
 #include "FileHelpers.h"
 
-juce::File getOrCreateSubdirectory(File dir, String const &name)
+juce::File getOrCreateSubdirectory(juce::File dir, juce::String const &name)
 {
-    File subdir = dir.getChildFile(name);
+    juce::File subdir = dir.getChildFile(name);
     if (!subdir.exists()) {
         subdir.createDirectory();
     }
     return subdir;
 }
 
-int FileDateComparatorOldestFirst::compareElements(File const &first, File const &second)
+int FileDateComparatorOldestFirst::compareElements(juce::File const &first, juce::File const &second)
 {
     if (first.getLastModificationTime() < second.getLastModificationTime()) return -1;
     if (first.getLastModificationTime() > second.getLastModificationTime()) return 1;
     return 0;
 }
 
-int FileDateComparatorNewestFirst::compareElements(File const &first, File const &second)
+int FileDateComparatorNewestFirst::compareElements(juce::File const &first, juce::File const &second)
 {
     if (first.getLastModificationTime() < second.getLastModificationTime()) return 1;
     if (first.getLastModificationTime() > second.getLastModificationTime()) return -1;
     return 0;
 }
 
-TemporaryDirectory::TemporaryDirectory()
+TemporaryDirectory::TemporaryDirectory(juce::String prefix, juce::String suffix)
 {
-    File tempDir = File::getSpecialLocation(File::tempDirectory);
-    dir_ = tempDir.getNonexistentChildFile("knobkraft", "tmp");
+    juce::File tempDir = juce::File::getSpecialLocation(juce::File::tempDirectory);
+    dir_ = tempDir.getNonexistentChildFile(prefix, suffix);
     dir_.createDirectory();
 }
 

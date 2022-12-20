@@ -23,7 +23,7 @@
  */
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_core/juce_core.h>
 
 class StreamLogger {
 public:
@@ -40,7 +40,7 @@ public:
     StreamLogger &operator<<(juce::String const &string);
     StreamLogger &operator<<(StandardEndLine manipulator);
     StreamLogger &operator<<(int value);
-    StreamLogger &operator<<(uint64 value);
+    StreamLogger &operator<<(uint64_t value);
     StreamLogger &operator<<(double value);
 
     void flushBuffer(bool force = false);

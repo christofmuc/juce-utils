@@ -24,27 +24,27 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_core/juce_core.h>
 
-class SimpleLogger : private Logger {
+class SimpleLogger : private juce::Logger {
 public:
-	SimpleLogger();
-	virtual ~SimpleLogger() override;
+    SimpleLogger();
+    virtual ~SimpleLogger() override;
 
-	static SimpleLogger *instance();
-	static void shutdown();
+    static SimpleLogger *instance();
+    static void shutdown();
 
-	virtual void postMessage(const String& message) = 0;
-	virtual void postMessageOncePerRun(const String& message) = 0;
-	virtual void markBenchmarkPoint(const String &message);
+    virtual void postMessage(const juce::String &message) = 0;
+    virtual void postMessageOncePerRun(const juce::String &message) = 0;
+    virtual void markBenchmarkPoint(const juce::String &message);
 
-	void writeToFile(const String &message);
+    void writeToFile(const juce::String &message);
 
 protected:
-	void logMessage(const String& message) override;
+    void logMessage(const juce::String &message) override;
 
 private:
-	static SimpleLogger *instance_;
-	std::unique_ptr<Logger> fileLogger_;
-	static bool hasBeenShutdown_;
+    static SimpleLogger *instance_;
+    std::unique_ptr<juce::Logger> fileLogger_;
+    static bool hasBeenShutdown_;
 };

@@ -23,11 +23,11 @@
  */
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_data_structures/juce_data_structures.h>
 
 class Settings {
 public:
-    static void setSettingsID(String const &id); // Call this before any call to instance
+    static void setSettingsID(juce::String const &id); // Call this before any call to instance
     static Settings &instance();
     static void shutdown();
     void saveAndClose();
@@ -38,8 +38,8 @@ public:
     void set(std::string const &key, std::string const &value);
     bool keyIsSet(std::string const &key);
 
-    File getSessionStorageDir() const;
-    File const & getPropertiesFile() noexcept;
+    juce::File getSessionStorageDir() const;
+    juce::File const &getPropertiesFile() noexcept;
 
     // Singleton!
     Settings(Settings const &) = delete;
@@ -50,6 +50,6 @@ public:
 
 private:
     static std::unique_ptr<Settings> instance_;
-    static String settingsID_;
-    ApplicationProperties properties_;
+    static juce::String settingsID_;
+    juce::ApplicationProperties properties_;
 };

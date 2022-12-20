@@ -24,7 +24,7 @@
 
 #include "I18NHelper.h"
 
-#include "JuceHeader.h"
+#include <juce_core/juce_core.h>
 
 #include "Logger.h"
 
@@ -36,7 +36,7 @@
 
 #ifdef GETTEXT_AVAILABLE
 
-File gLocalePath;
+juce::File gLocalePath;
 
 juce::String U8(const char* translatedString)
 {
@@ -51,12 +51,12 @@ juce::String U8(const char* translatedString)
 
 void globalSetupLocale()
 {
-	File executablePath = File::getSpecialLocation(File::SpecialLocationType::currentExecutableFile).getParentDirectory();
+    juce::File executablePath = juce::File::getSpecialLocation(juce::File::SpecialLocationType::currentExecutableFile).getParentDirectory();
 	gLocalePath = executablePath.getChildFile("share");
 	// Normal case - the share directory with the gmo files is a subdirectory of the executable directory
 	if (!gLocalePath.exists()) {
 		// Special case - if we are building with a multi-config generator and are running a development version, the share path could be one directory up!
-		File alternativeLocalePath = executablePath.getParentDirectory().getChildFile("share");
+        juce::File alternativeLocalePath = executablePath.getParentDirectory().getChildFile("share");
 		if (!alternativeLocalePath.exists()) {
 			SimpleLogger::instance()->postMessage("Translation files not found at " + gLocalePath.getFullPathName() + ", turning off translations!");
 			return;
@@ -64,7 +64,7 @@ void globalSetupLocale()
 		gLocalePath = alternativeLocalePath;
 	}
 	auto result = bindtextdomain(USE_GETTEXT_TEXT_DOMAIN, gLocalePath.getFullPathName().getCharPointer());
-	SimpleLogger::instance()->postMessage("Bindtext domain gave us " + String(result));
+    SimpleLogger::instance()->postMessage("Bindtext domain gave us " + juce::String(result));
 #if defined(WIN32) || defined(__APPLE__)
 	std::string displayLocale = juce::SystemStats::getDisplayLanguage().toStdString();
 #else
@@ -92,18 +92,18 @@ void switchDisplayLanguage(const char* languageID)
 #else
 	auto returnValue = ::setlocale(LC_MESSAGES, languageID);
     if (returnValue == nullptr) {
-        SimpleLogger::instance()->postMessage("User locale " + String(languageID) + " requested but error returned");
+        SimpleLogger::instance()->postMessage("User locale " + juce::String(languageID) + " requested but error returned");
     }
     localeToSet = languageID;
 #endif
 
 	// Make sure there is a directory of that ID
 	if (!gLocalePath.getChildFile(localeToSet).exists()) {
-		SimpleLogger::instance()->postMessage("User locale " + String(localeToSet) + " requested but no matching directory at " + gLocalePath.getFullPathName());
+        SimpleLogger::instance()->postMessage("User locale " + juce::String(localeToSet) + " requested but no matching directory at " + gLocalePath.getFullPathName());
 	}
 
 	textdomain(USE_GETTEXT_TEXT_DOMAIN);
-	SimpleLogger::instance()->postMessage("Setting user language to " + String(languageID) + " reported to " + String(localeToSet));
+    SimpleLogger::instance()->postMessage("Setting user language to " + juce::String(languageID) + " reported to " + juce::String(localeToSet));
 }
 
 #endif

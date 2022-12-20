@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_audio_devices/juce_audio_devices.h>
 
 #include "MidiClocker.h"
 
@@ -50,7 +50,7 @@ private:
 	bool isRecording_;
 	double recordingStartTime_;
 
-	std::map<String, juce::MidiInputCallback *>  callbacks_;
+	std::map<juce::String, juce::MidiInputCallback*> callbacks_;
 	juce::AudioDeviceManager &deviceManager_;
 
 	std::shared_ptr<MidiClocker> clocker_; // To determine the BPM from the Midi Clock signals

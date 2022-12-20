@@ -24,18 +24,18 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_audio_basics/juce_audio_basics.h>
 
 class MidiHelpers {
 public:
-    static MidiMessage sysexMessage(std::vector<uint8> const &data);
-    static MidiBuffer bufferFromMessages(std::vector<MidiMessage> const &messages);
-    static std::vector<MidiMessage> generateRPN(int midiChannel, int parameterNumber, int value, bool isNRPN, bool use14BitValue, bool MSBbeforeLSB);
-    static uint8 checksum7bit(std::vector<uint8> const &data);
+    static juce::MidiMessage sysexMessage(std::vector<juce::uint8> const &data);
+    static juce::MidiBuffer bufferFromMessages(std::vector<juce::MidiMessage> const &messages);
+    static std::vector<juce::MidiMessage> generateRPN(int midiChannel, int parameterNumber, int value, bool isNRPN, bool use14BitValue, bool MSBbeforeLSB);
+    static juce::uint8 checksum7bit(std::vector<juce::uint8> const &data);
 
-    static bool isEmptySysex(MidiMessage const &m);
-    static MidiBuffer removeEmptySysexMessages(MidiBuffer const &midiBuffer);
+    static bool isEmptySysex(juce::MidiMessage const &m);
+    static juce::MidiBuffer removeEmptySysexMessages(juce::MidiBuffer const &midiBuffer);
 
-    static bool equalSysexMessageContent(MidiMessage const &message1, MidiMessage const &message2, int digitsToCompare = -1);
-    static bool isSysexMessageMatching(MidiMessage const &message, std::vector<std::pair<size_t, uint8>> const &indexAndContentCondition);
+    static bool equalSysexMessageContent(juce::MidiMessage const &message1, juce::MidiMessage const &message2, int digitsToCompare = -1);
+    static bool isSysexMessageMatching(juce::MidiMessage const &message, std::vector<std::pair<size_t, juce::uint8>> const &indexAndContentCondition);
 };

@@ -24,18 +24,19 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_core/juce_core.h>
+#include <juce_audio_basics/juce_audio_basics.h>
 
 // Use the JUCE AbstractFifo class to build the most minimalistic RingBuffer for sample data
-class RingBuffer : public AbstractFifo {
+class RingBuffer : public juce::AbstractFifo {
 public:
     RingBuffer(int numChannelsToAllocate, int numSamplesToAllocate);
 
     void write(const float* const* channelPointers, int numChannels, int numSamples);
     void read(float** channelPointers, int numChannels, int numSamples);
 
-    void addBuffer(std::shared_ptr<AudioBuffer<float>> bufferToAdd);
-    void readPastData(std::shared_ptr<AudioBuffer<float>> outBuffer, int samplesOffset);
+    void addBuffer(std::shared_ptr<juce::AudioBuffer<float>> bufferToAdd);
+    void readPastData(std::shared_ptr<juce::AudioBuffer<float>> outBuffer, int samplesOffset);
 
     void discard(int numSamples);
 

@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_audio_basics/juce_audio_basics.h>
 
 #include "MidiNote.h"
 #include "MidiProgramNumber.h"
@@ -33,9 +33,9 @@ class MidiTuning {
 public:
     using TTuning = std::vector<std::pair<MidiNote, double>>;
 
-    static MidiMessage createTuningDumpRequest(uint8 deviceID, MidiProgramNumber tuningBankNumber);
-    static bool isTuningDump(MidiMessage const &message);
-    static bool fromMidiMessage(MidiMessage const &message, MidiTuning &tuningResult);
+    static juce::MidiMessage createTuningDumpRequest(juce::uint8 deviceID, MidiProgramNumber tuningBankNumber);
+    static bool isTuningDump(juce::MidiMessage const &message);
+    static bool fromMidiMessage(juce::MidiMessage const &message, MidiTuning &tuningResult);
 
     MidiTuning(MidiProgramNumber program, std::string const &name, TTuning const &tuning);
     MidiTuning();
@@ -47,3 +47,4 @@ private:
     std::string name_; // Limited to 16 ASCII chars by the standard
     TTuning tuning_;
 };
+

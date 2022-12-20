@@ -33,7 +33,7 @@ void StreamLogger::flushBuffer(bool force /* = false */)
     std::string toEmit = buffer.str();
     // If the whole string ends on a newline, just write it. Else, we must split it and call writeToLog twice
     if (force || (toEmit.size() > 0 && toEmit.at(toEmit.length() - 1) == '\n')) {
-        Logger::getCurrentLogger()->writeToLog(toEmit);
+        juce::Logger::getCurrentLogger()->writeToLog(toEmit);
         buffer.str(std::string());
     }
     else if (toEmit.find(endl) != std::string::npos) {
@@ -41,7 +41,7 @@ void StreamLogger::flushBuffer(bool force /* = false */)
         size_t start = 0;
         size_t end;
         while ((end = toEmit.find(endl, start)) != std::string::npos) {
-            Logger::getCurrentLogger()->writeToLog(toEmit.substr(start, end - start));
+            juce::Logger::getCurrentLogger()->writeToLog(toEmit.substr(start, end - start));
             start = end + endl.length();
         }
         buffer.str(std::string());
@@ -94,7 +94,7 @@ StreamLogger &StreamLogger::operator<<(StandardEndLine manipulator)
     return *this;
 }
 
-StreamLogger &StreamLogger::operator<<(uint64 value)
+StreamLogger &StreamLogger::operator<<(uint64_t value)
 {
     buffer << value;
     flushBuffer();

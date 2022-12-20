@@ -42,7 +42,7 @@ void Settings::shutdown()
     instance_.reset();
 }
 
-void Settings::setSettingsID(String const &id)
+void Settings::setSettingsID(juce::String const &id)
 {
     settingsID_ = id;
 }
@@ -54,13 +54,13 @@ std::string Settings::get(std::string const &key, std::string const &defaultValu
 
 int Settings::get(std::string const &key, int defaultValue)
 {
-    auto int_as_text = properties_.getUserSettings()->getValue(key, String(defaultValue)).toStdString();
+    auto int_as_text = properties_.getUserSettings()->getValue(key, juce::String(defaultValue)).toStdString();
     return atoi(int_as_text.c_str());
 }
 
 void Settings::set(std::string const &key, std::string const &value)
 {
-    properties_.getUserSettings()->setValue(key, String(value));
+    properties_.getUserSettings()->setValue(key, juce::String(value));
     properties_.getUserSettings()->setNeedsToBeSaved(true);
 }
 
@@ -69,9 +69,9 @@ bool Settings::keyIsSet(std::string const &key)
     return properties_.getUserSettings()->containsKey(key);
 }
 
-File Settings::getSessionStorageDir() const
+juce::File Settings::getSessionStorageDir() const
 {
-    auto dir = File(File::getSpecialLocation(File::userDocumentsDirectory).getFullPathName() + "/JammerNetzSession");
+    auto dir = juce::File(juce::File::getSpecialLocation(juce::File::userDocumentsDirectory).getFullPathName() + "/JammerNetzSession");
     if (!dir.exists()) {
         dir.createDirectory();
     }
@@ -79,20 +79,20 @@ File Settings::getSessionStorageDir() const
         if (dir.existsAsFile()) {
             jassert(false);
             StreamLogger::instance() << "Can't record to " << dir.getFullPathName() << " as it is a file and not a directory!" << std::endl;
-            return File::getSpecialLocation(File::userDocumentsDirectory).getFullPathName();
+            return juce::File::getSpecialLocation(juce::File::userDocumentsDirectory).getFullPathName();
         }
     }
     return dir;
 }
 
-File const & Settings::getPropertiesFile() noexcept
+juce::File const &Settings::getPropertiesFile() noexcept
 {
     return properties_.getUserSettings()->getFile();
 }
 
 Settings::Settings()
 {
-    PropertiesFile::Options options;
+    juce::PropertiesFile::Options options;
     options.folderName = settingsID_;
     options.applicationName = settingsID_;
     options.filenameSuffix = ".settings";

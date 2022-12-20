@@ -24,14 +24,14 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_audio_basics/juce_audio_basics.h>
 
 class Sysex {
 public:
-    static std::vector<MidiMessage> loadSysex(std::string const &filename);
-    static std::vector<MidiMessage> loadSysex(InputStream &inputStream);
-    static std::vector<MidiMessage> vectorToMessages(std::vector<uint8> const &midiData);
-    static std::vector<MidiMessage> memoryBlockToMessages(MemoryBlock const &midiData);
+    static std::vector<juce::MidiMessage> loadSysex(std::string const &filename);
+    static std::vector<juce::MidiMessage> loadSysex(juce::InputStream &inputStream);
+    static std::vector<juce::MidiMessage> vectorToMessages(std::vector<juce::uint8> const &midiData);
+    static std::vector<juce::MidiMessage> memoryBlockToMessages(juce::MemoryBlock const &midiData);
     static void saveSysex(std::string const &filename, std::vector<juce::MidiMessage> const &messages);
     static std::string saveSysexIntoNewFile(std::string const &directory, std::string const &desiredFileName, std::vector<juce::MidiMessage> const &messages);
 };

@@ -34,51 +34,51 @@ Data& Data::instance()
     return instance_;
 }
 
-const juce::var Data::getProperty(const Identifier& name)
+const juce::var Data::getProperty(const juce::Identifier& name)
 {
     return instance().get().getProperty(name);
 }
 
-const juce::var Data::getEphemeralProperty(const Identifier& name)
+const juce::var Data::getEphemeralProperty(const juce::Identifier& name)
 {
     return instance().getEphemeral().getProperty(name);
 }
 
-const juce::var Data::getRuntimeProperty(const Identifier& name)
+const juce::var Data::getRuntimeProperty(const juce::Identifier& name)
 {
     return instance().getRuntime().getProperty(name);
 }
 
-juce::Value Data::getPropertyAsValue(const Identifier& name)
+juce::Value Data::getPropertyAsValue(const juce::Identifier& name)
 {
     return instance().get().getPropertyAsValue(name, nullptr);
 }
 
-juce::Value Data::getEphemeralPropertyAsValue(const Identifier& name)
+juce::Value Data::getEphemeralPropertyAsValue(const juce::Identifier& name)
 {
     return instance().getEphemeral().getPropertyAsValue(name, nullptr);
 }
 
-juce::Value Data::getRuntimePropertyAsValue(const Identifier& name)
+juce::Value Data::getRuntimePropertyAsValue(const juce::Identifier& name)
 {
     return instance().getRuntime().getPropertyAsValue(name, nullptr);
 }
 
-void Data::ensurePropertyExists(const Identifier &name, var defaultValue)
+void Data::ensurePropertyExists(const juce::Identifier& name, juce::var defaultValue)
 {
     if (!instance_.get().hasProperty(name)) {
         instance_.get().setProperty(name, defaultValue, nullptr);
     }
 }
 
-void Data::ensureEphemeralPropertyExists(const Identifier &name, var defaultValue)
+void Data::ensureEphemeralPropertyExists(const juce::Identifier& name, juce::var defaultValue)
 {
     if (!instance_.getEphemeral().hasProperty(name)) {
         instance_.getEphemeral().setProperty(name, defaultValue, nullptr);
     }
 }
 
-void Data::ensureRuntimePropertyExists(const Identifier &name, var defaultValue)
+void Data::ensureRuntimePropertyExists(const juce::Identifier& name, juce::var defaultValue)
 {
     if (!instance_.getRuntime().hasProperty(name)) {
         instance_.getRuntime().setProperty(name, defaultValue, nullptr);
@@ -87,14 +87,15 @@ void Data::ensureRuntimePropertyExists(const Identifier &name, var defaultValue)
 
 void Data::reset()
 {
-    instance_.tree_ = std::make_unique<ValueTree>(Identifier("Setup"));
-    instance_.ephemeralTree_ = std::make_unique<ValueTree>(Identifier("Ephemeral"));
+    instance_.tree_ = std::make_unique<juce::ValueTree>(juce::Identifier("Setup"));
+    instance_.ephemeralTree_ = std::make_unique<juce::ValueTree>(juce::Identifier("Ephemeral"));
 }
 
 Data::Data() 
-    : tree_{std::make_unique<ValueTree>(Identifier("Setup"))}
-    , ephemeralTree_{std::make_unique<ValueTree>(Identifier("Ephemeral"))}
-    , runtimeTree_{std::make_unique<ValueTree>(Identifier("EphemeralSurvivingReset"))}
+    :
+    tree_ { std::make_unique<juce::ValueTree>(juce::Identifier("Setup")) }, ephemeralTree_ { std::make_unique<juce::ValueTree>(juce::Identifier("Ephemeral")) }, runtimeTree_ {
+        std::make_unique<juce::ValueTree>(juce::Identifier("EphemeralSurvivingReset"))
+    }
 {}
 
 juce::ValueTree& Data::get()
@@ -117,7 +118,7 @@ void Data::initializeFromSettings()
     auto xmlDoc = Settings::instance().get("ClientSettings", "");
     auto topLevel = juce::parseXML(xmlDoc);
     if (topLevel) {
-        *tree_ = ValueTree::fromXml(*topLevel);
+        *tree_ = juce::ValueTree::fromXml(*topLevel);
     }
 }
 

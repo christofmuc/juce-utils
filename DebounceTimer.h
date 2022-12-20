@@ -24,9 +24,9 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_events/juce_events.h>
 
-class DebounceTimer : public Timer {
+class DebounceTimer : public juce::Timer {
 public:
     void callDebounced(std::function<void()> action, int milliseconds);
 

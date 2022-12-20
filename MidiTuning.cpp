@@ -26,14 +26,14 @@
 
 #include "MidiHelpers.h"
 
-MidiMessage MidiTuning::createTuningDumpRequest(uint8 deviceID, MidiProgramNumber tuningBankNumber)
+juce::MidiMessage MidiTuning::createTuningDumpRequest(juce::uint8 deviceID, MidiProgramNumber tuningBankNumber)
 {
     // See e.g. http://www.microtonal-synthesis.com/MIDItuning.html
     jassert(tuningBankNumber.toZeroBased() >= 0 && tuningBankNumber.toZeroBased() < 128);
-    return MidiHelpers::sysexMessage({ 0x7E, deviceID, 0x08 /* MIDI Tuning Standard */, 0x00 /* Micro tuning request */, (uint8) tuningBankNumber.toZeroBased() });
+    return MidiHelpers::sysexMessage({ 0x7E, deviceID, 0x08 /* MIDI Tuning Standard */, 0x00 /* Micro tuning request */, (juce::uint8) tuningBankNumber.toZeroBased() });
 }
 
-bool MidiTuning::isTuningDump(MidiMessage const &message)
+bool MidiTuning::isTuningDump(juce::MidiMessage const &message)
 {
     if (message.isSysEx()) {
         if (message.getSysExDataSize() > 3) {
@@ -47,7 +47,7 @@ bool MidiTuning::isTuningDump(MidiMessage const &message)
     return false;
 }
 
-bool MidiTuning::fromMidiMessage(MidiMessage const &message, MidiTuning &tuningResult)
+bool MidiTuning::fromMidiMessage(juce::MidiMessage const &message, MidiTuning &tuningResult)
 {
     if (isTuningDump(message)) {
         auto data = message.getSysExData();

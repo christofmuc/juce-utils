@@ -24,16 +24,16 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <juce_core/juce_core.h>
 
-class WaitForEvent : public Thread {
+class WaitForEvent : public juce::Thread {
 public:
     WaitForEvent(std::function<bool()> hasHappened);
-    WaitForEvent(std::function<bool()> hasHappened, Thread *threadToBeNotified);
+    WaitForEvent(std::function<bool()> hasHappened, juce::Thread *threadToBeNotified);
 
     virtual void run() override;
 
 private:
     std::function<bool()> hasHappened_;
-    Thread *notify_;
+    juce::Thread *notify_;
 };
