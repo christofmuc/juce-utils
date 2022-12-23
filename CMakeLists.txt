@@ -48,6 +48,7 @@ set(Sources
 	RingBuffer.cpp RingBuffer.h
 	RunWithRetry.cpp RunWithRetry.h
 	Settings.cpp Settings.h
+	SpdLogJuce.h
 	StreamLogger.cpp StreamLogger.h
 	Sysex.cpp Sysex.h
 	TypedNamedValue.cpp TypedNamedValue.h
@@ -70,7 +71,7 @@ if (GETTEXT_AVAILABLE)
 endif()
 
 target_include_directories(juce-utils INTERFACE ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(juce-utils PUBLIC ${I18NLib} juce-static)
+target_link_libraries(juce-utils PUBLIC ${I18NLib} juce-static fmt::fmt)
 
 # Pedantic about warnings and precompiled headers
 if (MSVC)
