@@ -24,8 +24,15 @@
 
 #include "MidiHelpers.h"
 
+#include "Logger.h"
+
 juce::MidiMessage MidiHelpers::sysexMessage(std::vector<juce::uint8> const &sysEx)
 {
+    if (std::any_of(sysEx.cbegin(), sysEx.cend(), [](juce::uint8 byte) { return byte > 127; })) {
+        jassertfalse;
+        SimpleLogger::instance()->postMessage("Error converting bytes to Sysex message, not all values smaller than 128!");
+        return {};
+    }
     return juce::MidiMessage::createSysExMessage(sysEx.data(), (int) sysEx.size());
 }
 
