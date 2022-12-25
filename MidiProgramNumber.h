@@ -28,24 +28,27 @@
 
 class MidiProgramNumber {
 public:
+    static MidiProgramNumber invalidProgram();
     static MidiProgramNumber fromOneBase(int programNumber);
     static MidiProgramNumber fromZeroBase(int programNumber);
     static MidiProgramNumber fromOneBaseWithBank(MidiBankNumber bank, int programNumber);
     static MidiProgramNumber fromZeroBaseWithBank(MidiBankNumber bank, int programNumber);
-
-    MidiProgramNumber() : programNo_(0) {}
 
     int toZeroBased() const;
     int toOneBased() const;
     int toZeroBasedWithBank() const;
     int toOneBasedWithBank() const;
 
+    bool isValid() const;
+
     bool isBankKnown() const;
     MidiBankNumber bank() const;
 
 private:
+    MidiProgramNumber() : programNo_(0), isValid_(false) {}
     MidiProgramNumber(int zeroBasedNumber, MidiBankNumber bank);
 
     int programNo_;
+    bool isValid_;
     MidiBankNumber bank_ = MidiBankNumber::invalid();
 };

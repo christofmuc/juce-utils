@@ -71,7 +71,7 @@ MidiTuning::MidiTuning(MidiProgramNumber program, std::string const &name, TTuni
 {
 }
 
-MidiTuning::MidiTuning() : program_(MidiProgramNumber::fromZeroBase(0))
+MidiTuning::MidiTuning() : program_(MidiProgramNumber::invalidProgram())
 {
 }
 

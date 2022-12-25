@@ -26,6 +26,11 @@
 
 #include <juce_core/juce_core.h>
 
+MidiProgramNumber MidiProgramNumber::invalidProgram()
+{
+    return MidiProgramNumber();
+}
+
 MidiProgramNumber MidiProgramNumber::fromOneBase(int programNumber)
 {
     return MidiProgramNumber(programNumber - 1, MidiBankNumber::invalid());
@@ -88,6 +93,10 @@ int MidiProgramNumber::toOneBasedWithBank() const
     return toZeroBasedWithBank() + 1;
 }
 
+bool MidiProgramNumber::isValid() const
+{
+    return isValid_;
+}
 
 bool MidiProgramNumber::isBankKnown() const
 {
