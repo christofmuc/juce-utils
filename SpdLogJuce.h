@@ -28,6 +28,6 @@
 #include <juce_core/juce_core.h>
 
 // This allows us to log Juce strings with spdlog without specifying the toStdString conversion
-template <> struct fmt::formatter<juce::String> : fmt::formatter<std::string> {
-    auto format(juce::String my, format_context &ctx) -> decltype(ctx.out()) { return format_to(ctx.out(), my.toStdString()); }
+template <> struct fmt::formatter<juce::String> : fmt::dynamic_formatter<> {
+    auto format(const juce::String& my, format_context& ctx) { return fmt::dynamic_formatter<>::format(my.toStdString(), ctx); }
 };
