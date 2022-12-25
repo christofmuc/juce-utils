@@ -31,7 +31,28 @@
 
 #define _(STRING) gettext(STRING)
 
-String U8(const char* translatedString);
+String U8(const char *translatedString);
 void globalSetupLocale();
-void switchDisplayLanguage(const char* languageID);
+void switchDisplayLanguage(const char *languageID);
 #endif
+
+#include <algorithm>
+#include <cctype>
+#include <locale>
+
+
+inline void string_trim_left(std::string &s)
+{
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch); }));
+}
+
+inline void string_trim_right(std::string &s)
+{
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(), s.end());
+}
+
+inline void string_trim(std::string &s)
+{
+    string_trim_right(s);
+    string_trim_left(s);
+}
