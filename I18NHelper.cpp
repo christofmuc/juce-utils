@@ -26,7 +26,8 @@
 
 #include <juce_core/juce_core.h>
 
-#include "Logger.h"
+#include "SpdLogJuce.h"
+#include <spdlog/spdlog.h>
 
 #include <stdlib.h>
 
@@ -58,13 +59,13 @@ void globalSetupLocale()
         // Special case - if we are building with a multi-config generator and are running a development version, the share path could be one directory up!
         juce::File alternativeLocalePath = executablePath.getParentDirectory().getChildFile("share");
         if (!alternativeLocalePath.exists()) {
-            SimpleLogger::instance()->postMessage("Translation files not found at " + gLocalePath.getFullPathName() + ", turning off translations!");
+            spdlog::warn("Translation files not found at {}, turning off translations!", gLocalePath.getFullPathName());
             return;
         }
         gLocalePath = alternativeLocalePath;
     }
     auto result = bindtextdomain(USE_GETTEXT_TEXT_DOMAIN, gLocalePath.getFullPathName().getCharPointer());
-    SimpleLogger::instance()->postMessage("Bindtext domain gave us " + juce::String(result));
+    spdlog::debug("Bindtext domain gave us {}", juce::String(result));
 #if defined(WIN32) || defined(__APPLE__)
     std::string displayLocale = juce::SystemStats::getDisplayLanguage().toStdString();
 #else
@@ -92,18 +93,18 @@ void switchDisplayLanguage(const char* languageID)
 #else
     auto returnValue = ::setlocale(LC_MESSAGES, languageID);
     if (returnValue == nullptr) {
-        SimpleLogger::instance()->postMessage("User locale " + juce::String(languageID) + " requested but error returned");
+        spdlog::debug("User locale {} requested but error returned", juce::String(languageID));
     }
     localeToSet = languageID;
 #endif
 
     // Make sure there is a directory of that ID
     if (!gLocalePath.getChildFile(localeToSet).exists()) {
-        SimpleLogger::instance()->postMessage("User locale " + juce::String(localeToSet) + " requested but no matching directory at " + gLocalePath.getFullPathName());
+        spdlog::debug("User locale {}" + +" requested but no matching directory at {}", juce::String(localeToSet), gLocalePath.getFullPathName());
     }
 
     textdomain(USE_GETTEXT_TEXT_DOMAIN);
-    SimpleLogger::instance()->postMessage("Setting user language to " + juce::String(languageID) + " reported to " + juce::String(localeToSet));
+    spdlog::debug("Setting user language to {} reported to {}", juce::String(languageID), juce::String(localeToSet));
 }
 
 #endif

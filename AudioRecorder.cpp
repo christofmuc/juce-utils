@@ -26,6 +26,9 @@
 
 #include "Logger.h"
 
+#include "SpdLogJuce.h"
+#include <spdlog/spdlog.h>
+
 const float kSignalThreshold = 0.001f; // Signals below this value are considered noise (don't trigger recording)
 
 AudioRecorder::AudioRecorder(juce::File directory, std::string const& baseFileName, RecordingType recordingType) :
@@ -125,7 +128,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels)
         if (allowed == bitDepthRequested) bitsOk = true;
     if (!bitsOk) {
         jassert(false);
-        SimpleLogger::instance()->postMessage("Error: trying to create a file with a bit depth that is not supported by the format: " + juce::String(bitDepthRequested));
+        spdlog::error("Trying to create a file with a bit depth that is not supported by the format: {}", bitDepthRequested);
         return;
     }
 
@@ -134,7 +137,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels)
         if (rate == sampleRate) rateOk = true;
     if (!rateOk) {
         jassert(false);
-        SimpleLogger::instance()->postMessage("Error: trying to create a file with a sample rate that is not supported by the format: " + juce::String(sampleRate));
+        spdlog::error("Trying to create a file with a sample rate that is not supported by the format: {}", sampleRate);
         return;
     }
 
@@ -175,7 +178,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels)
         // activeFile_ = directory_.getNonexistentChildFile(String(baseFileName_) + startTime_.formatted("-%Y-%m-%d-%H-%M-%S"), fileExtension, false);
     }
     if (activeFile_.existsAsFile()) {
-        SimpleLogger::instance()->postMessage("Overwriting file " + activeFile_.getFullPathName());
+        spdlog::warn("Overwriting file {}", activeFile_.getFullPathName());
         activeFile_.deleteFile();
     }
     juce::OutputStream* outStream = new juce::FileOutputStream(activeFile_, 16384);
@@ -186,7 +189,7 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels)
     if (!writer_) {
         jassert(false);
         delete outStream;
-        SimpleLogger::instance()->postMessage("Fatal: Could not create writer for Audio file, can't record to disk");
+        spdlog::error("Fatal: Could not create writer for Audio file, can't record to disk");
         return;
     }
 
@@ -201,7 +204,7 @@ void AudioRecorder::saveBlock(const float* const* data, int numSamples)
     if (data && data[0]) {
         if (!writeThread_->write(data, numSamples)) {
             // TODO - need a smarter strategy than that
-            SimpleLogger::instance()->postMessage("Ups, FIFO full and can't write block to disk, lost it!");
+            spdlog::error("Ups, FIFO full and can't write block to disk, lost it!");
         }
         samplesWritten_ += (juce::uint64) numSamples;
     }

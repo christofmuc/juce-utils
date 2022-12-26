@@ -24,7 +24,7 @@
 
 #include "RunWithRetry.h"
 
-#include "Logger.h"
+#include <spdlog/spdlog.h>
 
 void RunWithRetry::start(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, int retryIntervalMS, std::string const &message)
 {
@@ -47,7 +47,7 @@ void RunWithRetry::timerCallback()
             action_();
         }
         else {
-            SimpleLogger::instance()->postMessage("Giving up retrying " + message_);
+            spdlog::error("Giving up retrying {}", message_);
             stopTimer();
             // TODO this needs some cleanup logic to remove the stopped timer from memory
         }

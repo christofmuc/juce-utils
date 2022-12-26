@@ -71,7 +71,7 @@ if (GETTEXT_AVAILABLE)
 endif()
 
 target_include_directories(juce-utils INTERFACE ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(juce-utils PUBLIC ${I18NLib} juce-static fmt::fmt)
+target_link_libraries(juce-utils PUBLIC ${I18NLib} juce-static fmt::fmt spdlog::spdlog)
 
 # Pedantic about warnings and precompiled headers
 if (MSVC)

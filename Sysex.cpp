@@ -24,7 +24,8 @@
 
 #include "Sysex.h"
 
-#include "Logger.h"
+#include "SpdLogJuce.h"
+#include <spdlog/spdlog.h>
 
 std::vector<juce::MidiMessage> Sysex::loadSysex(std::string const &filename)
 {
@@ -40,7 +41,7 @@ std::vector<juce::MidiMessage> Sysex::loadSysex(std::string const &filename)
                 juce::File zipEntry = juce::File::createFileWithoutCheckingPath(entry->filename);
                 if (zipEntry.getFileExtension().toLowerCase() == ".mid" || zipEntry.getFileExtension().toLowerCase() == ".syx") {
                     // That's an interesting entry
-                    SimpleLogger::instance()->postMessage(juce::String("Opening ") + juce::String(entry->filename));
+                    spdlog::debug("Opening {}", entry->filename);
                     auto zipStream = zip.createStreamForEntry(i);
                     if (zipStream) {
                         auto newMessages = loadSysex(*zipStream);
