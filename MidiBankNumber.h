@@ -24,6 +24,10 @@
 
 #pragma once
 
+#include <juce_core/juce_core.h>
+#include <nlohmann/json.hpp>
+
+
 class MidiBankNumber {
 public:
     static MidiBankNumber fromOneBase(int bankNo, int banksize);
@@ -36,9 +40,20 @@ public:
 
     int bankSize() const;
 
+    bool operator!=(MidiBankNumber const& other) const;
+
+    nlohmann::json toJson() const;
+    static MidiBankNumber fromJson(nlohmann::json& json);
+
 private:
     MidiBankNumber(int zeroBasedNumber, int banksize);
 
     int bankNo_;
     int bankSize_;
+};
+
+template <> class juce::VariantConverter<MidiBankNumber> {
+public:
+    static MidiBankNumber fromVar(const var& v);
+    static var toVar(const MidiBankNumber& t);
 };

@@ -24,7 +24,8 @@
 
 #include "MidiProgramNumber.h"
 
-#include <juce_core/juce_core.h>
+#include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
 
 MidiProgramNumber MidiProgramNumber::invalidProgram()
 {
@@ -106,4 +107,45 @@ bool MidiProgramNumber::isBankKnown() const
 MidiBankNumber MidiProgramNumber::bank() const
 {
     return bank_;
+}
+
+bool MidiProgramNumber::operator!=(MidiProgramNumber const& other) const
+{
+    return bank_ != other.bank_ || programNo_ != other.programNo_ || isValid_ != other.isValid_;
+}
+
+MidiProgramNumber juce::VariantConverter<MidiProgramNumber>::fromVar(const juce::var& v)
+{
+    try {
+        std::string text = v.toString().toStdString();
+        nlohmann::json json = nlohmann::json::parse(text);
+        if (json["valid"] == false) {
+            return MidiProgramNumber ::invalidProgram();
+        }
+        else {
+            auto bank = MidiBankNumber::fromJson(json["bank"]);
+            return MidiProgramNumber ::fromZeroBaseWithBank(bank, json["program"]);
+        }
+    }
+    catch (std::exception& e) {
+        jassertfalse;
+        spdlog::error("{}", e.what());
+        return MidiProgramNumber::invalidProgram();
+    }
+}
+
+juce::var juce::VariantConverter<MidiProgramNumber>::toVar(const MidiProgramNumber& t)
+{
+    try {
+        if (t.isValid()) {
+            return String(nlohmann::json({ { "valid", true }, { "program", t.toZeroBased() }, { "bank", t.bank().toJson() } }).dump());
+        }
+        else {
+            return String((nlohmann::json({ { "valid", false } })).dump());
+        }
+    }
+    catch (std::exception& e) {
+        spdlog::error("{}", e.what());
+        return String((nlohmann::json({ { "valid", false } })).dump());
+    }
 }

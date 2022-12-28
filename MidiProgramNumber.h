@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include <juce_core/juce_core.h>
+
 #include "MidiBankNumber.h"
 
 class MidiProgramNumber {
@@ -44,6 +46,8 @@ public:
     bool isBankKnown() const;
     MidiBankNumber bank() const;
 
+    bool operator!=(MidiProgramNumber const& other) const;
+
 private:
     MidiProgramNumber() : programNo_(0), isValid_(false) {}
     MidiProgramNumber(int zeroBasedNumber, MidiBankNumber bank);
@@ -51,4 +55,10 @@ private:
     int programNo_;
     bool isValid_;
     MidiBankNumber bank_ = MidiBankNumber::invalid();
+};
+
+template <> class juce::VariantConverter<MidiProgramNumber> {
+public:
+    static MidiProgramNumber fromVar(const var& v);
+    static var toVar(const MidiProgramNumber& t);
 };

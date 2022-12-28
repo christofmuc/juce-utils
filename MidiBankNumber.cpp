@@ -24,6 +24,8 @@
 
 #include "MidiBankNumber.h"
 
+#include <spdlog/spdlog.h>
+
 #include <stdexcept>
 
 MidiBankNumber MidiBankNumber::fromOneBase(int bankNo, int banksize)
@@ -69,4 +71,64 @@ int MidiBankNumber::toOneBased() const
 int MidiBankNumber::bankSize() const
 {
     return bankSize_;
+}
+
+bool MidiBankNumber::operator!=(MidiBankNumber const& other) const
+{
+    return bankNo_ != other.bankNo_;
+}
+
+nlohmann::json MidiBankNumber::toJson() const
+{
+    try {
+        if (isValid()) {
+            return { { "valid", true }, { "bank", bankNo_ }, { "bankSize", bankSize_ } };
+        }
+        else {
+            return { { "valid", false } };
+        }
+    }
+    catch (std::exception& e) {
+        spdlog::error("{}", e.what());
+        return { { "valid", false } };
+    }
+}
+
+MidiBankNumber MidiBankNumber::fromJson(nlohmann::json& json)
+{
+    try {
+        if (json["valid"] == false) {
+            return MidiBankNumber::invalid();
+        }
+        else {
+            return MidiBankNumber::fromZeroBase(json["bank"], json["bankSize"]);
+        }
+    }
+    catch (std::exception& e) {
+        jassertfalse;
+        spdlog::error("{}", e.what());
+        return MidiBankNumber::invalid();
+    }
+}
+
+
+MidiBankNumber juce::VariantConverter<MidiBankNumber>::fromVar(const juce::var& v)
+{
+    std::string text = v.toString().toStdString();
+    try {
+        auto json = nlohmann::json::parse(text);
+        return MidiBankNumber::fromJson(json);
+    }
+    catch (std::exception& e) {
+        jassertfalse;
+        spdlog::error("{}", e.what());
+        return MidiBankNumber::invalid();
+    }
+}
+
+
+juce::var juce::VariantConverter<MidiBankNumber>::toVar(const MidiBankNumber& t)
+{
+    auto asJson = t.toJson();
+    return String(asJson.dump());
 }
