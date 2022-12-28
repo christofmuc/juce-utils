@@ -33,6 +33,7 @@ set(Sources
 	DebounceTimer.cpp DebounceTimer.h
 	FileHelpers.cpp FileHelpers.h
 	I18NHelper.cpp I18NHelper.h
+	LambdaValueListener.h
 	Logger.cpp Logger.h
 	MidiBankNumber.cpp MidiBankNumber.h
 	MidiChannel.h
