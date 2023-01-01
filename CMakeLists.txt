@@ -72,6 +72,8 @@ if (GETTEXT_AVAILABLE)
 endif()
 
 target_include_directories(juce-utils INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+get_target_property(fmt_include_dirs fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
+target_include_directories(juce-utils SYSTEM PUBLIC ${fmt_include_dirs})
 target_link_libraries(juce-utils PUBLIC ${I18NLib} juce-static fmt::fmt spdlog::spdlog nlohmann_json)
 
 # Pedantic about warnings and precompiled headers
