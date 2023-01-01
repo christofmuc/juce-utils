@@ -51,6 +51,7 @@ public:
     TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::File const &defaultValue, bool isDirectory);
     //! Construct a color value type
     TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::Colour defaultValue);
+    TypedNamedValue(TypedNamedValue const& other) = default;
 
     virtual ~TypedNamedValue() = default;
 
