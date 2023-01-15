@@ -34,6 +34,8 @@ public:
         value_.addListener(this);
     }
 
+    void trigger() { listener_(value_); }
+
 private:
     virtual void valueChanged(juce::Value& value) override
     {
@@ -51,6 +53,12 @@ public:
     void addListener(juce::Value const& value, std::function<void(juce::Value& newValue)> listener) { listeners_.emplace_back(std::make_unique<LambdaValueListener>(value, listener)); }
 
     void clear() { listeners_.clear(); }
+    void triggerAll()
+    {
+        for (auto& l : listeners_) {
+            l->trigger();
+        }
+    }
 
 private:
     std::vector<std::unique_ptr<LambdaValueListener>> listeners_;
