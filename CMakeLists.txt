@@ -72,7 +72,7 @@ if (GETTEXT_AVAILABLE)
 	if(MSVC)
 		set(I18NLib intl)
 	else()
-		set(I18NLib libintl)
+		set(I18NLibs "intl iconv")
 	endif()
 endif()
 
