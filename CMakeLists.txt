@@ -92,5 +92,5 @@ if (MSVC)
 	endif()
 else()
     # lots of warnings and all warnings as errors
-    #target_compile_options(juce-utils PRIVATE -Wall -Wextra -pedantic -Werror)
+    target_compile_options(juce-utils PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()

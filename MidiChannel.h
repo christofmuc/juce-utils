@@ -39,6 +39,7 @@ public:
 
 	bool isValid() const { return isValid_; }
 	bool isOmni() const { return isOmni_; }
+	bool isMPE() const { return isMPE_; }
 
 private:
 	int zerobasedChannel_;
