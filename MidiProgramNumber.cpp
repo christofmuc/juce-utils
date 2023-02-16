@@ -69,12 +69,12 @@ MidiProgramNumber::MidiProgramNumber(int zeroBasedNumber, MidiBankNumber bank) :
     }
 }
 
-int MidiProgramNumber::toZeroBased() const
+int MidiProgramNumber::toZeroBasedDiscardingBank() const
 {
     return programNo_;
 }
 
-int MidiProgramNumber::toOneBased() const
+int MidiProgramNumber::toOneBasedDiscardingBank() const
 {
     return programNo_ + 1;
 }
@@ -123,8 +123,14 @@ MidiProgramNumber juce::VariantConverter<MidiProgramNumber>::fromVar(const juce:
             return MidiProgramNumber ::invalidProgram();
         }
         else {
-            auto bank = MidiBankNumber::fromJson(json["bank"]);
-            return MidiProgramNumber ::fromZeroBaseWithBank(bank, json["program"]);
+            auto& bankEntry = json["bank"];
+            if (bankEntry) {
+                auto bank = MidiBankNumber::fromJson(bankEntry);
+                return MidiProgramNumber ::fromZeroBaseWithBank(bank, json["program"]);
+            }
+            else {
+                return MidiProgramNumber ::fromZeroBase(json["program"]);
+            }
         }
     }
     catch (std::exception& e) {
@@ -138,7 +144,12 @@ juce::var juce::VariantConverter<MidiProgramNumber>::toVar(const MidiProgramNumb
 {
     try {
         if (t.isValid()) {
-            return String(nlohmann::json({ { "valid", true }, { "program", t.toZeroBased() }, { "bank", t.bank().toJson() } }).dump());
+            if (t.isBankKnown()) {
+                return String(nlohmann::json({ { "valid", true }, { "program", t.toZeroBasedWithBank() }, { "bank", t.bank().toJson() } }).dump());
+            }
+            else {
+                return String(nlohmann::json({ { "valid", true }, { "program", t.toZeroBasedDiscardingBank() } }).dump());
+            }
         }
         else {
             return String((nlohmann::json({ { "valid", false } })).dump());

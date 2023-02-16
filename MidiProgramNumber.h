@@ -36,8 +36,8 @@ public:
     static MidiProgramNumber fromOneBaseWithBank(MidiBankNumber bank, int programNumber);
     static MidiProgramNumber fromZeroBaseWithBank(MidiBankNumber bank, int programNumber);
 
-    int toZeroBased() const;
-    int toOneBased() const;
+    int toZeroBasedDiscardingBank() const;
+    int toOneBasedDiscardingBank() const;
     int toZeroBasedWithBank() const;
     int toOneBasedWithBank() const;
 

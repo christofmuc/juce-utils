@@ -29,8 +29,8 @@
 juce::MidiMessage MidiTuning::createTuningDumpRequest(juce::uint8 deviceID, MidiProgramNumber tuningBankNumber)
 {
     // See e.g. http://www.microtonal-synthesis.com/MIDItuning.html
-    jassert(tuningBankNumber.toZeroBased() >= 0 && tuningBankNumber.toZeroBased() < 128);
-    return MidiHelpers::sysexMessage({ 0x7E, deviceID, 0x08 /* MIDI Tuning Standard */, 0x00 /* Micro tuning request */, (juce::uint8) tuningBankNumber.toZeroBased() });
+    jassert(tuningBankNumber.toZeroBasedDiscardingBank() >= 0 && tuningBankNumber.toZeroBasedDiscardingBank() < 128);
+    return MidiHelpers::sysexMessage({ 0x7E, deviceID, 0x08 /* MIDI Tuning Standard */, 0x00 /* Micro tuning request */, (juce::uint8) tuningBankNumber.toZeroBasedDiscardingBank() });
 }
 
 bool MidiTuning::isTuningDump(juce::MidiMessage const &message)
