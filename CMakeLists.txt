@@ -79,7 +79,7 @@ target_link_libraries(juce-utils PUBLIC ${I18NLib} juce-static fmt::fmt spdlog::
 # Pedantic about warnings and precompiled headers
 if (MSVC)
     # warning level 4 and all warnings as errors
-    target_compile_options(juce-utils PRIVATE /W4 /WX)
+    target_compile_options(juce-utils PRIVATE /W4 /WX /we4018 /we4388 /we4389)
 	if(REALLY_USE_PRECOMPILED_HEADERS)
 		target_precompile_headers(juce-utils
 			PRIVATE

@@ -162,7 +162,7 @@ std::string Sysex::dumpSysexToString(std::vector<juce::MidiMessage> const &messa
 {
     std::stringstream result;
     for (auto const &message : messages) {
-        for (size_t i = 0; i < message.getRawDataSize(); i++) {
+        for (size_t i = 0; i < static_cast<size_t>(message.getRawDataSize()); i++) {
             result << fmt::format("{:02x} ", message.getRawData()[i]);
         }
     }
