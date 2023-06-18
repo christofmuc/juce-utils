@@ -34,7 +34,7 @@ public:
     static MidiBankNumber fromZeroBase(int bankNo, int banksize);
     static MidiBankNumber invalid();
 
-    int isValid() const;
+    bool isValid() const;
     int toZeroBased() const;
     int toOneBased() const;
 

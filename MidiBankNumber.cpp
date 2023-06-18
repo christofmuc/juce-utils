@@ -47,7 +47,7 @@ MidiBankNumber::MidiBankNumber(int zeroBasedNumber, int banksize) : bankNo_(zero
 {
 }
 
-int MidiBankNumber::isValid() const
+bool MidiBankNumber::isValid() const
 {
     return bankNo_ != -1;
 }
