@@ -51,7 +51,7 @@ public:
     TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::File const &defaultValue, bool isDirectory);
     //! Construct a color value type
     TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::Colour defaultValue);
-    TypedNamedValue(TypedNamedValue const& other) = default;
+    TypedNamedValue(TypedNamedValue const &other) = default;
 
     virtual ~TypedNamedValue() = default;
 
@@ -70,6 +70,7 @@ public:
     int indexOfValue(std::string const &text) const; // TODO - suboptimal linear search
     std::string lookupValue();
     void setLookup(std::map<int, std::string> const &newLookup);
+    int findOrAppendLookup(std::string const &item);
 
 protected:
     juce::String name_;

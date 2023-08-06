@@ -143,6 +143,19 @@ void TypedNamedValue::setLookup(std::map<int, std::string> const &newLookup)
     }
 }
 
+int TypedNamedValue::findOrAppendLookup(std::string const &item)
+{
+    auto found = indexOfValue(item);
+    if (found == 0) {
+        lookup_.emplace(maxValue_ + 1, item);
+        maxValue_ = lookup_.rbegin()->first;
+        return maxValue_;
+    }
+    else {
+        return found;
+    }
+}
+
 std::shared_ptr<TypedNamedValue> TypedNamedValueSet::typedNamedValueByName(std::string const &name)
 {
     for (auto tnv : *this) {
