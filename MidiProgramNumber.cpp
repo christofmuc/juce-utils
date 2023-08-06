@@ -57,7 +57,7 @@ MidiProgramNumber MidiProgramNumber::fromZeroBaseWithBank(MidiBankNumber bank, i
     }
 }
 
-MidiProgramNumber::MidiProgramNumber(int zeroBasedNumber, MidiBankNumber bank) : programNo_(zeroBasedNumber)
+MidiProgramNumber::MidiProgramNumber(int zeroBasedNumber, MidiBankNumber bank) : programNo_(zeroBasedNumber), isValid_(true)
 {
     bank_ = bank;
     if (bank_.isValid()) {
