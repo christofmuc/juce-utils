@@ -83,7 +83,7 @@ std::vector<juce::MidiMessage> MidiHelpers::generateRPN(int midiChannel, int par
 
 bool MidiHelpers::equalSysexMessageContent(juce::MidiMessage const &message1, juce::MidiMessage const &message2, int digitsToCompare /* = -1 */)
 {
-    if (!(message1.isSysEx() & message2.isSysEx())) return false;
+    if (!(message1.isSysEx() && message2.isSysEx())) return false;
     if (digitsToCompare == -1) {
         if (message1.getSysExDataSize() != message2.getSysExDataSize()) return false;
         // The complete message should be compared
