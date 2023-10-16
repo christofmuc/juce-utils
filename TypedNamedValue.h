@@ -42,7 +42,7 @@ public:
     //! Construct a Bool type
     TypedNamedValue(juce::String const &name, juce::String const &sectionName, bool defaultValue);
     //! Construct a juce::String type (edit field)
-    TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::String const &defaultValue, int maxLength);
+    TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::String const &defaultValue, int maxLength, bool isMultiLine = false);
     //! Construct an Integer type
     TypedNamedValue(juce::String const &name, juce::String const &sectionName, int defaultValue, int minValue, int maxValue);
     //! Construct a lookup value type
@@ -63,6 +63,7 @@ public:
     ValueType valueType() const;
     int minValue() const;
     int maxValue() const;
+    bool multiLine() const;
     bool enabled() const;
     std::map<int, std::string> lookup() const;
 
@@ -79,6 +80,7 @@ protected:
     ValueType valueType_;
     int minValue_;
     int maxValue_;
+    bool multiLine_ { false };
     std::map<int, std::string> lookup_;
     bool enabled_;
 };

@@ -32,8 +32,8 @@ TypedNamedValue::TypedNamedValue(juce::String const &name, juce::String const &s
     enabled_ = true;
 }
 
-TypedNamedValue::TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::String const &defaultValue, int maxLength) :
-    name_(name), sectionName_(sectionName), valueType_(ValueType::String)
+TypedNamedValue::TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::String const &defaultValue, int maxLength, bool isMultiLine /* = false */) :
+    name_(name), sectionName_(sectionName), valueType_(ValueType::String), multiLine_(isMultiLine)
 {
     value_ = juce::Value(defaultValue);
     minValue_ = 0;
@@ -104,6 +104,11 @@ int TypedNamedValue::minValue() const
 int TypedNamedValue::maxValue() const
 {
     return maxValue_;
+}
+
+bool TypedNamedValue::multiLine() const
+{
+    return multiLine_;
 }
 
 bool TypedNamedValue::enabled() const
