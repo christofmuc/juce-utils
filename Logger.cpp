@@ -43,7 +43,7 @@ SimpleLogger::SimpleLogger()
         // Replace the BootstrapLogger with the real logger
         BootstrapLogger* bootstrap = dynamic_cast<BootstrapLogger*>(instance_);
         if (bootstrap == nullptr) {
-            throw new std::runtime_error("This is a singleton, can't create twice");
+            throw std::runtime_error("This is a singleton, can't create twice");
         }
 
         // Don't do this immediately, but rather when the message queue runs!

@@ -55,7 +55,7 @@ bool MidiBankNumber::isValid() const
 int MidiBankNumber::toZeroBased() const
 {
     if (!isValid()) {
-        throw new std::runtime_error("Illegal State");
+        throw std::runtime_error("Illegal State");
     }
     return bankNo_;
 }
@@ -63,7 +63,7 @@ int MidiBankNumber::toZeroBased() const
 int MidiBankNumber::toOneBased() const
 {
     if (!isValid()) {
-        throw new std::runtime_error("Illegal State");
+        throw std::runtime_error("Illegal State");
     }
     return bankNo_ + 1;
 }
