@@ -48,7 +48,7 @@ void RingBuffer::write(const float* const* channelPointers, int numChannels, int
     finishedWrite(blockSize1 + blockSize2);
 }
 
-void RingBuffer::read(float** channelPointers, int numChannels, int numSamples)
+void RingBuffer::read(float* const* channelPointers, int numChannels, int numSamples)
 {
     jassert(numChannels == ringBuffer_.getNumChannels());
     int startIndex1, blockSize1, startIndex2, blockSize2;
