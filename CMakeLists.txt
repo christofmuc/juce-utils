@@ -49,7 +49,7 @@ set(Sources
 	RingBuffer.cpp RingBuffer.h
 	RunWithRetry.cpp RunWithRetry.h
 	Settings.cpp Settings.h
-	SpdLogJuce.h
+	SpdLogJuce.cpp SpdLogJuce.h
 	StreamLogger.cpp StreamLogger.h
 	Sysex.cpp Sysex.h
 	TypedNamedValue.cpp TypedNamedValue.h

@@ -22,14 +22,9 @@
  * SOFTWARE.
  */
 
-#pragma once
+#include "SpdLogJuce.h"
 
-#include <fmt/format.h>
-#include <juce_core/juce_core.h>
-
-// This allows us to log Juce strings with spdlog without specifying the toStdString conversion
-template <> struct fmt::formatter<juce::String> : formatter<string_view> {
-    // parse is inherited from formatter<string_view>.
-
-    auto format(juce::String text, format_context& ctx) const -> format_context::iterator;
-};
+auto fmt::formatter<juce::String>::format(juce::String text, format_context& ctx) const -> format_context::iterator
+{
+    return formatter<string_view>::format(text.toStdString(), ctx);
+}
