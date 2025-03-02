@@ -32,6 +32,7 @@ enum class ValueType {
     Bool,
     String,
     Lookup,
+    List,
     Filename,
     Pathname,
     Color,
@@ -47,6 +48,8 @@ public:
     TypedNamedValue(juce::String const &name, juce::String const &sectionName, int defaultValue, int minValue, int maxValue);
     //! Construct a lookup value type
     TypedNamedValue(juce::String const &name, juce::String const &sectionName, int defaultValue, std::map<int, std::string> const &lookup);
+    //! Construct a list of strings type
+    TypedNamedValue(juce::String const &name, juce::String const &sectionName, std::string const &defaultValue, std::vector<std::pair<std::string, std::string>> const &list);
     //! Construct a Filepath value type
     TypedNamedValue(juce::String const &name, juce::String const &sectionName, juce::File const &defaultValue, bool isDirectory);
     //! Construct a color value type
@@ -66,6 +69,7 @@ public:
     bool multiLine() const;
     bool enabled() const;
     std::map<int, std::string> lookup() const;
+    std::vector<std::pair<std::string, std::string>> list() const;
 
     // For lookups only
     int indexOfValue(std::string const &text) const; // TODO - suboptimal linear search
@@ -82,6 +86,7 @@ protected:
     int maxValue_;
     bool multiLine_ { false };
     std::map<int, std::string> lookup_;
+    std::vector<std::pair<std::string, std::string>> list_;
     bool enabled_;
 };
 

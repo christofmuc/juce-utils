@@ -71,6 +71,13 @@ TypedNamedValue::TypedNamedValue(juce::String const &name, juce::String const &s
     enabled_ = true;
 }
 
+TypedNamedValue::TypedNamedValue(juce::String const &name, juce::String const &sectionName, std::string const &defaultValue, std::vector<std::pair<std::string, std::string>> const &list) :
+    name_(name), sectionName_(sectionName), valueType_(ValueType::List)
+{
+    value_ = juce::Value(juce::String(defaultValue));
+    list_ = list;
+}
+
 void TypedNamedValue::setEnabled(bool enabled)
 {
     enabled_ = enabled;
@@ -109,6 +116,11 @@ int TypedNamedValue::maxValue() const
 bool TypedNamedValue::multiLine() const
 {
     return multiLine_;
+}
+
+std::vector<std::pair<std::string, std::string>> TypedNamedValue::list() const
+{
+    return list_;
 }
 
 bool TypedNamedValue::enabled() const
