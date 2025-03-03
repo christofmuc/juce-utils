@@ -12,7 +12,7 @@ repos:
     rev: 'master'
     hooks:
     -  id: licenseheaders
-       args: ["-t", ".copyright.tmpl", "-y", "2019-2023", "-o", "Christof Ruch", "-x", ".pre-commit-config.yaml", "LICENSE.md", "-f"]
+       args: ["-t", ".copyright.tmpl", "-y", "2019-2025", "-o", "Christof Ruch", "-x", ".pre-commit-config.yaml", "LICENSE.md", "-f"]
 -   repo: https://github.com/pre-commit/mirrors-clang-format
     rev: v14.0.6
     hooks:

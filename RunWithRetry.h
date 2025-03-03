@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2023 Christof Ruch
+ * Copyright (c) 2019-2025 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,21 +25,28 @@
 #pragma once
 
 #include <juce_events/juce_events.h>
+#include <memory>
+#include <vector>
 
-class RunWithRetry : public juce::Timer {
+class RunWithRetry : public std::enable_shared_from_this<RunWithRetry> {
+
 public:
-    static void start(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, int retryIntervalMS, std::string const &message);
+    static void start(std::function<void()> action, std::function<bool()> retryRequired, std::function<bool()> stopCondition, int numRetries, int retryIntervalMS, const std::string& message);
 
 private:
-    RunWithRetry(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, std::string const &message);
+    RunWithRetry(std::function<void()> action, std::function<bool()> retryRequired, std::function<bool()> stopCondition, int numRetries, int retryIntervalMS, const std::string& message);
+    void removeFromList();
 
-    void timerCallback() override;
+    void attemptAction();
 
-    static std::vector<RunWithRetry *> retryObjects_;
+    static std::vector<std::shared_ptr<RunWithRetry>> retryObjects_;
+    static juce::CriticalSection retryLock_;
 
     std::function<void()> action_;
     std::function<bool()> retryRequiredPredicate_;
+    std::function<bool()> stopCondition_;
     int numRetries_;
+    int retryIntervalMS_;
     std::string message_;
     int retries_;
 };
