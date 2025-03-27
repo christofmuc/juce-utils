@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2019-2025 Christof Ruch
+ * Copyright (c) 2019-2023 Christof Ruch
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,57 +26,36 @@
 
 #include <spdlog/spdlog.h>
 
-
-// Static member definitions
-std::vector<std::shared_ptr<RunWithRetry>> RunWithRetry::retryObjects_;
-juce::CriticalSection RunWithRetry::retryLock_;
-
-void RunWithRetry::start(std::function<void()> action, std::function<bool()> retryRequired, std::function<bool()> stopCondition, int numRetries, int retryIntervalMS, const std::string& message)
+void RunWithRetry::start(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, int retryIntervalMS, std::string const &message)
 {
-    auto instance = std::shared_ptr<RunWithRetry>(new RunWithRetry(action, retryRequired, stopCondition, numRetries, retryIntervalMS, message));
-
-    {
-        juce::ScopedLock lock(retryLock_);
-        retryObjects_.push_back(instance);
-    }
-
-    instance->attemptAction();
+    retryObjects_.push_back(new RunWithRetry(action, retryRequired, numRetries, message));
+    action();
+    retryObjects_.back()->startTimer(retryIntervalMS);
 }
 
-RunWithRetry::RunWithRetry(std::function<void()> action, std::function<bool()> retryRequired, std::function<bool()> stopCondition, int numRetries, int retryIntervalMS, const std::string& message) :
-    action_(std::move(action)), retryRequiredPredicate_(std::move(retryRequired)), stopCondition_(std::move(stopCondition)), numRetries_(numRetries), retryIntervalMS_(retryIntervalMS),
-    message_(message), retries_(0)
+RunWithRetry::RunWithRetry(std::function<void()> action, std::function<bool()> retryRequired, int numRetries, std::string const &message) :
+    action_(action), retryRequiredPredicate_(retryRequired), numRetries_(numRetries), message_(message)
 {
+    retries_ = 0;
 }
 
-void RunWithRetry::attemptAction()
+void RunWithRetry::timerCallback()
 {
-    if (stopCondition_()) {
-        // Remove self from the retry list and delete
-        removeFromList();
-        return;
-    }
-
-    if (!retryRequiredPredicate_()) {
-        // No retry needed yet, schedule another check
-        juce::Timer::callAfterDelay(retryIntervalMS_, [self = shared_from_this()] { self->attemptAction(); });
-        return;
-    }
-
-    if (retries_ < numRetries_) {
+    if (retryRequiredPredicate_()) {
         retries_++;
-        action_();
-        // Schedule next retry attempt
-        juce::Timer::callAfterDelay(retryIntervalMS_, [self = shared_from_this()] { self->attemptAction(); });
+        if (retries_ <= numRetries_) {
+            action_();
+        }
+        else {
+            spdlog::error("Giving up retrying {}", message_);
+            stopTimer();
+            // TODO this needs some cleanup logic to remove the stopped timer from memory
+        }
     }
     else {
-        // Stop retrying and remove from list
-        removeFromList();
+        stopTimer();
+        // TODO this needs some cleanup logic to remove the stopped timer from memory
     }
 }
 
-void RunWithRetry::removeFromList()
-{
-    juce::ScopedLock lock(retryLock_);
-    retryObjects_.erase(std::remove_if(retryObjects_.begin(), retryObjects_.end(), [this](const std::shared_ptr<RunWithRetry>& obj) { return obj.get() == this; }), retryObjects_.end());
-}
+std::vector<RunWithRetry *> RunWithRetry::retryObjects_;
