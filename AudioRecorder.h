@@ -71,7 +71,7 @@ private:
     juce::File directory_;
     std::string baseFileName_;
     RecordingType recordingType_;
-    juce::AudioFormatWriter* writer_;
+    std::unique_ptr<juce::AudioFormatWriter> writer_;
     std::unique_ptr<juce::TimeSliceThread> thread_;
     std::unique_ptr<juce::AudioFormatWriter::ThreadedWriter> writeThread_;
 

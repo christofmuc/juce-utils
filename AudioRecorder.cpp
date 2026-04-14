@@ -94,6 +94,19 @@ juce::File AudioRecorder::getFile() const
     return activeFile_;
 }
 
+
+// Helper function which is static in JUCE
+using StringMap = std::unordered_map<juce::String, juce::String>;
+static StringMap toMap(const juce::StringPairArray& array)
+{
+    StringMap result;
+
+    for (auto i = 0; i < array.size(); ++i)
+        result[array.getAllKeys()[i]] = array.getAllValues()[i];
+
+    return result;
+}
+
 void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels)
 {
     lastSampleRate_ = sampleRate;
@@ -181,20 +194,20 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels)
         spdlog::warn("Overwriting file {}", activeFile_.getFullPathName());
         activeFile_.deleteFile();
     }
-    juce::OutputStream* outStream = new juce::FileOutputStream(activeFile_, 16384);
+    std::unique_ptr<juce::OutputStream> outStream = std::make_unique<juce::FileOutputStream>(activeFile_, 16384);
 
     // Create the writer based on the format and file
     juce::StringPairArray metaData;
-    writer_ = audioFormat->createWriterFor(outStream, sampleRate, (unsigned) numChannels, bitDepthRequested, metaData, 1 /* unused by wav */);
+    auto opt = juce::AudioFormatWriter::Options {}.withSampleRate(sampleRate).withNumChannels(numChannels).withBitsPerSample(bitDepthRequested).withMetadataValues(toMap(metaData));
+    writer_ = audioFormat->createWriterFor(outStream, opt);
     if (!writer_) {
         jassert(false);
-        delete outStream;
         spdlog::error("Fatal: Could not create writer for Audio file, can't record to disk");
         return;
     }
 
     // Finally, create the new writer associating it with the background thread
-    writeThread_ = std::make_unique<juce::AudioFormatWriter::ThreadedWriter>(writer_, *thread_, 16384);
+    writeThread_ = std::make_unique<juce::AudioFormatWriter::ThreadedWriter>(writer_.get(), *thread_, 16384);
     samplesWritten_ = 0;
 }
 
