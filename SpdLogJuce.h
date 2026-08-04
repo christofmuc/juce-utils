@@ -29,5 +29,5 @@
 
 // This allows us to log Juce strings with spdlog without specifying the toStdString conversion
 template <> struct fmt::formatter<juce::String> : fmt::formatter<std::string> {
-    auto format(const juce::String& my, format_context& ctx) { return fmt::formatter<std::string>::format(my.toStdString(), ctx); }
+    auto format(const juce::String& my, format_context& ctx) const { return fmt::formatter<std::string>::format(my.toStdString(), ctx); }
 };
