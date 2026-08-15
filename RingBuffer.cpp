@@ -60,7 +60,7 @@ void RingBuffer::read(float* const* channelPointers, int numChannels, int numSam
     }
     if (blockSize2 > 0) {
         for (int c = 0; c < std::min(numChannels, ringBuffer_.getNumChannels()); ++c) {
-            juce::FloatVectorOperations::copy(channelPointers[c] + blockSize1, ringBuffer_.getReadPointer(c, blockSize2), blockSize2);
+            juce::FloatVectorOperations::copy(channelPointers[c] + blockSize1, ringBuffer_.getReadPointer(c, startIndex2), blockSize2);
         }
     }
     finishedRead(blockSize1 + blockSize2);
