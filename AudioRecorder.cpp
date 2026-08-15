@@ -181,14 +181,25 @@ void AudioRecorder::updateChannelInfo(int sampleRate, int numChannels)
         spdlog::warn("Overwriting file {}", activeFile_.getFullPathName());
         activeFile_.deleteFile();
     }
-    juce::OutputStream* outStream = new juce::FileOutputStream(activeFile_, 16384);
+    std::unique_ptr<juce::OutputStream> outStream = std::make_unique<juce::FileOutputStream>(activeFile_, 16384);
 
     // Create the writer based on the format and file
+#if JUCE_VERSION >= 0x090000
+    const auto writerOptions = juce::AudioFormatWriterOptions{}
+                                   .withSampleRate(sampleRate)
+                                   .withNumChannels(numChannels)
+                                   .withBitsPerSample(bitDepthRequested)
+                                   .withQualityOptionIndex(1); // unused by wav
+    writer_ = audioFormat->createWriterFor(outStream, writerOptions).release();
+#else
     juce::StringPairArray metaData;
-    writer_ = audioFormat->createWriterFor(outStream, sampleRate, (unsigned) numChannels, bitDepthRequested, metaData, 1 /* unused by wav */);
+    writer_ = audioFormat->createWriterFor(outStream.get(), sampleRate, (unsigned) numChannels, bitDepthRequested, metaData, 1 /* unused by wav */);
+    if (writer_) {
+        outStream.release();
+    }
+#endif
     if (!writer_) {
         jassert(false);
-        delete outStream;
         spdlog::error("Fatal: Could not create writer for Audio file, can't record to disk");
         return;
     }
